@@ -173,6 +173,12 @@ const GRID_COLUMNS: int = 3
 var _deco_filter: StringName = &""
 var _filter_buttons: Dictionary = {}  # category_id -> Button
 
+const ZONE_BY_NAME: Dictionary = {
+	&"natural": GameEnums.ZoneType.NATURE,
+	&"taller": GameEnums.ZoneType.WORKSHOP,
+	&"recepcion": GameEnums.ZoneType.RECEPTION,
+}
+
 
 func _ready() -> void:
 	UIManager.register_panel(PANEL_NAME, self)
@@ -187,6 +193,24 @@ func _ready() -> void:
 		g.add_theme_constant_override(&"h_separation", 10)
 		g.add_theme_constant_override(&"v_separation", 10)
 	_build_deco_filters()
+	# Reaccionar al cambio de zona para que el panel se refresque mientras está abierto.
+	var cam := get_tree().get_first_node_in_group("zone_camera")
+	if cam != null and cam.has_signal("zone_changed"):
+		cam.zone_changed.connect(_on_zone_changed)
+
+
+func _on_zone_changed(_zone_name: StringName) -> void:
+	if visible:
+		_rebuild()
+
+
+func _get_active_zone() -> GameEnums.ZoneType:
+	var cam := get_tree().get_first_node_in_group("zone_camera")
+	if cam != null and cam.has_method("get_current_zone"):
+		var z = cam.get_current_zone()
+		if z is Dictionary:
+			return ZONE_BY_NAME.get(z.get("name", &""), GameEnums.ZoneType.NONE)
+	return GameEnums.ZoneType.NONE
 
 
 func _build_deco_filters() -> void:
@@ -244,9 +268,14 @@ func _rebuild() -> void:
 		for child in g.get_children():
 			child.queue_free()
 	var unlocked: Array[BuildableData] = BuildManager.get_unlocked_buildables()
+	var active_zone: GameEnums.ZoneType = _get_active_zone()
 	var has_func: bool = false
 	var has_deco: bool = false
 	for b in unlocked:
+		# Filtrado por zona: si el buildable tiene allowed_zone específica y no coincide
+		# con la zona activa de la cámara, lo ocultamos. NONE = universal (siempre visible).
+		if active_zone != GameEnums.ZoneType.NONE and b.allowed_zone != GameEnums.ZoneType.NONE and b.allowed_zone != active_zone:
+			continue
 		if b.is_decorative:
 			if _deco_filter != &"" and b.decoration_category != _deco_filter:
 				continue
@@ -257,12 +286,12 @@ func _rebuild() -> void:
 			has_func = true
 	if not has_func:
 		var l := Label.new()
-		l.text = "(no hay edificios desbloqueados)"
+		l.text = "(sin edificios para esta zona)"
 		l.modulate = Color(0.7, 0.7, 0.7, 1)
 		func_grid.add_child(l)
 	if not has_deco:
 		var l := Label.new()
-		l.text = "(sin decoraciones en esta categoría)" if _deco_filter != &"" else "(no hay decoraciones desbloqueadas)"
+		l.text = "(sin decoraciones en esta categoría)" if _deco_filter != &"" else "(sin decoraciones para esta zona)"
 		l.modulate = Color(0.7, 0.7, 0.7, 1)
 		deco_grid.add_child(l)
 

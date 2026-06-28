@@ -25,13 +25,17 @@ func unregister_node(node) -> void:
 	node_unregistered.emit(node)
 
 
-func get_closest_available_node(from_pos: Vector2, type: GameEnums.ResourceType):
+func get_closest_available_node(from_pos: Vector2, type: GameEnums.ResourceType, requester: Node = null):
 	var best = null
 	var best_dist_sq: float = INF
 	for n in _registered_nodes:
 		if not is_instance_valid(n):
 			continue
 		if not n.is_available():
+			continue
+		# Si otro worker ya reservó este nodo, no lo consideramos: el solicitante
+		# debe quedarse en wander en lugar de competir por el mismo target.
+		if requester != null and n.has_method("is_reserved_for_other") and n.is_reserved_for_other(requester):
 			continue
 		if type != GameEnums.ResourceType.NONE and n.resource_type != type:
 			continue

@@ -8,10 +8,10 @@ signal order_expired(order: OrderData)
 signal customer_arrived(customer)
 signal queue_changed
 
-const BASE_CAPACITY: int = 3
+const BASE_CAPACITY: int = 1
 ## ponytail: capacidad = base + sillas colocadas. Mantengo `MAX_ACTIVE_ORDERS` como compat
 ## por si algún consumer lo lee directo (HUD, etc.); ahora apunta a _get_capacity().
-const MAX_ACTIVE_ORDERS: int = 3  # deprecated, lee `get_capacity()`
+const MAX_ACTIVE_ORDERS: int = 1  # deprecated, lee `get_capacity()`
 
 class ActiveOrder:
 	var data: OrderData

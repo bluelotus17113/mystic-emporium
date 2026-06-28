@@ -9,6 +9,8 @@ extends Node2D
 
 var _is_collected: bool = false
 var _generator_owner: Node = null
+## Worker que reservó este nodo. Otros workers lo ignoran y wander en su lugar.
+var _reserved_by: Node = null
 
 signal collected(node: ResourceNode)
 
@@ -55,6 +57,7 @@ func collect() -> bool:
 
 func _respawn() -> void:
 	_is_collected = false
+	_reserved_by = null
 	show()
 	set_process(true)
 
@@ -65,3 +68,24 @@ func respawn() -> void:
 
 func set_generator_owner(owner_node: Node) -> void:
 	_generator_owner = owner_node
+
+
+func reserve(by: Node) -> bool:
+	# Solo reserva si no está reservado por otro vivo.
+	if _reserved_by != null and is_instance_valid(_reserved_by) and _reserved_by != by:
+		return false
+	_reserved_by = by
+	return true
+
+
+func release(by: Node) -> void:
+	if _reserved_by == by:
+		_reserved_by = null
+
+
+func is_reserved_for_other(by: Node) -> bool:
+	return _reserved_by != null and is_instance_valid(_reserved_by) and _reserved_by != by
+
+
+func _respawn_reset_reservation() -> void:
+	_reserved_by = null

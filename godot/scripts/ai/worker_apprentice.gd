@@ -14,13 +14,16 @@ func _ready() -> void:
 	move_speed = 75.0
 
 
-func _on_idle() -> void:
+func _on_idle(delta: float) -> void:
 	if ResearchManager.get_active() == null:
-		# nothing to do
+		# nothing to do — wander suave para no congelarse junto al spawn.
+		_wander(delta)
 		return
 	target = WorkstationManager.get_closest_idle(global_position, preferred_station_type)
 	if target != null:
 		_change_state(GameEnums.WorkerState.FETCHING)
+	else:
+		_wander(delta)
 
 
 func _on_arrived_at_target() -> void:
