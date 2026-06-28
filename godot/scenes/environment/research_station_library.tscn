@@ -1,0 +1,28 @@
+[gd_scene load_steps=4 format=3 uid="uid://b5j8r7n9m1a13"]
+
+[ext_resource type="Script" path="res://scripts/gameplay/research_station.gd" id="1_rs"]
+[ext_resource type="Texture2D" path="res://art/sprites/environment/bookshelf.png" id="2_tex"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
+size = Vector2(40, 40)
+
+[node name="ResearchStationLibrary" type="Node2D"]
+script = ExtResource("1_rs")
+station_type = 6
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(2, 2)
+texture = ExtResource("2_tex")
+
+[node name="Label" type="Label" parent="."]
+offset_left = -36.0
+offset_top = -34.0
+offset_right = 36.0
+offset_bottom = -18.0
+text = "Library"
+horizontal_alignment = 1
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("RectangleShape2D_1")

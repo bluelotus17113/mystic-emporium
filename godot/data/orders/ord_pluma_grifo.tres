@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="OrderData" load_steps=3 format=3 uid="uid://b5j8r7n937524c4"]
+
+[ext_resource type="Script" path="res://scripts/data/order_data.gd" id="1_od"]
+[ext_resource type="Resource" uid="uid://b5j8r7n9m7c109" path="res://data/items/pluma_grifo.tres" id="2_it"]
+
+[resource]
+script = ExtResource("1_od")
+id = &"ord_pluma_grifo"
+display_name = "Pedido de Pluma de Grifo"
+requested_item = ExtResource("2_it")
+requested_quantity = 2
+coin_reward = 280
+reputation_reward = 6
+time_limit = 0.0
+tier = 4
+min_reputation = 65

@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="OrderData" load_steps=3 format=3 uid="uid://b5j8r7n9d4b1d0e"]
+
+[ext_resource type="Script" path="res://scripts/data/order_data.gd" id="1_od"]
+[ext_resource type="Resource" uid="uid://b5j8r7n9mded0e" path="res://data/items/pocion_fuerza_mayor.tres" id="2_it"]
+
+[resource]
+script = ExtResource("1_od")
+id = &"ord_pocion_fuerza_mayor"
+display_name = "Pedido de Poción de Fuerza Mayor"
+requested_item = ExtResource("2_it")
+requested_quantity = 1
+coin_reward = 480
+reputation_reward = 6
+time_limit = 0.0
+tier = 4
+min_reputation = 70

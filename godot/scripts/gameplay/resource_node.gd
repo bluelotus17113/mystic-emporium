@@ -1,0 +1,67 @@
+class_name ResourceNode
+extends Node2D
+
+@export var item_data: ItemData
+@export var resource_type: GameEnums.ResourceType = GameEnums.ResourceType.HERB
+@export var yield_quantity: int = 1
+@export var respawn_after_collect: bool = false
+@export var respawn_time: float = 0.0
+
+var _is_collected: bool = false
+var _generator_owner: Node = null
+
+signal collected(node: ResourceNode)
+
+
+func _ready() -> void:
+	add_to_group("resource_nodes")
+	ResourceManager.register_node(self)
+
+
+func _exit_tree() -> void:
+	ResourceManager.unregister_node(self)
+
+
+func is_available() -> bool:
+	# IMPORTANTE: no chequear `visible`. La zona-camera oculta nodos para render
+	# (estás mirando otra zona) pero gameplay sigue corriendo. Si filtráramos por
+	# visible, los workers en una zona no recogerían recursos en otra cuando el
+	# jugador se mueve. El gating real por desbloqueo lo hace resource_generator
+	# vía set_process(false) cuando la zona no alcanzó el nivel necesario.
+	return not _is_collected
+
+
+func collect() -> bool:
+	if _is_collected:
+		return false
+	_is_collected = true
+	hide()
+	set_process(false)
+	# Add to central inventory
+	if item_data != null:
+		InventoryManager.add_item(item_data, yield_quantity)
+		StatsManager.bump("items_collected_total", yield_quantity)
+		print("[Collect] +%d %s" % [yield_quantity, item_data.display_name])
+	VFXManager.play(VFXManager.FX.COLLECT, global_position)
+	collected.emit(self)
+	# Notify owner generator (so it can start its cooldown)
+	if _generator_owner != null and _generator_owner.has_method("on_node_collected"):
+		_generator_owner.on_node_collected(self)
+	if respawn_after_collect and _generator_owner == null:
+		await get_tree().create_timer(respawn_time).timeout
+		_respawn()
+	return true
+
+
+func _respawn() -> void:
+	_is_collected = false
+	show()
+	set_process(true)
+
+
+func respawn() -> void:
+	_respawn()
+
+
+func set_generator_owner(owner_node: Node) -> void:
+	_generator_owner = owner_node

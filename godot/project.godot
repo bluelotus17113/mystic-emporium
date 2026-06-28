@@ -1,0 +1,103 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="Mystic Emporium Automata"
+config/description="Simulación, gestión, automatización y compañero de escritorio."
+run/main_scene="res://scenes/core/app_launcher.tscn"
+config/features=PackedStringArray("4.6", "GL Compatibility")
+config/icon="res://icon.svg"
+
+[autoload]
+
+GameEnums="*res://scripts/core/global_enums.gd"
+NameGenerator="*res://scripts/core/name_generator.gd"
+AudioManager="*res://scripts/managers/audio_manager.gd"
+InventoryManager="*res://scripts/managers/inventory_manager.gd"
+ShopManager="*res://scripts/managers/shop_manager.gd"
+ResourceManager="*res://scripts/managers/resource_manager.gd"
+WorkstationManager="*res://scripts/managers/workstation_manager.gd"
+GridManager="*res://scripts/managers/grid_manager.gd"
+BuildManager="*res://scripts/managers/build_manager.gd"
+ResearchManager="*res://scripts/managers/research_manager.gd"
+RecipeManager="*res://scripts/managers/recipe_manager.gd"
+OrderManager="*res://scripts/managers/order_manager.gd"
+UIManager="*res://scripts/managers/ui_manager.gd"
+VFXManager="*res://scripts/managers/vfx_manager.gd"
+NotificationManager="*res://scripts/managers/notification_manager.gd"
+EventManager="*res://scripts/managers/event_manager.gd"
+StatsManager="*res://scripts/managers/stats_manager.gd"
+CalendarManager="*res://scripts/managers/calendar_manager.gd"
+IdleAutomationManager="*res://scripts/managers/idle_automation_manager.gd"
+PrestigeManager="*res://scripts/managers/prestige_manager.gd"
+DailyQuestManager="*res://scripts/managers/daily_quest_manager.gd"
+ZoneExpansionManager="*res://scripts/managers/zone_expansion_manager.gd"
+SaveManager="*res://scripts/managers/save_manager.gd"
+TutorialManager="*res://scripts/managers/tutorial_manager.gd"
+WindowController="*res://scripts/window/window_controller.gd"
+EndingManager="*res://scripts/managers/ending_manager.gd"
+
+[display]
+
+window/size/viewport_width=1920
+window/size/viewport_height=1080
+window/size/window_width_override=1280
+window/size/window_height_override=720
+window/stretch/mode="canvas_items"
+window/per_pixel_transparency/allowed=true
+
+[gui]
+
+theme/custom="res://data/theme/global_theme.tres"
+
+[input]
+
+build_confirm={
+"deadzone": 0.5,
+"events": [Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"button_mask":0,"position":Vector2(0, 0),"global_position":Vector2(0, 0),"factor":1.0,"button_index":1,"canceled":false,"pressed":false,"double_click":false,"script":null)
+]
+}
+build_cancel={
+"deadzone": 0.5,
+"events": [Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"button_mask":0,"position":Vector2(0, 0),"global_position":Vector2(0, 0),"factor":1.0,"button_index":2,"canceled":false,"pressed":false,"double_click":false,"script":null)
+, Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":4194305,"physical_keycode":0,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
+]
+}
+ui_toggle_inventory={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":73,"physical_keycode":0,"key_label":0,"unicode":105,"location":0,"echo":false,"script":null)
+]
+}
+ui_toggle_build={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":66,"physical_keycode":0,"key_label":0,"unicode":98,"location":0,"echo":false,"script":null)
+]
+}
+ui_toggle_companion={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":4194332,"physical_keycode":0,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
+]
+}
+ui_pause={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":4194305,"physical_keycode":0,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
+, Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":80,"physical_keycode":0,"key_label":0,"unicode":112,"location":0,"echo":false,"script":null)
+]
+}
+
+[rendering]
+
+textures/canvas_textures/default_texture_filter=0
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+2d/snap/snap_2d_transforms_to_pixel=true
+2d/snap/snap_2d_vertices_to_pixel=true
+environment/defaults/default_clear_color=Color(0, 0, 0, 1)

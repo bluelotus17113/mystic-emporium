@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="RecipeData" load_steps=8 format=3 uid="uid://b5j8r7n9m99002"]
+
+[ext_resource type="Script" path="res://scripts/data/recipe_data.gd" id="1_rd"]
+[ext_resource type="Resource" path="res://data/items/lagrima_hada.tres" id="2_lag"]
+[ext_resource type="Resource" path="res://data/items/oro_elfico.tres" id="3_oro"]
+[ext_resource type="Resource" path="res://data/items/cuerno_unicornio.tres" id="4_cue"]
+[ext_resource type="Resource" path="res://data/items/elixir_vida.tres" id="5_eli"]
+[ext_resource type="Resource" path="res://data/items/lingote_mithril.tres" id="6_mit"]
+[ext_resource type="Resource" path="res://data/items/estrella_emporio.tres" id="7_out"]
+
+[resource]
+script = ExtResource("1_rd")
+id = &"recipe_estrella_emporio"
+display_name = "★ Estrella del Emporio (LEGENDARIA)"
+description = "El ritual final. Combina los cinco artefactos más raros del reino para crear la Estrella del Emporio — meta legendaria del juego."
+ingredients = Array[ItemData]([ExtResource("2_lag"), ExtResource("3_oro"), ExtResource("4_cue"), ExtResource("5_eli"), ExtResource("6_mit")])
+ingredient_quantities = Array[int]([3, 2, 1, 1, 2])
+output_item = ExtResource("7_out")
+output_quantity = 1
+crafting_time = 180.0
+required_station_type = 1
+unlocked_by_default = true
+tier = 5

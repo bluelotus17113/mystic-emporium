@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="RecipeData" load_steps=6 format=3 uid="uid://b5j8r7n9rcpllavemae"]
+
+[ext_resource type="Script" path="res://scripts/data/recipe_data.gd" id="1_rd"]
+[ext_resource type="Resource" uid="uid://b5j8r7n9m6dc6d" path="res://data/items/lingote_mithril.tres" id="2_ing0"]
+[ext_resource type="Resource" uid="uid://b5j8r7n9mf1001" path="res://data/items/fragmento_amatista.tres" id="3_ing1"]
+[ext_resource type="Resource" uid="uid://b5j8r7n9m2f4a0" path="res://data/items/esencia_estabilizada.tres" id="4_ing2"]
+[ext_resource type="Resource" uid="uid://b5j8r7n9me88a0" path="res://data/items/llave_maestra.tres" id="5_out"]
+[resource]
+script = ExtResource("1_rd")
+id = &"craft_llave_maestra"
+display_name = "Llave Maestra"
+description = "Abre cualquier cerradura mundana."
+ingredients = Array[ItemData]([ExtResource("2_ing0"), ExtResource("3_ing1"), ExtResource("4_ing2")])
+ingredient_quantities = Array[int]([1, 1, 1])
+output_item = ExtResource("5_out")
+output_quantity = 1
+crafting_time = 35.0
+required_station_type = 3
+unlocked_by_default = false
+tier = 4

@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ResearchData" load_steps=3 format=3 uid="uid://b5j8r7n9md37be"]
+
+[ext_resource type="Script" path="res://scripts/data/research_data.gd" id="1_re"]
+[ext_resource type="Resource" path="res://data/recipes/pocion_curacion_mayor.tres" id="3_rcp"]
+
+[resource]
+script = ExtResource("1_re")
+id = &"res_alquimia_avanzada"
+display_name = "Alquimia Avanzada"
+description = "Investigación tier 3."
+required_station_type = 1
+research_time = 45
+coin_cost = 450
+recipe_to_unlock = ExtResource("3_rcp")
+tier = 3

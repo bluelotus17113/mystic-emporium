@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="OrderData" load_steps=3 format=3 uid="uid://b5j8r7n9m1d03"]
+
+[ext_resource type="Script" path="res://scripts/data/order_data.gd" id="1_od"]
+[ext_resource type="Resource" uid="uid://b5j8r7n9m1b04" path="res://data/items/pocion_curacion_menor.tres" id="2_pot"]
+
+[resource]
+script = ExtResource("1_od")
+id = &"order_pocion"
+display_name = "Aventurero herido"
+requested_item = ExtResource("2_pot")
+requested_quantity = 1
+coin_reward = 100
+reputation_reward = 2
+time_limit = 0.0

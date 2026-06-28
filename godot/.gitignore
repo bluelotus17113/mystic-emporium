@@ -1,0 +1,24 @@
+# Godot 4+ specific ignores
+.godot/
+.import/
+export.cfg
+export_credentials.cfg
+
+# Build outputs
+*.tmp
+exports/
+builds/
+
+# IDE
+.vscode/
+.idea/
+*.code-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs / backups
+*.log
+*.bak
+*~

@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="OrderData" load_steps=3 format=3 uid="uid://b5j8r7n9d4b1b13"]
+
+[ext_resource type="Script" path="res://scripts/data/order_data.gd" id="1_od"]
+[ext_resource type="Resource" uid="uid://b5j8r7n9mbcb13" path="res://data/items/bomba_humo.tres" id="2_it"]
+
+[resource]
+script = ExtResource("1_od")
+id = &"ord_bomba_humo"
+display_name = "Pedido de Bomba de Humo"
+requested_item = ExtResource("2_it")
+requested_quantity = 2
+coin_reward = 160
+reputation_reward = 4
+time_limit = 0.0
+tier = 2
+min_reputation = 20

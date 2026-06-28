@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=3 format=3 uid="uid://b5j8r7n9m39bb8"]
+
+[ext_resource type="Script" path="res://scripts/data/item_data.gd" id="1_id"]
+[ext_resource type="Texture2D" path="res://art/sprites/items/plata_pura.png" id="2_icon"]
+
+[resource]
+script = ExtResource("1_id")
+icon = ExtResource("2_icon")
+id = &"plata_pura"
+display_name = "Plata Pura"
+description = "Mineral plateado puro."
+max_stack = 99
+category = 0
+base_value = 40
+tier = 3

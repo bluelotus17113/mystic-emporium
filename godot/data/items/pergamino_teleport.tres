@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=3 format=3 uid="uid://b5j8r7n9m28f28"]
+
+[ext_resource type="Script" path="res://scripts/data/item_data.gd" id="1_id"]
+[ext_resource type="Texture2D" path="res://art/sprites/items/pergamino_teleport.png" id="2_icon"]
+
+[resource]
+script = ExtResource("1_id")
+icon = ExtResource("2_icon")
+id = &"pergamino_teleport"
+display_name = "Pergamino de Teletransporte"
+description = "Teletransporta al portador."
+max_stack = 99
+category = 3
+base_value = 250
+tier = 5

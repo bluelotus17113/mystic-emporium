@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ResearchData" load_steps=3 format=3 uid="uid://b5j8r7n9mfbe75"]
+
+[ext_resource type="Script" path="res://scripts/data/research_data.gd" id="1_re"]
+[ext_resource type="Resource" path="res://data/recipes/daga_encantada.tres" id="3_rcp"]
+
+[resource]
+script = ExtResource("1_re")
+id = &"res_encantamiento_basico"
+display_name = "Encantamiento Básico"
+description = "Investigación tier 3."
+required_station_type = 3
+research_time = 40
+coin_cost = 350
+recipe_to_unlock = ExtResource("3_rcp")
+tier = 3

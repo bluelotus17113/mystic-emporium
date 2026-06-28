@@ -1,0 +1,32 @@
+[gd_scene load_steps=5 format=3 uid="uid://b5j8r7n9m1a08"]
+
+[ext_resource type="Script" path="res://scripts/ai/customer_ai.gd" id="1_cust"]
+[ext_resource type="Texture2D" path="res://art/sprites/characters/customer.png" id="2_tex"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_1"]
+radius = 7.0
+
+[sub_resource type="AtlasTexture" id="ATX_cust"]
+atlas = ExtResource("2_tex")
+region = Rect2(0, 0, 48, 48)
+
+[node name="Customer" type="CharacterBody2D"]
+script = ExtResource("1_cust")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+scale = Vector2(2, 2)
+offset = Vector2(0, -24)
+texture = SubResource("ATX_cust")
+
+[node name="Label" type="Label" parent="."]
+offset_left = -60.0
+offset_top = -100.0
+offset_right = 60.0
+offset_bottom = -82.0
+text = "?"
+horizontal_alignment = 1
+modulate = Color(1, 1, 0.7, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_1")

@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://b5j8r7n9m1d91"]
+
+[ext_resource type="Texture2D" path="res://art/sprites/environment/decoration_cash_register.png" id="1_tex"]
+
+[node name="DecoCashRegister" type="Node2D"]
+y_sort_enabled = true
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+scale = Vector2(2, 2)
+texture = ExtResource("1_tex")

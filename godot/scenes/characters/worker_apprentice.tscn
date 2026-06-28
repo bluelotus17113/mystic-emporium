@@ -1,0 +1,23 @@
+[gd_scene load_steps=5 format=3 uid="uid://b5j8r7n9m1a05"]
+
+[ext_resource type="Script" path="res://scripts/ai/worker_apprentice.gd" id="1_wa"]
+[ext_resource type="Texture2D" path="res://art/sprites/characters/apprentice.png" id="2_tex"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_1"]
+radius = 7.0
+
+[sub_resource type="AtlasTexture" id="ATX_app"]
+atlas = ExtResource("2_tex")
+region = Rect2(0, 0, 48, 48)
+
+[node name="WorkerApprentice" type="CharacterBody2D"]
+script = ExtResource("1_wa")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+scale = Vector2(2, 2)
+offset = Vector2(0, -24)
+texture = SubResource("ATX_app")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_1")

@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="BuildableData" load_steps=4 format=3 uid="uid://b5j8r7n9m1g08"]
+
+[ext_resource type="Script" path="res://scripts/data/buildable_data.gd" id="1_bd"]
+[ext_resource type="PackedScene" uid="uid://b5j8r7n9m1a18" path="res://scenes/environment/workstation_enchanting.tscn" id="2_scene"]
+[ext_resource type="Texture2D" path="res://art/sprites/environment/ws_mesa_encantamiento.png" id="3_icon"]
+
+[resource]
+script = ExtResource("1_bd")
+icon = ExtResource("3_icon")
+id = &"build_mesa_encantamiento"
+display_name = "Mesa de Encantamiento"
+description = "Imbuye objetos con propiedades mágicas."
+scene = ExtResource("2_scene")
+cost = 200
+allowed_zone = 2
+size = Vector2i(1, 1)
+unlocked_by_default = false

@@ -1,0 +1,86 @@
+[gd_scene load_steps=16 format=3 uid="uid://b5j8r7oam1a12"]
+
+[ext_resource type="Script" path="res://scripts/ai/protagonist_ai.gd" id="1_proto"]
+[ext_resource type="Texture2D" path="res://art/sprites/characters/protagonist_anim.png" id="2_tex"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_1"]
+radius = 8.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_pick"]
+radius = 48.0
+
+[sub_resource type="AtlasTexture" id="ATX_p1"]
+atlas = ExtResource("2_tex")
+region = Rect2(0, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="ATX_p2"]
+atlas = ExtResource("2_tex")
+region = Rect2(48, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="ATX_p3"]
+atlas = ExtResource("2_tex")
+region = Rect2(96, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="ATX_p4"]
+atlas = ExtResource("2_tex")
+region = Rect2(144, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="ATX_p5"]
+atlas = ExtResource("2_tex")
+region = Rect2(0, 48, 48, 48)
+
+[sub_resource type="AtlasTexture" id="ATX_p6"]
+atlas = ExtResource("2_tex")
+region = Rect2(48, 48, 48, 48)
+
+[sub_resource type="AtlasTexture" id="ATX_p7"]
+atlas = ExtResource("2_tex")
+region = Rect2(96, 48, 48, 48)
+
+[sub_resource type="AtlasTexture" id="ATX_p8"]
+atlas = ExtResource("2_tex")
+region = Rect2(144, 48, 48, 48)
+
+[sub_resource type="AtlasTexture" id="ATX_p9"]
+atlas = ExtResource("2_tex")
+region = Rect2(192, 48, 48, 48)
+
+[sub_resource type="AtlasTexture" id="ATX_p10"]
+atlas = ExtResource("2_tex")
+region = Rect2(240, 48, 48, 48)
+
+[sub_resource type="SpriteFrames" id="SF_proto"]
+animations = [{
+"frames": [{"duration": 1.0, "texture": SubResource("ATX_p1")}, {"duration": 1.0, "texture": SubResource("ATX_p2")}, {"duration": 1.0, "texture": SubResource("ATX_p3")}, {"duration": 1.0, "texture": SubResource("ATX_p4")}],
+"loop": true,
+"name": &"idle",
+"speed": 6.0
+}, {
+"frames": [{"duration": 1.0, "texture": SubResource("ATX_p5")}, {"duration": 1.0, "texture": SubResource("ATX_p6")}, {"duration": 1.0, "texture": SubResource("ATX_p7")}, {"duration": 1.0, "texture": SubResource("ATX_p8")}, {"duration": 1.0, "texture": SubResource("ATX_p9")}, {"duration": 1.0, "texture": SubResource("ATX_p10")}],
+"loop": true,
+"name": &"walk_south",
+"speed": 8.0
+}]
+
+[node name="Protagonist" type="CharacterBody2D"]
+script = ExtResource("1_proto")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
+scale = Vector2(2, 2)
+offset = Vector2(0, -24)
+sprite_frames = SubResource("SF_proto")
+animation = &"idle"
+autoplay = "idle"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_1")
+
+[node name="PickArea" type="Area2D" parent="."]
+input_pickable = true
+collision_layer = 0
+collision_mask = 0
+
+[node name="PickShape" type="CollisionShape2D" parent="PickArea"]
+position = Vector2(0, -48)
+shape = SubResource("CircleShape2D_pick")

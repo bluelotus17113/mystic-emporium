@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="OrderData" load_steps=3 format=3 uid="uid://b5j8r7n9m62f99"]
+
+[ext_resource type="Script" path="res://scripts/data/order_data.gd" id="1_od"]
+[ext_resource type="Resource" path="res://data/items/polvo_lunar.tres" id="2_it"]
+
+[resource]
+script = ExtResource("1_od")
+id = &"ord_polvo_alquimista"
+display_name = "Polvo para la alquimista"
+requested_item = ExtResource("2_it")
+requested_quantity = 2
+coin_reward = 60
+reputation_reward = 1
+time_limit = 0.0
+tier = 1
+min_reputation = 0

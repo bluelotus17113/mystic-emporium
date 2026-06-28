@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://b5j8r7n9m1a01"]
+
+[ext_resource type="Script" path="res://scripts/gameplay/resource_node.gd" id="1_rn"]
+[ext_resource type="Texture2D" path="res://art/sprites/environment/herb_node.png" id="2_tex"]
+
+[node name="ResourceNode" type="Node2D"]
+script = ExtResource("1_rn")
+resource_type = 1
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_tex")

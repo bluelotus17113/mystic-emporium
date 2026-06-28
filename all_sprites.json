@@ -1,0 +1,2200 @@
+[
+  {
+    "tipo": "Item",
+    "id": "hierba_lunar",
+    "nombre": "Hierba Lunar",
+    "path": "art/sprites/items/hierba_lunar.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "cristal_cuarzo",
+    "nombre": "Cristal de Cuarzo",
+    "path": "art/sprites/items/cristal_cuarzo.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "mena_hierro",
+    "nombre": "Mena de Hierro",
+    "path": "art/sprites/items/mena_hierro.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "madera_arcana",
+    "nombre": "Madera Arcana",
+    "path": "art/sprites/items/madera_arcana.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "esencia_espiritual",
+    "nombre": "Esencia Espiritual",
+    "path": "art/sprites/items/esencia_espiritual.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "flor_sol",
+    "nombre": "Flor de Sol",
+    "path": "art/sprites/items/flor_sol.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "ortiga_sombria",
+    "nombre": "Ortiga Sombría",
+    "path": "art/sprites/items/ortiga_sombria.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "raiz_mandragora",
+    "nombre": "Raíz de Mandrágora",
+    "path": "art/sprites/items/raiz_mandragora.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "fragmento_amatista",
+    "nombre": "Fragmento de Amatista",
+    "path": "art/sprites/items/fragmento_amatista.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "fragmento_obsidiana",
+    "nombre": "Fragmento de Obsidiana",
+    "path": "art/sprites/items/fragmento_obsidiana.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "polvo_estrella",
+    "nombre": "Polvo de Estrella",
+    "path": "art/sprites/items/polvo_estrella.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "champinon_sangrante",
+    "nombre": "Champiñón Sangrante",
+    "path": "art/sprites/items/champinon_sangrante.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "lagrima_hada",
+    "nombre": "Lágrima de Hada",
+    "path": "art/sprites/items/lagrima_hada.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "pluma_grifo",
+    "nombre": "Pluma de Grifo",
+    "path": "art/sprites/items/pluma_grifo.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "escama_dragon",
+    "nombre": "Escama de Dragón Bebé",
+    "path": "art/sprites/items/escama_dragon.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "cuerno_unicornio",
+    "nombre": "Cuerno de Unicornio",
+    "path": "art/sprites/items/cuerno_unicornio.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "plata_pura",
+    "nombre": "Plata Pura",
+    "path": "art/sprites/items/plata_pura.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "oro_elfico",
+    "nombre": "Oro Élfico",
+    "path": "art/sprites/items/oro_elfico.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "mithril_raw",
+    "nombre": "Mithril Crudo",
+    "path": "art/sprites/items/mithril_raw.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "hueso_wyvern",
+    "nombre": "Hueso de Wyvern",
+    "path": "art/sprites/items/hueso_wyvern.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "sangre_vampiro",
+    "nombre": "Sangre de Vampiro",
+    "path": "art/sprites/items/sangre_vampiro.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "agua_arcana",
+    "nombre": "Agua Arcana",
+    "path": "art/sprites/items/agua_arcana.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "polvo_lunar",
+    "nombre": "Polvo Lunar",
+    "path": "art/sprites/items/polvo_lunar.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "lingote_hierro",
+    "nombre": "Lingote de Hierro",
+    "path": "art/sprites/items/lingote_hierro.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "lingote_plata",
+    "nombre": "Lingote de Plata",
+    "path": "art/sprites/items/lingote_plata.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "lingote_oro",
+    "nombre": "Lingote de Oro",
+    "path": "art/sprites/items/lingote_oro.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "lingote_mithril",
+    "nombre": "Lingote de Mithril",
+    "path": "art/sprites/items/lingote_mithril.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "cuarzo_purificado",
+    "nombre": "Cuarzo Purificado",
+    "path": "art/sprites/items/cuarzo_purificado.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "tabla_encantada",
+    "nombre": "Tabla Encantada",
+    "path": "art/sprites/items/tabla_encantada.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "pergamino_blanco",
+    "nombre": "Pergamino en Blanco",
+    "path": "art/sprites/items/pergamino_blanco.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "esencia_estabilizada",
+    "nombre": "Esencia Estabilizada",
+    "path": "art/sprites/items/esencia_estabilizada.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "tinta_arcana",
+    "nombre": "Tinta Arcana",
+    "path": "art/sprites/items/tinta_arcana.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "hilo_tela_magica",
+    "nombre": "Hilo de Tela Mágica",
+    "path": "art/sprites/items/hilo_tela_magica.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "cuero_curtido",
+    "nombre": "Cuero Curtido",
+    "path": "art/sprites/items/cuero_curtido.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "aceite_bestia",
+    "nombre": "Aceite de Bestia",
+    "path": "art/sprites/items/aceite_bestia.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "pasta_mandragora",
+    "nombre": "Pasta de Mandrágora",
+    "path": "art/sprites/items/pasta_mandragora.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "sal_cristalizada",
+    "nombre": "Sal Cristalizada",
+    "path": "art/sprites/items/sal_cristalizada.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "polvo_hueso",
+    "nombre": "Polvo de Hueso",
+    "path": "art/sprites/items/polvo_hueso.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "esencia_sombra",
+    "nombre": "Esencia de Sombra",
+    "path": "art/sprites/items/esencia_sombra.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "esencia_luz",
+    "nombre": "Esencia de Luz",
+    "path": "art/sprites/items/esencia_luz.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "resina_encantada",
+    "nombre": "Resina Encantada",
+    "path": "art/sprites/items/resina_encantada.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "pigmento_runico",
+    "nombre": "Pigmento Rúnico",
+    "path": "art/sprites/items/pigmento_runico.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "pocion_curacion_menor",
+    "nombre": "Poción de Curación Menor",
+    "path": "art/sprites/items/pocion_curacion_menor.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "pocion_curacion_mayor",
+    "nombre": "Poción de Curación Mayor",
+    "path": "art/sprites/items/pocion_curacion_mayor.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "pocion_fuerza_menor",
+    "nombre": "Poción de Fuerza Menor",
+    "path": "art/sprites/items/pocion_fuerza_menor.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "pocion_fuerza_mayor",
+    "nombre": "Poción de Fuerza Mayor",
+    "path": "art/sprites/items/pocion_fuerza_mayor.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "pocion_velocidad",
+    "nombre": "Poción de Velocidad",
+    "path": "art/sprites/items/pocion_velocidad.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "pocion_invisibilidad",
+    "nombre": "Poción de Invisibilidad",
+    "path": "art/sprites/items/pocion_invisibilidad.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "pocion_resistencia",
+    "nombre": "Poción de Resistencia",
+    "path": "art/sprites/items/pocion_resistencia.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "pocion_mana",
+    "nombre": "Poción de Maná",
+    "path": "art/sprites/items/pocion_mana.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "antidoto",
+    "nombre": "Antídoto",
+    "path": "art/sprites/items/antidoto.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "elixir_vida",
+    "nombre": "Elixir de Vida",
+    "path": "art/sprites/items/elixir_vida.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "daga_encantada",
+    "nombre": "Daga Encantada",
+    "path": "art/sprites/items/daga_encantada.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "espada_encantada",
+    "nombre": "Espada Encantada",
+    "path": "art/sprites/items/espada_encantada.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "lanza_elfica",
+    "nombre": "Lanza Élfica",
+    "path": "art/sprites/items/lanza_elfica.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "arco_cazador",
+    "nombre": "Arco de Cazador",
+    "path": "art/sprites/items/arco_cazador.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "baston_arcano",
+    "nombre": "Bastón Arcano",
+    "path": "art/sprites/items/baston_arcano.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "amuleto_proteccion",
+    "nombre": "Amuleto de Protección",
+    "path": "art/sprites/items/amuleto_proteccion.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "anillo_sabiduria",
+    "nombre": "Anillo de Sabiduría",
+    "path": "art/sprites/items/anillo_sabiduria.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "talisman_suerte",
+    "nombre": "Talismán de Suerte",
+    "path": "art/sprites/items/talisman_suerte.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "brazalete_fuerza",
+    "nombre": "Brazalete de Fuerza",
+    "path": "art/sprites/items/brazalete_fuerza.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "capa_sombria",
+    "nombre": "Capa Sombría",
+    "path": "art/sprites/items/capa_sombria.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "botas_velocidad",
+    "nombre": "Botas de Velocidad",
+    "path": "art/sprites/items/botas_velocidad.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "casco_runico",
+    "nombre": "Casco Rúnico",
+    "path": "art/sprites/items/casco_runico.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "escudo_bendecido",
+    "nombre": "Escudo Bendecido",
+    "path": "art/sprites/items/escudo_bendecido.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "pergamino_celeridad",
+    "nombre": "Pergamino de Celeridad",
+    "path": "art/sprites/items/pergamino_celeridad.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "pergamino_fuego",
+    "nombre": "Pergamino de Fuego",
+    "path": "art/sprites/items/pergamino_fuego.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "pergamino_hielo",
+    "nombre": "Pergamino de Hielo",
+    "path": "art/sprites/items/pergamino_hielo.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "pergamino_rayo",
+    "nombre": "Pergamino de Rayo",
+    "path": "art/sprites/items/pergamino_rayo.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "pergamino_teleport",
+    "nombre": "Pergamino de Teletransporte",
+    "path": "art/sprites/items/pergamino_teleport.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "libro_hechizos",
+    "nombre": "Libro de Hechizos",
+    "path": "art/sprites/items/libro_hechizos.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "mapa_tesoro",
+    "nombre": "Mapa del Tesoro",
+    "path": "art/sprites/items/mapa_tesoro.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "brujula_magica",
+    "nombre": "Brújula Mágica",
+    "path": "art/sprites/items/brujula_magica.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "linterna_eterna",
+    "nombre": "Linterna Eterna",
+    "path": "art/sprites/items/linterna_eterna.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "llave_maestra",
+    "nombre": "Llave Maestra",
+    "path": "art/sprites/items/llave_maestra.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "reloj_arena_tiempo",
+    "nombre": "Reloj de Arena del Tiempo",
+    "path": "art/sprites/items/reloj_arena_tiempo.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "golem_arcilla",
+    "nombre": "Golem de Arcilla (consumible)",
+    "path": "art/sprites/items/golem_arcilla.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "bomba_humo",
+    "nombre": "Bomba de Humo",
+    "path": "art/sprites/items/bomba_humo.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "trampa_magica",
+    "nombre": "Trampa Mágica",
+    "path": "art/sprites/items/trampa_magica.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "arcane_coin",
+    "nombre": "Moneda Arcana",
+    "path": "art/sprites/items/arcane_coin.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "cristal_reputacion",
+    "nombre": "Cristal de Reputación",
+    "path": "art/sprites/items/cristal_reputacion.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "vale_gremio",
+    "nombre": "Vale del Gremio",
+    "path": "art/sprites/items/vale_gremio.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "token_evento",
+    "nombre": "Token de Evento",
+    "path": "art/sprites/items/token_evento.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Item",
+    "id": "invitacion_vip",
+    "nombre": "Invitación VIP",
+    "path": "art/sprites/items/invitacion_vip.png",
+    "tamano": "32×32"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "gen_hierbas",
+    "nombre": "Parcela de Hierbas",
+    "path": "art/sprites/environment/gen_hierbas.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "gen_cristal",
+    "nombre": "Filón de Cristal",
+    "path": "art/sprites/environment/gen_cristal.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "gen_hierro",
+    "nombre": "Depósito de Hierro",
+    "path": "art/sprites/environment/gen_hierro.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "gen_arboleda",
+    "nombre": "Arboleda Arcana",
+    "path": "art/sprites/environment/gen_arboleda.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "gen_esencia",
+    "nombre": "Nodo de Esencia",
+    "path": "art/sprites/environment/gen_esencia.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "gen_flor_sol",
+    "nombre": "Campo Solar",
+    "path": "art/sprites/environment/gen_flor_sol.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "gen_ortiga",
+    "nombre": "Maleza Sombría",
+    "path": "art/sprites/environment/gen_ortiga.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "gen_jardin_setas",
+    "nombre": "Jardín de Setas",
+    "path": "art/sprites/environment/gen_jardin_setas.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "gen_mina_plata",
+    "nombre": "Mina de Plata",
+    "path": "art/sprites/environment/gen_mina_plata.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "gen_mina_oro",
+    "nombre": "Mina de Oro",
+    "path": "art/sprites/environment/gen_mina_oro.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "gen_geiser",
+    "nombre": "Géiser Elemental",
+    "path": "art/sprites/environment/gen_geiser.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "gen_estanque_espiritual",
+    "nombre": "Estanque Espiritual",
+    "path": "art/sprites/environment/gen_estanque_espiritual.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "gen_roca_lunar",
+    "nombre": "Roca Lunar",
+    "path": "art/sprites/environment/gen_roca_lunar.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "gen_arboleda_mandragora",
+    "nombre": "Arboleda Mandrágora",
+    "path": "art/sprites/environment/gen_arboleda_mandragora.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "ws_caldero",
+    "nombre": "Caldero Alquímico",
+    "path": "art/sprites/environment/ws_caldero.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "ws_caldero_grande",
+    "nombre": "Caldero Grande",
+    "path": "art/sprites/environment/ws_caldero_grande.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "ws_forja",
+    "nombre": "Forja Mística",
+    "path": "art/sprites/environment/ws_forja.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "ws_forja_elfica",
+    "nombre": "Forja Élfica",
+    "path": "art/sprites/environment/ws_forja_elfica.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "ws_mesa_encantamiento",
+    "nombre": "Mesa de Encantamiento",
+    "path": "art/sprites/environment/ws_mesa_encantamiento.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "ws_mesa_runas",
+    "nombre": "Mesa de Runas Avanzada",
+    "path": "art/sprites/environment/ws_mesa_runas.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "ws_escritorio_escriba",
+    "nombre": "Escritorio de Escriba",
+    "path": "art/sprites/environment/ws_escritorio_escriba.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "ws_escritorio_iluminado",
+    "nombre": "Escritorio Iluminado",
+    "path": "art/sprites/environment/ws_escritorio_iluminado.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "ws_circulo_invocacion",
+    "nombre": "Círculo de Invocación",
+    "path": "art/sprites/environment/ws_circulo_invocacion.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "ws_laboratorio_mutacion",
+    "nombre": "Laboratorio de Mutación",
+    "path": "art/sprites/environment/ws_laboratorio_mutacion.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "ws_telar_magico",
+    "nombre": "Telar Mágico",
+    "path": "art/sprites/environment/ws_telar_magico.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "ws_curtidor",
+    "nombre": "Curtidor de Bestias",
+    "path": "art/sprites/environment/ws_curtidor.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "ws_destilador",
+    "nombre": "Destilador Arcano",
+    "path": "art/sprites/environment/ws_destilador.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "rs_biblioteca",
+    "nombre": "Biblioteca Arcana",
+    "path": "art/sprites/environment/rs_biblioteca.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "rs_observatorio",
+    "nombre": "Observatorio Astrológico",
+    "path": "art/sprites/environment/rs_observatorio.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "rs_sala_meditacion",
+    "nombre": "Sala de Meditación",
+    "path": "art/sprites/environment/rs_sala_meditacion.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "rs_camara_estudio",
+    "nombre": "Cámara de Estudio Profundo",
+    "path": "art/sprites/environment/rs_camara_estudio.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "st_cofre_pequeño",
+    "nombre": "Cofre Pequeño",
+    "path": "art/sprites/environment/st_cofre_pequeño.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "st_cofre_mediano",
+    "nombre": "Cofre Mediano",
+    "path": "art/sprites/environment/st_cofre_mediano.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "st_cofre_grande",
+    "nombre": "Cofre Grande",
+    "path": "art/sprites/environment/st_cofre_grande.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "st_bodega",
+    "nombre": "Bodega",
+    "path": "art/sprites/environment/st_bodega.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "st_estanteria",
+    "nombre": "Estantería de Productos",
+    "path": "art/sprites/environment/st_estanteria.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "rc_mostrador",
+    "nombre": "Mostrador",
+    "path": "art/sprites/environment/rc_mostrador.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "rc_silla_espera",
+    "nombre": "Silla de Espera",
+    "path": "art/sprites/environment/rc_silla_espera.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "rc_banco_espera",
+    "nombre": "Banco de Espera",
+    "path": "art/sprites/environment/rc_banco_espera.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "rc_caja_registradora",
+    "nombre": "Caja Registradora",
+    "path": "art/sprites/environment/rc_caja_registradora.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "rc_vitrina_premium",
+    "nombre": "Vitrina Premium",
+    "path": "art/sprites/environment/rc_vitrina_premium.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "dec_estatua_pequeña",
+    "nombre": "Estatua Pequeña",
+    "path": "art/sprites/environment/dec_estatua_pequeña.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "dec_estatua_grande",
+    "nombre": "Estatua Grande",
+    "path": "art/sprites/environment/dec_estatua_grande.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "dec_fuente_mana",
+    "nombre": "Fuente de Maná",
+    "path": "art/sprites/environment/dec_fuente_mana.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "dec_brasero_eterno",
+    "nombre": "Brasero Eterno",
+    "path": "art/sprites/environment/dec_brasero_eterno.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "dec_reloj_pared",
+    "nombre": "Reloj de Pared",
+    "path": "art/sprites/environment/dec_reloj_pared.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "dec_macetero",
+    "nombre": "Macetero Decorativo",
+    "path": "art/sprites/environment/dec_macetero.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "dec_pendon",
+    "nombre": "Pendón / Bandera",
+    "path": "art/sprites/environment/dec_pendon.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "dec_alfombra_pequeña",
+    "nombre": "Alfombra Pequeña",
+    "path": "art/sprites/environment/dec_alfombra_pequeña.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "dec_alfombra_grande",
+    "nombre": "Alfombra Grande",
+    "path": "art/sprites/environment/dec_alfombra_grande.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "dec_candelabro",
+    "nombre": "Candelabro",
+    "path": "art/sprites/environment/dec_candelabro.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "dec_farol_colgante",
+    "nombre": "Farol Colgante",
+    "path": "art/sprites/environment/dec_farol_colgante.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "dec_cuadro_mago",
+    "nombre": "Cuadro de Mago",
+    "path": "art/sprites/environment/dec_cuadro_mago.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "dec_cristal_decorativo",
+    "nombre": "Cristal Decorativo",
+    "path": "art/sprites/environment/dec_cristal_decorativo.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "dec_globo_aerostatico",
+    "nombre": "Globo Aerostático (mini)",
+    "path": "art/sprites/environment/dec_globo_aerostatico.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "sup_torre_alerta",
+    "nombre": "Torre de Alerta",
+    "path": "art/sprites/environment/sup_torre_alerta.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "sup_altar_sacrificio",
+    "nombre": "Altar de Sacrificio",
+    "path": "art/sprites/environment/sup_altar_sacrificio.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "sup_portal_teleport",
+    "nombre": "Portal de Teletransporte",
+    "path": "art/sprites/environment/sup_portal_teleport.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Edificio",
+    "id": "sup_taller_inventor",
+    "nombre": "Taller del Inventor",
+    "path": "art/sprites/environment/sup_taller_inventor.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Suelo",
+    "id": "floor_camino_tierra",
+    "nombre": "Camino de Tierra",
+    "path": "art/tiles/floor/floor_camino_tierra.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Suelo",
+    "id": "floor_camino_piedra",
+    "nombre": "Camino de Piedra",
+    "path": "art/tiles/floor/floor_camino_piedra.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Suelo",
+    "id": "floor_camino_madera",
+    "nombre": "Camino de Madera",
+    "path": "art/tiles/floor/floor_camino_madera.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Suelo",
+    "id": "floor_camino_ladrillo",
+    "nombre": "Camino de Ladrillo",
+    "path": "art/tiles/floor/floor_camino_ladrillo.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Suelo",
+    "id": "floor_camino_marmol",
+    "nombre": "Camino de Mármol",
+    "path": "art/tiles/floor/floor_camino_marmol.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Suelo",
+    "id": "floor_hierba",
+    "nombre": "Suelo de Hierba",
+    "path": "art/tiles/floor/floor_hierba.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Suelo",
+    "id": "floor_hierba_seca",
+    "nombre": "Suelo de Hierba Seca",
+    "path": "art/tiles/floor/floor_hierba_seca.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Suelo",
+    "id": "floor_musgo",
+    "nombre": "Suelo de Musgo",
+    "path": "art/tiles/floor/floor_musgo.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Suelo",
+    "id": "floor_tierra_arcana",
+    "nombre": "Tierra Arcana",
+    "path": "art/tiles/floor/floor_tierra_arcana.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Suelo",
+    "id": "floor_arena_lunar",
+    "nombre": "Arena Lunar",
+    "path": "art/tiles/floor/floor_arena_lunar.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Suelo",
+    "id": "floor_piedra_natural",
+    "nombre": "Piedra Natural",
+    "path": "art/tiles/floor/floor_piedra_natural.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Suelo",
+    "id": "floor_parcela_arada",
+    "nombre": "Parcela Arada",
+    "path": "art/tiles/floor/floor_parcela_arada.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Suelo",
+    "id": "floor_parcela_humeda",
+    "nombre": "Parcela Húmeda",
+    "path": "art/tiles/floor/floor_parcela_humeda.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Suelo",
+    "id": "floor_parcela_brotes",
+    "nombre": "Parcela con Brotes",
+    "path": "art/tiles/floor/floor_parcela_brotes.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Suelo",
+    "id": "floor_parcela_crecimiento",
+    "nombre": "Parcela en Crecimiento",
+    "path": "art/tiles/floor/floor_parcela_crecimiento.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Suelo",
+    "id": "floor_parcela_madura",
+    "nombre": "Parcela Madura",
+    "path": "art/tiles/floor/floor_parcela_madura.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Suelo",
+    "id": "floor_parcela_marchita",
+    "nombre": "Parcela Marchita",
+    "path": "art/tiles/floor/floor_parcela_marchita.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Suelo",
+    "id": "floor_madera_oscura",
+    "nombre": "Suelo Madera Oscura",
+    "path": "art/tiles/floor/floor_madera_oscura.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Suelo",
+    "id": "floor_madera_clara",
+    "nombre": "Suelo Madera Clara",
+    "path": "art/tiles/floor/floor_madera_clara.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Suelo",
+    "id": "floor_baldosa_taller",
+    "nombre": "Baldosa Taller",
+    "path": "art/tiles/floor/floor_baldosa_taller.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Suelo",
+    "id": "floor_piedra_forja",
+    "nombre": "Piedra Forja",
+    "path": "art/tiles/floor/floor_piedra_forja.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Suelo",
+    "id": "floor_baldosa_alquimia",
+    "nombre": "Baldosa Alquimia",
+    "path": "art/tiles/floor/floor_baldosa_alquimia.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Suelo",
+    "id": "floor_baldosa_marmol",
+    "nombre": "Baldosa Mármol",
+    "path": "art/tiles/floor/floor_baldosa_marmol.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Suelo",
+    "id": "floor_baldosa_esmaltada",
+    "nombre": "Baldosa Esmaltada",
+    "path": "art/tiles/floor/floor_baldosa_esmaltada.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Suelo",
+    "id": "floor_alfombra_roja",
+    "nombre": "Alfombra Roja",
+    "path": "art/tiles/floor/floor_alfombra_roja.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Suelo",
+    "id": "floor_alfombra_purpura",
+    "nombre": "Alfombra Púrpura",
+    "path": "art/tiles/floor/floor_alfombra_purpura.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Suelo",
+    "id": "floor_mosaico_dorado",
+    "nombre": "Mosaico Dorado",
+    "path": "art/tiles/floor/floor_mosaico_dorado.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Suelo",
+    "id": "floor_baldosa_obsidiana",
+    "nombre": "Baldosa Obsidiana",
+    "path": "art/tiles/floor/floor_baldosa_obsidiana.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Suelo",
+    "id": "floor_borde_zona",
+    "nombre": "Borde de Zona",
+    "path": "art/tiles/floor/floor_borde_zona.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Suelo",
+    "id": "floor_grid_temporal",
+    "nombre": "Grid Construcción",
+    "path": "art/tiles/floor/floor_grid_temporal.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Suelo",
+    "id": "floor_zona_invalida",
+    "nombre": "Zona Inválida",
+    "path": "art/tiles/floor/floor_zona_invalida.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Suelo",
+    "id": "floor_runa_canalizadora",
+    "nombre": "Runa Canalizadora",
+    "path": "art/tiles/floor/floor_runa_canalizadora.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Pared",
+    "id": "wall_piedra_interior",
+    "nombre": "Pared Piedra Interior",
+    "path": "art/tiles/wall/wall_piedra_interior.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Pared",
+    "id": "wall_madera_interior",
+    "nombre": "Pared Madera Interior",
+    "path": "art/tiles/wall/wall_madera_interior.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Pared",
+    "id": "wall_ladrillo_interior",
+    "nombre": "Pared Ladrillo Interior",
+    "path": "art/tiles/wall/wall_ladrillo_interior.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Pared",
+    "id": "wall_papel_arcano",
+    "nombre": "Pared Empapelada Arcana",
+    "path": "art/tiles/wall/wall_papel_arcano.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Pared",
+    "id": "wall_piedra_exterior",
+    "nombre": "Pared Piedra Exterior",
+    "path": "art/tiles/wall/wall_piedra_exterior.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Pared",
+    "id": "wall_madera_exterior",
+    "nombre": "Pared Madera Exterior",
+    "path": "art/tiles/wall/wall_madera_exterior.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Pared",
+    "id": "wall_ladrillo_exterior",
+    "nombre": "Pared Ladrillo Exterior",
+    "path": "art/tiles/wall/wall_ladrillo_exterior.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Pared",
+    "id": "wall_esquina_int_TL",
+    "nombre": "Esquina Interior TL",
+    "path": "art/tiles/wall/wall_esquina_int_TL.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Pared",
+    "id": "wall_esquina_int_TR",
+    "nombre": "Esquina Interior TR",
+    "path": "art/tiles/wall/wall_esquina_int_TR.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Pared",
+    "id": "wall_esquina_int_BL",
+    "nombre": "Esquina Interior BL",
+    "path": "art/tiles/wall/wall_esquina_int_BL.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Pared",
+    "id": "wall_esquina_int_BR",
+    "nombre": "Esquina Interior BR",
+    "path": "art/tiles/wall/wall_esquina_int_BR.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Pared",
+    "id": "wall_borde_top",
+    "nombre": "Borde Superior",
+    "path": "art/tiles/wall/wall_borde_top.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Pared",
+    "id": "wall_borde_bottom",
+    "nombre": "Borde Inferior",
+    "path": "art/tiles/wall/wall_borde_bottom.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Pared",
+    "id": "wall_borde_left",
+    "nombre": "Borde Izquierdo",
+    "path": "art/tiles/wall/wall_borde_left.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Pared",
+    "id": "wall_borde_right",
+    "nombre": "Borde Derecho",
+    "path": "art/tiles/wall/wall_borde_right.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Pared",
+    "id": "door_madera_cerrada",
+    "nombre": "Puerta Madera Cerrada",
+    "path": "art/tiles/wall/door_madera_cerrada.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Pared",
+    "id": "door_madera_abierta",
+    "nombre": "Puerta Madera Abierta",
+    "path": "art/tiles/wall/door_madera_abierta.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Pared",
+    "id": "door_hierro_cerrada",
+    "nombre": "Puerta Hierro Cerrada",
+    "path": "art/tiles/wall/door_hierro_cerrada.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Pared",
+    "id": "door_arcana_cerrada",
+    "nombre": "Puerta Arcana",
+    "path": "art/tiles/wall/door_arcana_cerrada.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Pared",
+    "id": "door_doble_cerrada",
+    "nombre": "Puertas Dobles Cerradas",
+    "path": "art/tiles/wall/door_doble_cerrada.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Pared",
+    "id": "window_basica",
+    "nombre": "Ventana Básica",
+    "path": "art/tiles/wall/window_basica.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Pared",
+    "id": "window_arcana",
+    "nombre": "Ventana Arcana",
+    "path": "art/tiles/wall/window_arcana.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Pared",
+    "id": "window_redonda",
+    "nombre": "Ventana Redonda",
+    "path": "art/tiles/wall/window_redonda.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Pared",
+    "id": "col_columna_piedra",
+    "nombre": "Columna de Piedra",
+    "path": "art/tiles/wall/col_columna_piedra.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Pared",
+    "id": "col_columna_marmol",
+    "nombre": "Columna de Mármol",
+    "path": "art/tiles/wall/col_columna_marmol.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Pared",
+    "id": "col_pilar_arcano",
+    "nombre": "Pilar Arcano",
+    "path": "art/tiles/wall/col_pilar_arcano.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Pared",
+    "id": "ext_cerca_madera",
+    "nombre": "Cerca de Madera",
+    "path": "art/tiles/wall/ext_cerca_madera.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Pared",
+    "id": "ext_cerca_piedra",
+    "nombre": "Cerca de Piedra",
+    "path": "art/tiles/wall/ext_cerca_piedra.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Pared",
+    "id": "ext_seto_alto",
+    "nombre": "Seto Alto",
+    "path": "art/tiles/wall/ext_seto_alto.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Pared",
+    "id": "ext_arco_entrada",
+    "nombre": "Arco de Entrada",
+    "path": "art/tiles/wall/ext_arco_entrada.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "Tile Pared",
+    "id": "ext_letrero",
+    "nombre": "Letrero Mystic Emporium",
+    "path": "art/tiles/wall/ext_letrero.png",
+    "tamano": "64×64"
+  },
+  {
+    "tipo": "NPC",
+    "id": "npc_aldeano",
+    "nombre": "Aldeano humilde",
+    "path": "art/sprites/characters/npc_aldeano.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "NPC",
+    "id": "npc_aventurero_novato",
+    "nombre": "Aventurero novato",
+    "path": "art/sprites/characters/npc_aventurero_novato.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "NPC",
+    "id": "npc_aventurero_veterano",
+    "nombre": "Aventurero veterano",
+    "path": "art/sprites/characters/npc_aventurero_veterano.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "NPC",
+    "id": "npc_comerciante",
+    "nombre": "Comerciante",
+    "path": "art/sprites/characters/npc_comerciante.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "NPC",
+    "id": "npc_anciano_sabio",
+    "nombre": "Anciano sabio",
+    "path": "art/sprites/characters/npc_anciano_sabio.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "NPC",
+    "id": "npc_nino_curioso",
+    "nombre": "Niño curioso",
+    "path": "art/sprites/characters/npc_nino_curioso.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "NPC",
+    "id": "npc_cocinero",
+    "nombre": "Cocinero",
+    "path": "art/sprites/characters/npc_cocinero.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "NPC",
+    "id": "npc_doctor",
+    "nombre": "Doctor / Sanador",
+    "path": "art/sprites/characters/npc_doctor.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "NPC",
+    "id": "npc_caballero",
+    "nombre": "Caballero",
+    "path": "art/sprites/characters/npc_caballero.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "NPC",
+    "id": "npc_paladin",
+    "nombre": "Paladín",
+    "path": "art/sprites/characters/npc_paladin.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "NPC",
+    "id": "npc_mago_iniciado",
+    "nombre": "Mago iniciado",
+    "path": "art/sprites/characters/npc_mago_iniciado.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "NPC",
+    "id": "npc_archimago",
+    "nombre": "Archimago",
+    "path": "art/sprites/characters/npc_archimago.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "NPC",
+    "id": "npc_druida",
+    "nombre": "Druida",
+    "path": "art/sprites/characters/npc_druida.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "NPC",
+    "id": "npc_bardo",
+    "nombre": "Bardo",
+    "path": "art/sprites/characters/npc_bardo.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "NPC",
+    "id": "npc_sacerdote",
+    "nombre": "Sacerdote",
+    "path": "art/sprites/characters/npc_sacerdote.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "NPC",
+    "id": "npc_ladron",
+    "nombre": "Ladrón / Pícaro",
+    "path": "art/sprites/characters/npc_ladron.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "NPC",
+    "id": "npc_pirata",
+    "nombre": "Pirata",
+    "path": "art/sprites/characters/npc_pirata.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "NPC",
+    "id": "npc_asesino",
+    "nombre": "Asesino",
+    "path": "art/sprites/characters/npc_asesino.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "NPC",
+    "id": "npc_caballero_negro",
+    "nombre": "Caballero Negro",
+    "path": "art/sprites/characters/npc_caballero_negro.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "NPC",
+    "id": "npc_elfo_bosque",
+    "nombre": "Elfo del Bosque",
+    "path": "art/sprites/characters/npc_elfo_bosque.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "NPC",
+    "id": "npc_elfo_oscuro",
+    "nombre": "Elfo Oscuro",
+    "path": "art/sprites/characters/npc_elfo_oscuro.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "NPC",
+    "id": "npc_enano_forjador",
+    "nombre": "Enano Forjador",
+    "path": "art/sprites/characters/npc_enano_forjador.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "NPC",
+    "id": "npc_orco_mercenario",
+    "nombre": "Orco Mercenario",
+    "path": "art/sprites/characters/npc_orco_mercenario.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "NPC",
+    "id": "npc_halfling",
+    "nombre": "Halfling",
+    "path": "art/sprites/characters/npc_halfling.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "NPC",
+    "id": "npc_hada_visitante",
+    "nombre": "Hada Visitante",
+    "path": "art/sprites/characters/npc_hada_visitante.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "NPC",
+    "id": "npc_brujo_oscuro",
+    "nombre": "Brujo Oscuro",
+    "path": "art/sprites/characters/npc_brujo_oscuro.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "NPC",
+    "id": "npc_vampiro",
+    "nombre": "Vampiro elegante",
+    "path": "art/sprites/characters/npc_vampiro.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "NPC",
+    "id": "npc_hombre_lobo",
+    "nombre": "Hombre Lobo",
+    "path": "art/sprites/characters/npc_hombre_lobo.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "NPC",
+    "id": "npc_fantasma",
+    "nombre": "Fantasma cliente",
+    "path": "art/sprites/characters/npc_fantasma.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "NPC",
+    "id": "npc_demonio_menor",
+    "nombre": "Demonio Menor",
+    "path": "art/sprites/characters/npc_demonio_menor.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "NPC",
+    "id": "npc_angel",
+    "nombre": "Ángel visitante",
+    "path": "art/sprites/characters/npc_angel.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "NPC",
+    "id": "npc_esqueleto",
+    "nombre": "Esqueleto explorador",
+    "path": "art/sprites/characters/npc_esqueleto.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "NPC",
+    "id": "npc_genio",
+    "nombre": "Genio del frasco",
+    "path": "art/sprites/characters/npc_genio.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "NPC",
+    "id": "npc_princesa",
+    "nombre": "Princesa",
+    "path": "art/sprites/characters/npc_princesa.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "NPC",
+    "id": "npc_principe",
+    "nombre": "Príncipe",
+    "path": "art/sprites/characters/npc_principe.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "NPC",
+    "id": "npc_rey",
+    "nombre": "Rey",
+    "path": "art/sprites/characters/npc_rey.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "NPC",
+    "id": "npc_reina",
+    "nombre": "Reina",
+    "path": "art/sprites/characters/npc_reina.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "NPC",
+    "id": "npc_emperador",
+    "nombre": "Emperador",
+    "path": "art/sprites/characters/npc_emperador.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "NPC",
+    "id": "npc_inspector",
+    "nombre": "Inspector del Gremio",
+    "path": "art/sprites/characters/npc_inspector.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "NPC",
+    "id": "npc_bandido",
+    "nombre": "Bandido",
+    "path": "art/sprites/characters/npc_bandido.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "NPC",
+    "id": "npc_inspector_calidad",
+    "nombre": "Inspector de Calidad",
+    "path": "art/sprites/characters/npc_inspector_calidad.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "NPC",
+    "id": "npc_periodista",
+    "nombre": "Periodista",
+    "path": "art/sprites/characters/npc_periodista.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "NPC",
+    "id": "npc_critico_gastronomico",
+    "nombre": "Crítico Gastronómico",
+    "path": "art/sprites/characters/npc_critico_gastronomico.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "NPC",
+    "id": "npc_misterioso",
+    "nombre": "Cliente Misterioso",
+    "path": "art/sprites/characters/npc_misterioso.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "NPC",
+    "id": "npc_celebrities",
+    "nombre": "Celebridad arcana",
+    "path": "art/sprites/characters/npc_celebrities.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "Personaje",
+    "id": "protagonista",
+    "nombre": "Protagonista (base)",
+    "path": "art/sprites/characters/protagonista.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "Personaje",
+    "id": "protagonista_festival",
+    "nombre": "Protagonista festival",
+    "path": "art/sprites/characters/protagonista_festival.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "Personaje",
+    "id": "protagonista_armadura",
+    "nombre": "Protagonista armadura",
+    "path": "art/sprites/characters/protagonista_armadura.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "Personaje",
+    "id": "protagonista_pijama",
+    "nombre": "Protagonista pijama",
+    "path": "art/sprites/characters/protagonista_pijama.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "Personaje",
+    "id": "protagonista_hoodie",
+    "nombre": "Protagonista hoodie",
+    "path": "art/sprites/characters/protagonista_hoodie.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "Personaje",
+    "id": "worker_duende",
+    "nombre": "Duende verde (base)",
+    "path": "art/sprites/characters/worker_duende.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "Personaje",
+    "id": "worker_duende_avanzado",
+    "nombre": "Duende veterano",
+    "path": "art/sprites/characters/worker_duende_avanzado.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "Personaje",
+    "id": "worker_golem",
+    "nombre": "Gólem de piedra",
+    "path": "art/sprites/characters/worker_golem.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "Personaje",
+    "id": "worker_golem_cristal",
+    "nombre": "Gólem de cristal",
+    "path": "art/sprites/characters/worker_golem_cristal.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "Personaje",
+    "id": "worker_aprendiz",
+    "nombre": "Aprendiz de mago",
+    "path": "art/sprites/characters/worker_aprendiz.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "Personaje",
+    "id": "worker_archmago",
+    "nombre": "Archimago",
+    "path": "art/sprites/characters/worker_archmago.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "Personaje",
+    "id": "worker_hada_luz",
+    "nombre": "Hada de Luz",
+    "path": "art/sprites/characters/worker_hada_luz.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "Personaje",
+    "id": "worker_hada_oscura",
+    "nombre": "Hada Oscura",
+    "path": "art/sprites/characters/worker_hada_oscura.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "Personaje",
+    "id": "worker_satiro",
+    "nombre": "Sátiro Botánico",
+    "path": "art/sprites/characters/worker_satiro.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "Personaje",
+    "id": "worker_quimera",
+    "nombre": "Quimera Mensajera",
+    "path": "art/sprites/characters/worker_quimera.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "Personaje",
+    "id": "worker_imp",
+    "nombre": "Imp Saboteador",
+    "path": "art/sprites/characters/worker_imp.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "Personaje",
+    "id": "worker_espiritu_bosque",
+    "nombre": "Espíritu del Bosque",
+    "path": "art/sprites/characters/worker_espiritu_bosque.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "Personaje",
+    "id": "worker_elemental_agua",
+    "nombre": "Elemental de Agua",
+    "path": "art/sprites/characters/worker_elemental_agua.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "Personaje",
+    "id": "worker_elemental_fuego",
+    "nombre": "Elemental de Fuego",
+    "path": "art/sprites/characters/worker_elemental_fuego.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "Personaje",
+    "id": "worker_elemental_tierra",
+    "nombre": "Elemental de Tierra",
+    "path": "art/sprites/characters/worker_elemental_tierra.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "Personaje",
+    "id": "worker_elemental_aire",
+    "nombre": "Elemental de Aire",
+    "path": "art/sprites/characters/worker_elemental_aire.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "Personaje",
+    "id": "companion_default",
+    "nombre": "Compañero (default)",
+    "path": "art/sprites/characters/companion_default.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "Personaje",
+    "id": "companion_gato",
+    "nombre": "Compañero gato mágico",
+    "path": "art/sprites/characters/companion_gato.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "Personaje",
+    "id": "companion_buho",
+    "nombre": "Compañero búho sabio",
+    "path": "art/sprites/characters/companion_buho.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "Personaje",
+    "id": "companion_hada",
+    "nombre": "Compañero hada",
+    "path": "art/sprites/characters/companion_hada.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "Personaje",
+    "id": "companion_drago",
+    "nombre": "Compañero dragoncito",
+    "path": "art/sprites/characters/companion_drago.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "Personaje",
+    "id": "companion_slime",
+    "nombre": "Compañero slime",
+    "path": "art/sprites/characters/companion_slime.png",
+    "tamano": "32×48"
+  },
+  {
+    "tipo": "Icono UI",
+    "id": "icon_coin",
+    "nombre": "Icono Moneda",
+    "path": "art/sprites/ui/icon_coin.png",
+    "tamano": "24×24"
+  },
+  {
+    "tipo": "Icono UI",
+    "id": "icon_reputation",
+    "nombre": "Icono Reputación",
+    "path": "art/sprites/ui/icon_reputation.png",
+    "tamano": "24×24"
+  },
+  {
+    "tipo": "Icono UI",
+    "id": "icon_inventory",
+    "nombre": "Icono Inventario",
+    "path": "art/sprites/ui/icon_inventory.png",
+    "tamano": "24×24"
+  },
+  {
+    "tipo": "Icono UI",
+    "id": "icon_build",
+    "nombre": "Icono Construir",
+    "path": "art/sprites/ui/icon_build.png",
+    "tamano": "24×24"
+  },
+  {
+    "tipo": "Icono UI",
+    "id": "icon_research",
+    "nombre": "Icono Investigación",
+    "path": "art/sprites/ui/icon_research.png",
+    "tamano": "24×24"
+  },
+  {
+    "tipo": "Icono UI",
+    "id": "icon_shop",
+    "nombre": "Icono Tienda",
+    "path": "art/sprites/ui/icon_shop.png",
+    "tamano": "24×24"
+  },
+  {
+    "tipo": "Icono UI",
+    "id": "icon_orders",
+    "nombre": "Icono Pedidos",
+    "path": "art/sprites/ui/icon_orders.png",
+    "tamano": "24×24"
+  },
+  {
+    "tipo": "Icono UI",
+    "id": "icon_settings",
+    "nombre": "Icono Ajustes",
+    "path": "art/sprites/ui/icon_settings.png",
+    "tamano": "24×24"
+  },
+  {
+    "tipo": "Icono UI",
+    "id": "icon_companion",
+    "nombre": "Icono Compañero",
+    "path": "art/sprites/ui/icon_companion.png",
+    "tamano": "24×24"
+  },
+  {
+    "tipo": "Icono UI",
+    "id": "icon_pomodoro",
+    "nombre": "Icono Pomodoro",
+    "path": "art/sprites/ui/icon_pomodoro.png",
+    "tamano": "24×24"
+  },
+  {
+    "tipo": "Icono UI",
+    "id": "icon_notes",
+    "nombre": "Icono Notas",
+    "path": "art/sprites/ui/icon_notes.png",
+    "tamano": "24×24"
+  },
+  {
+    "tipo": "Icono UI",
+    "id": "icon_todo",
+    "nombre": "Icono Tareas",
+    "path": "art/sprites/ui/icon_todo.png",
+    "tamano": "24×24"
+  },
+  {
+    "tipo": "Icono UI",
+    "id": "icon_ambient",
+    "nombre": "Icono Ambiente",
+    "path": "art/sprites/ui/icon_ambient.png",
+    "tamano": "24×24"
+  },
+  {
+    "tipo": "Icono UI",
+    "id": "icon_music",
+    "nombre": "Icono Música",
+    "path": "art/sprites/ui/icon_music.png",
+    "tamano": "24×24"
+  },
+  {
+    "tipo": "Icono UI",
+    "id": "icon_save",
+    "nombre": "Icono Guardar",
+    "path": "art/sprites/ui/icon_save.png",
+    "tamano": "24×24"
+  },
+  {
+    "tipo": "Icono UI",
+    "id": "icon_load",
+    "nombre": "Icono Cargar",
+    "path": "art/sprites/ui/icon_load.png",
+    "tamano": "24×24"
+  },
+  {
+    "tipo": "Icono UI",
+    "id": "icon_close",
+    "nombre": "Icono Cerrar",
+    "path": "art/sprites/ui/icon_close.png",
+    "tamano": "24×24"
+  },
+  {
+    "tipo": "Icono UI",
+    "id": "icon_help",
+    "nombre": "Icono Ayuda",
+    "path": "art/sprites/ui/icon_help.png",
+    "tamano": "24×24"
+  },
+  {
+    "tipo": "Icono UI",
+    "id": "icon_check",
+    "nombre": "Icono Check",
+    "path": "art/sprites/ui/icon_check.png",
+    "tamano": "24×24"
+  },
+  {
+    "tipo": "Icono UI",
+    "id": "icon_alert",
+    "nombre": "Icono Alerta",
+    "path": "art/sprites/ui/icon_alert.png",
+    "tamano": "24×24"
+  },
+  {
+    "tipo": "Icono UI",
+    "id": "icon_upgrade",
+    "nombre": "Icono Mejora",
+    "path": "art/sprites/ui/icon_upgrade.png",
+    "tamano": "24×24"
+  },
+  {
+    "tipo": "Icono UI",
+    "id": "icon_craft",
+    "nombre": "Icono Craftear",
+    "path": "art/sprites/ui/icon_craft.png",
+    "tamano": "24×24"
+  },
+  {
+    "tipo": "Icono UI",
+    "id": "cursor_default",
+    "nombre": "Cursor Default",
+    "path": "art/sprites/ui/cursor_default.png",
+    "tamano": "24×24"
+  },
+  {
+    "tipo": "Icono UI",
+    "id": "cursor_build",
+    "nombre": "Cursor Construir",
+    "path": "art/sprites/ui/cursor_build.png",
+    "tamano": "24×24"
+  },
+  {
+    "tipo": "Icono UI",
+    "id": "cursor_collect",
+    "nombre": "Cursor Recolectar",
+    "path": "art/sprites/ui/cursor_collect.png",
+    "tamano": "24×24"
+  },
+  {
+    "tipo": "Icono UI",
+    "id": "frame_panel",
+    "nombre": "Frame Panel",
+    "path": "art/sprites/ui/frame_panel.png",
+    "tamano": "24×24"
+  },
+  {
+    "tipo": "Icono UI",
+    "id": "frame_popup",
+    "nombre": "Frame Popup",
+    "path": "art/sprites/ui/frame_popup.png",
+    "tamano": "24×24"
+  },
+  {
+    "tipo": "Icono UI",
+    "id": "frame_tooltip",
+    "nombre": "Frame Tooltip",
+    "path": "art/sprites/ui/frame_tooltip.png",
+    "tamano": "24×24"
+  },
+  {
+    "tipo": "Icono UI",
+    "id": "button_default",
+    "nombre": "Botón Default",
+    "path": "art/sprites/ui/button_default.png",
+    "tamano": "24×24"
+  },
+  {
+    "tipo": "Icono UI",
+    "id": "button_hover",
+    "nombre": "Botón Hover",
+    "path": "art/sprites/ui/button_hover.png",
+    "tamano": "24×24"
+  },
+  {
+    "tipo": "Icono UI",
+    "id": "button_pressed",
+    "nombre": "Botón Pressed",
+    "path": "art/sprites/ui/button_pressed.png",
+    "tamano": "24×24"
+  },
+  {
+    "tipo": "Icono UI",
+    "id": "badge_new",
+    "nombre": "Badge Nuevo",
+    "path": "art/sprites/ui/badge_new.png",
+    "tamano": "24×24"
+  },
+  {
+    "tipo": "Icono UI",
+    "id": "badge_vip",
+    "nombre": "Badge VIP",
+    "path": "art/sprites/ui/badge_vip.png",
+    "tamano": "24×24"
+  },
+  {
+    "tipo": "Icono UI",
+    "id": "badge_event",
+    "nombre": "Badge Evento",
+    "path": "art/sprites/ui/badge_event.png",
+    "tamano": "24×24"
+  },
+  {
+    "tipo": "Icono UI",
+    "id": "progress_bar_fill",
+    "nombre": "Progress Bar Fill",
+    "path": "art/sprites/ui/progress_bar_fill.png",
+    "tamano": "24×24"
+  },
+  {
+    "tipo": "Icono UI",
+    "id": "progress_bar_bg",
+    "nombre": "Progress Bar Background",
+    "path": "art/sprites/ui/progress_bar_bg.png",
+    "tamano": "24×24"
+  }
+]

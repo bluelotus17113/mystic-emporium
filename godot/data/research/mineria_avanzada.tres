@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ResearchData" load_steps=4 format=3 uid="uid://b5j8r7n9m58ff3"]
+
+[ext_resource type="Script" path="res://scripts/data/research_data.gd" id="1_re"]
+[ext_resource type="Resource" uid="uid://b5j8r7n916e63ed" path="res://data/recipes/oro_elfico.tres" id="rcp_oro_elfico"]
+
+
+[resource]
+script = ExtResource("1_re")
+id = &"res_mineria_avanzada"
+display_name = "Minería Avanzada"
+description = "Investigación tier 4."
+required_station_type = 2
+research_time = 60
+coin_cost = 640
+
+tier = 4
+recipe_to_unlock = ExtResource("rcp_oro_elfico")

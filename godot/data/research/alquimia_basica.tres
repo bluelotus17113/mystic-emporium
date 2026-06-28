@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ResearchData" load_steps=3 format=3 uid="uid://b5j8r7n9m1h01"]
+
+[ext_resource type="Script" path="res://scripts/data/research_data.gd" id="1_rd"]
+[ext_resource type="Resource" uid="uid://b5j8r7n9m1c02" path="res://data/recipes/pocion_curacion_menor.tres" id="2_recipe"]
+
+[resource]
+script = ExtResource("1_rd")
+id = &"research_alquimia_basica"
+display_name = "Alquimia Básica"
+description = "Estudia los rudimentos de las pociones de sanación."
+prerequisites = Array[ResearchData]([])
+required_station_type = 1
+research_time = 15.0
+coin_cost = 80
+recipe_to_unlock = ExtResource("2_recipe")

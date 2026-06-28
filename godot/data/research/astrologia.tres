@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ResearchData" load_steps=4 format=3 uid="uid://b5j8r7n9ma5e6d"]
+
+[ext_resource type="Script" path="res://scripts/data/research_data.gd" id="1_re"]
+[ext_resource type="Resource" uid="uid://b5j8r7n9f7231ca" path="res://data/recipes/polvo_estrella.tres" id="rcp_polvo_estrella"]
+
+
+[resource]
+script = ExtResource("1_re")
+id = &"res_astrologia"
+display_name = "Astrología"
+description = "Investigación tier 4."
+required_station_type = 7
+research_time = 60
+coin_cost = 640
+
+tier = 4
+recipe_to_unlock = ExtResource("rcp_polvo_estrella")

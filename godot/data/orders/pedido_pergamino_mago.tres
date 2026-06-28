@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="OrderData" load_steps=3 format=3 uid="uid://b5j8r7n9m34d7d"]
+
+[ext_resource type="Script" path="res://scripts/data/order_data.gd" id="1_od"]
+[ext_resource type="Resource" path="res://data/items/pergamino_celeridad.tres" id="2_it"]
+
+[resource]
+script = ExtResource("1_od")
+id = &"ord_pergamino_mago"
+display_name = "Mago olvidadizo"
+requested_item = ExtResource("2_it")
+requested_quantity = 1
+coin_reward = 160
+reputation_reward = 2
+time_limit = 0.0
+tier = 3
+min_reputation = 20

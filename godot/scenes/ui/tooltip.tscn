@@ -1,0 +1,20 @@
+[gd_scene load_steps=2 format=3 uid="uid://b5j8r7n9m1f09"]
+
+[ext_resource type="Script" path="res://scripts/ui/tooltip.gd" id="1_tt"]
+
+[node name="Tooltip" type="PanelContainer"]
+custom_minimum_size = Vector2(220, 0)
+modulate = Color(1, 1, 1, 0.95)
+script = ExtResource("1_tt")
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 6
+
+[node name="Label" type="Label" parent="Margin"]
+layout_mode = 2
+text = "Tooltip"
+autowrap_mode = 2

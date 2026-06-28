@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="OrderData" load_steps=3 format=3 uid="uid://b5j8r7n949f8132"]
+
+[ext_resource type="Script" path="res://scripts/data/order_data.gd" id="1_od"]
+[ext_resource type="Resource" uid="uid://b5j8r7n9ma0d23" path="res://data/items/capa_sombria.tres" id="2_it"]
+
+[resource]
+script = ExtResource("1_od")
+id = &"ord_capa_sombria"
+display_name = "Pedido de Capa Sombría"
+requested_item = ExtResource("2_it")
+requested_quantity = 1
+coin_reward = 240
+reputation_reward = 5
+time_limit = 0.0
+tier = 4
+min_reputation = 60

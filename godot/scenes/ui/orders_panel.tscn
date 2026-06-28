@@ -1,0 +1,192 @@
+[gd_scene load_steps=6 format=3 uid="uid://b5j8r7n9m1f08"]
+
+[ext_resource type="Script" path="res://scripts/ui/orders_panel.gd" id="1_op"]
+
+[sub_resource type="StyleBoxFlat" id="SBF_panel"]
+bg_color = Color(0.07, 0.05, 0.13, 0.97)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.62, 0.42, 0.88, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_color = Color(0.45, 0.25, 0.75, 0.55)
+shadow_size = 18
+
+[sub_resource type="StyleBoxFlat" id="SBF_section"]
+bg_color = Color(0.13, 0.10, 0.20, 0.85)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.4, 0.32, 0.55, 0.8)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+content_margin_left = 10
+content_margin_top = 8
+content_margin_right = 10
+content_margin_bottom = 8
+
+[sub_resource type="StyleBoxFlat" id="SBF_close"]
+bg_color = Color(0.45, 0.15, 0.20, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.9, 0.45, 0.5, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="SBF_deliver"]
+bg_color = Color(0.18, 0.50, 0.25, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.55, 0.95, 0.55, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[node name="OrdersPanel" type="PanelContainer"]
+custom_minimum_size = Vector2(720, 700)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -360.0
+offset_top = -350.0
+offset_right = 360.0
+offset_bottom = 350.0
+theme_override_styles/panel = SubResource("SBF_panel")
+script = ExtResource("1_op")
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 16
+
+[node name="VBox" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Header" type="HBoxContainer" parent="Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="Margin/VBox/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "📋 Registro de Pedidos"
+theme_override_font_sizes/font_size = 26
+theme_override_colors/font_color = Color(1.0, 0.92, 0.72, 1)
+
+[node name="CloseButton" type="Button" parent="Margin/VBox/Header"]
+custom_minimum_size = Vector2(34, 34)
+layout_mode = 2
+text = "✕"
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("SBF_close")
+theme_override_styles/hover = SubResource("SBF_close")
+theme_override_styles/pressed = SubResource("SBF_close")
+
+[node name="StatsBox" type="PanelContainer" parent="Margin/VBox"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("SBF_section")
+
+[node name="StatsBar" type="HBoxContainer" parent="Margin/VBox/StatsBox"]
+layout_mode = 2
+theme_override_constants/separation = 14
+alignment = 1
+
+[node name="SectionActiveLabel" type="Label" parent="Margin/VBox"]
+layout_mode = 2
+text = "🕒 Pedidos en curso"
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.95, 0.85, 1.0, 1)
+
+[node name="ActiveBox" type="PanelContainer" parent="Margin/VBox"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("SBF_section")
+
+[node name="ActiveBoxVBox" type="VBoxContainer" parent="Margin/VBox/ActiveBox"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="CurrentBox" type="VBoxContainer" parent="Margin/VBox/ActiveBox/ActiveBoxVBox"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="CurrentLabel" type="Label" parent="Margin/VBox/ActiveBox/ActiveBoxVBox/CurrentBox"]
+layout_mode = 2
+text = "(no hay pedido activo)"
+theme_override_font_sizes/font_size = 14
+
+[node name="ProgressLabel" type="Label" parent="Margin/VBox/ActiveBox/ActiveBoxVBox/CurrentBox"]
+layout_mode = 2
+text = ""
+theme_override_font_sizes/font_size = 12
+modulate = Color(0.7, 0.95, 0.7, 1)
+
+[node name="DeliverButton" type="Button" parent="Margin/VBox/ActiveBox/ActiveBoxVBox/CurrentBox"]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+text = "✓ Entregar siguiente"
+disabled = true
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("SBF_deliver")
+theme_override_styles/hover = SubResource("SBF_deliver")
+theme_override_styles/pressed = SubResource("SBF_deliver")
+
+[node name="SectionHistoryLabel" type="Label" parent="Margin/VBox"]
+layout_mode = 2
+text = "📜 Historial de pedidos"
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.95, 0.85, 1.0, 1)
+
+[node name="HistoryBox" type="PanelContainer" parent="Margin/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("SBF_section")
+
+[node name="Scroll" type="ScrollContainer" parent="Margin/VBox/HistoryBox"]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="History" type="VBoxContainer" parent="Margin/VBox/HistoryBox/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 4
+
+[node name="SectionDiarioLabel" type="Label" parent="Margin/VBox"]
+layout_mode = 2
+text = "📰 Diario (logros, eventos, misiones)"
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.95, 0.85, 1.0, 1)
+
+[node name="DiarioBox" type="PanelContainer" parent="Margin/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("SBF_section")
+
+[node name="DiarioScroll" type="ScrollContainer" parent="Margin/VBox/DiarioBox"]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="DiarioList" type="VBoxContainer" parent="Margin/VBox/DiarioBox/DiarioScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 3

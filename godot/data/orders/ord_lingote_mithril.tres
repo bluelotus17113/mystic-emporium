@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="OrderData" load_steps=3 format=3 uid="uid://b5j8r7n9feef617"]
+
+[ext_resource type="Script" path="res://scripts/data/order_data.gd" id="1_od"]
+[ext_resource type="Resource" uid="uid://b5j8r7n9m6dc6d" path="res://data/items/lingote_mithril.tres" id="2_it"]
+
+[resource]
+script = ExtResource("1_od")
+id = &"ord_lingote_mithril"
+display_name = "Pedido de Lingote de Mithril"
+requested_item = ExtResource("2_it")
+requested_quantity = 2
+coin_reward = 520
+reputation_reward = 10
+time_limit = 0.0
+tier = 5
+min_reputation = 150

@@ -1,0 +1,59 @@
+[gd_scene load_steps=2 format=3 uid="uid://b5j8r7n9m1f06"]
+
+[ext_resource type="Script" path="res://scripts/ui/shop_panel.gd" id="1_sp"]
+
+[node name="ShopPanel" type="PanelContainer"]
+custom_minimum_size = Vector2(540, 460)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -270.0
+offset_top = -230.0
+offset_right = 270.0
+offset_bottom = 230.0
+script = ExtResource("1_sp")
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 16
+
+[node name="VBox" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Header" type="HBoxContainer" parent="Margin/VBox"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="Margin/VBox/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "🛒 Tienda de Ayudantes"
+theme_override_font_sizes/font_size = 22
+
+[node name="CloseButton" type="Button" parent="Margin/VBox/Header"]
+layout_mode = 2
+text = "✕"
+
+[node name="Sep" type="HSeparator" parent="Margin/VBox"]
+layout_mode = 2
+
+[node name="Scroll" type="ScrollContainer" parent="Margin/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Grid" type="GridContainer" parent="Margin/VBox/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+columns = 3
+
+[node name="StatusLabel" type="Label" parent="Margin/VBox"]
+layout_mode = 2
+text = ""
+horizontal_alignment = 1
+modulate = Color(0.95, 0.7, 0.6, 1)

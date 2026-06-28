@@ -1,0 +1,27 @@
+# Godot 4+
+godot/.godot/
+godot/.import/
+godot/export.cfg
+godot/export_credentials.cfg
+
+# Build outputs
+builds/
+exports/
+*.tmp
+
+# IDE
+.vscode/
+.idea/
+*.code-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs / backups
+*.log
+*.bak
+*~
+
+# Aseprite working files (keep .png exports, ignore source if too large)
+# *.aseprite

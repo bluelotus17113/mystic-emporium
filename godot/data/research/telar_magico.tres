@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ResearchData" load_steps=4 format=3 uid="uid://b5j8r7n9me586d"]
+
+[ext_resource type="Script" path="res://scripts/data/research_data.gd" id="1_re"]
+[ext_resource type="Resource" uid="uid://b5j8r7n91d85f6c" path="res://data/recipes/tinta_arcana.tres" id="rcp_tinta_arcana"]
+
+
+[resource]
+script = ExtResource("1_re")
+id = &"res_telar_magico"
+display_name = "Telar Mágico"
+description = "Investigación tier 3."
+required_station_type = 3
+research_time = 40
+coin_cost = 400
+
+tier = 3
+recipe_to_unlock = ExtResource("rcp_tinta_arcana")

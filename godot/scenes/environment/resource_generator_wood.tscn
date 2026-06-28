@@ -1,0 +1,68 @@
+[gd_scene load_steps=12 format=3 uid="uid://b5j8r7n9m1a17"]
+
+[ext_resource type="Script" path="res://scripts/gameplay/resource_generator.gd" id="1_rg"]
+[ext_resource type="PackedScene" uid="uid://b5j8r7n9m1a16" path="res://scenes/environment/resource_node_wood.tscn" id="2_node"]
+[ext_resource type="Texture2D" path="res://art/sprites/environment/plot_wood_anim.png" id="3_tex"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
+size = Vector2(44, 44)
+
+[sub_resource type="AtlasTexture" id="ATX_w1"]
+atlas = ExtResource("3_tex")
+region = Rect2(0, 0, 40, 40)
+
+[sub_resource type="AtlasTexture" id="ATX_w2"]
+atlas = ExtResource("3_tex")
+region = Rect2(40, 0, 40, 40)
+
+[sub_resource type="AtlasTexture" id="ATX_w3"]
+atlas = ExtResource("3_tex")
+region = Rect2(80, 0, 40, 40)
+
+[sub_resource type="AtlasTexture" id="ATX_w4"]
+atlas = ExtResource("3_tex")
+region = Rect2(120, 0, 40, 40)
+
+[sub_resource type="AtlasTexture" id="ATX_w5"]
+atlas = ExtResource("3_tex")
+region = Rect2(160, 0, 40, 40)
+
+[sub_resource type="AtlasTexture" id="ATX_w6"]
+atlas = ExtResource("3_tex")
+region = Rect2(200, 0, 40, 40)
+
+[sub_resource type="SpriteFrames" id="SF_wood"]
+animations = [{
+"frames": [{"duration": 1.0, "texture": SubResource("ATX_w1")}, {"duration": 1.0, "texture": SubResource("ATX_w2")}, {"duration": 1.0, "texture": SubResource("ATX_w3")}, {"duration": 1.0, "texture": SubResource("ATX_w4")}, {"duration": 1.0, "texture": SubResource("ATX_w5")}, {"duration": 1.0, "texture": SubResource("ATX_w6")}],
+"loop": true,
+"name": &"idle",
+"speed": 5.56
+}]
+
+[node name="ResourceGeneratorWood" type="Node2D"]
+script = ExtResource("1_rg")
+resource_type = 4
+resource_node_scene = ExtResource("2_node")
+generation_cooldown = 8.0
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
+sprite_frames = SubResource("SF_wood")
+animation = &"idle"
+autoplay = "idle"
+
+[node name="Label" type="Label" parent="."]
+offset_left = -34.0
+offset_top = -40.0
+offset_right = 34.0
+offset_bottom = -24.0
+text = "Wood"
+horizontal_alignment = 1
+modulate = Color(0.8, 1, 0.8, 1)
+
+[node name="SpawnPoint" type="Marker2D" parent="."]
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("RectangleShape2D_1")

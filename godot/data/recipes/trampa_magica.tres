@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="RecipeData" load_steps=6 format=3 uid="uid://b5j8r7n9rcptrampama"]
+
+[ext_resource type="Script" path="res://scripts/data/recipe_data.gd" id="1_rd"]
+[ext_resource type="Resource" uid="uid://b5j8r7n9m1b05" path="res://data/items/lingote_hierro.tres" id="2_ing0"]
+[ext_resource type="Resource" uid="uid://b5j8r7n9m2f4a0" path="res://data/items/esencia_estabilizada.tres" id="3_ing1"]
+[ext_resource type="Resource" uid="uid://b5j8r7n9md2ef4" path="res://data/items/hilo_tela_magica.tres" id="4_ing2"]
+[ext_resource type="Resource" uid="uid://b5j8r7n9m46ea8" path="res://data/items/trampa_magica.tres" id="5_out"]
+[resource]
+script = ExtResource("1_rd")
+id = &"craft_trampa_magica"
+display_name = "Trampa Mágica"
+description = "Inmoviliza a quien la pisa por unos segundos."
+ingredients = Array[ItemData]([ExtResource("2_ing0"), ExtResource("3_ing1"), ExtResource("4_ing2")])
+ingredient_quantities = Array[int]([1, 1, 1])
+output_item = ExtResource("5_out")
+output_quantity = 1
+crafting_time = 22.0
+required_station_type = 3
+unlocked_by_default = false
+tier = 3

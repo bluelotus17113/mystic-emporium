@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=3 format=3 uid="uid://b5j8r7n9m1b07"]
+
+[ext_resource type="Script" path="res://scripts/data/item_data.gd" id="1_id"]
+[ext_resource type="Texture2D" path="res://art/sprites/items/mena_hierro.png" id="2_icon"]
+
+[resource]
+script = ExtResource("1_id")
+icon = ExtResource("2_icon")
+id = &"mena_hierro"
+display_name = "Mena de Hierro"
+description = "Mineral férrico crudo extraído de filones. Requiere fundición."
+max_stack = 99
+category = 0
+base_value = 6
+tier = 1

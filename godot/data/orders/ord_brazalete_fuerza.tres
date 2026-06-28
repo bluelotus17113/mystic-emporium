@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="OrderData" load_steps=3 format=3 uid="uid://b5j8r7n9d4b1dc9"]
+
+[ext_resource type="Script" path="res://scripts/data/order_data.gd" id="1_od"]
+[ext_resource type="Resource" uid="uid://b5j8r7n9m2ddc9" path="res://data/items/brazalete_fuerza.tres" id="2_it"]
+
+[resource]
+script = ExtResource("1_od")
+id = &"ord_brazalete_fuerza"
+display_name = "Pedido de Brazalete de Fuerza"
+requested_item = ExtResource("2_it")
+requested_quantity = 1
+coin_reward = 220
+reputation_reward = 5
+time_limit = 0.0
+tier = 3
+min_reputation = 40

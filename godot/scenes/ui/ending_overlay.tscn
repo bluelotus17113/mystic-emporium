@@ -1,0 +1,94 @@
+[gd_scene load_steps=3 format=3 uid="uid://b5j8r7n9m99003"]
+
+[ext_resource type="Script" path="res://scripts/ui/ending_overlay.gd" id="1_eo"]
+
+[sub_resource type="StyleBoxFlat" id="SBF_ending"]
+bg_color = Color(0.08, 0.06, 0.16, 0.97)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 3
+border_color = Color(1, 0.92, 0.55, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+shadow_color = Color(1, 0.85, 0.45, 0.6)
+shadow_size = 16
+anti_aliasing = true
+
+[node name="EndingOverlay" type="CanvasLayer"]
+layer = 50
+script = ExtResource("1_eo")
+
+[node name="Dim" type="ColorRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0, 0, 0.65)
+mouse_filter = 1
+
+[node name="Panel" type="PanelContainer" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -340.0
+offset_top = -180.0
+offset_right = 340.0
+offset_bottom = 180.0
+theme_override_styles/panel = SubResource("SBF_ending")
+
+[node name="Margin" type="MarginContainer" parent="Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_top = 28
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 28
+
+[node name="VBox" type="VBoxContainer" parent="Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 14
+alignment = 1
+
+[node name="Star" type="Label" parent="Panel/Margin/VBox"]
+layout_mode = 2
+text = "✦  ★  ✦"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 56
+modulate = Color(1, 0.92, 0.55, 1)
+
+[node name="Title" type="Label" parent="Panel/Margin/VBox"]
+layout_mode = 2
+text = "¡EMPORIO COMPLETADO!"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 32
+modulate = Color(1, 0.95, 0.8, 1)
+
+[node name="Sub" type="Label" parent="Panel/Margin/VBox"]
+layout_mode = 2
+text = "Has forjado la Estrella del Emporio."
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 16
+modulate = Color(0.85, 0.85, 0.95, 1)
+
+[node name="Divider" type="ColorRect" parent="Panel/Margin/VBox"]
+custom_minimum_size = Vector2(0, 1)
+layout_mode = 2
+color = Color(1, 0.85, 0.4, 0.5)
+
+[node name="Lore" type="Label" parent="Panel/Margin/VBox"]
+layout_mode = 2
+text = "Tu Emporio Místico ha alcanzado la maestría legendaria. Los duendes cantan tu nombre, los clientes hablan de ti en tierras lejanas y la Maga del Emporio descansa por fin con una sonrisa.
+
+Puedes seguir jugando, prestigiar para reiniciar con bonus permanentes, o simplemente decorar tu tienda perfecta."
+horizontal_alignment = 1
+autowrap_mode = 2
+theme_override_font_sizes/font_size = 13
+modulate = Color(0.95, 0.92, 0.85, 1)
+
+[node name="CloseButton" type="Button" parent="Panel/Margin/VBox"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "✦  Continuar  ✦"
+theme_override_font_sizes/font_size = 16

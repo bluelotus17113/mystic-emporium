@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="OrderData" load_steps=3 format=3 uid="uid://b5j8r7n9m1d05"]
+
+[ext_resource type="Script" path="res://scripts/data/order_data.gd" id="1_od"]
+[ext_resource type="Resource" uid="uid://b5j8r7n9m1b06" path="res://data/items/daga_encantada.tres" id="2_da"]
+
+[resource]
+script = ExtResource("1_od")
+id = &"order_daga"
+display_name = "Aventurero ambicioso"
+requested_item = ExtResource("2_da")
+requested_quantity = 1
+coin_reward = 200
+reputation_reward = 3
+time_limit = 0.0

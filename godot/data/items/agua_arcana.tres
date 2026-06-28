@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=3 format=3 uid="uid://b5j8r7n9mb3e0c"]
+
+[ext_resource type="Script" path="res://scripts/data/item_data.gd" id="1_id"]
+[ext_resource type="Texture2D" path="res://art/sprites/items/agua_arcana.png" id="2_icon"]
+
+[resource]
+script = ExtResource("1_id")
+icon = ExtResource("2_icon")
+id = &"agua_arcana"
+display_name = "Agua Arcana"
+description = "Agua infusa con magia ambiental."
+max_stack = 99
+category = 0
+base_value = 5
+tier = 1

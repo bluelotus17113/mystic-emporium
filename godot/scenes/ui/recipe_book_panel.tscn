@@ -1,0 +1,427 @@
+[gd_scene load_steps=11 format=3 uid="uid://b5j8r7n9m1f29"]
+
+[ext_resource type="Script" path="res://scripts/ui/recipe_book_panel.gd" id="1_rb"]
+
+[sub_resource type="StyleBoxFlat" id="SBF_book_cover"]
+bg_color = Color(0.26, 0.10, 0.04, 0.99)
+border_width_left = 8
+border_width_top = 8
+border_width_right = 8
+border_width_bottom = 10
+border_color = Color(0.88, 0.65, 0.20, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+expand_margin_left = 4.0
+expand_margin_top = 4.0
+expand_margin_right = 4.0
+expand_margin_bottom = 4.0
+shadow_color = Color(0.42, 0.20, 0.55, 0.6)
+shadow_size = 38
+shadow_offset = Vector2(0, 8)
+anti_aliasing = true
+
+[sub_resource type="StyleBoxFlat" id="SBF_spine"]
+bg_color = Color(0.12, 0.05, 0.01, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.60, 0.40, 0.10, 0.9)
+
+[sub_resource type="StyleBoxFlat" id="SBF_page"]
+bg_color = Color(0.94, 0.86, 0.66, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 3
+border_color = Color(0.65, 0.45, 0.18, 0.65)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+content_margin_left = 20.0
+content_margin_top = 16.0
+content_margin_right = 20.0
+content_margin_bottom = 16.0
+shadow_color = Color(0.4, 0.20, 0.0, 0.45)
+shadow_size = 8
+shadow_offset = Vector2(0, 3)
+
+[sub_resource type="StyleBoxFlat" id="SBF_recipe_frame"]
+bg_color = Color(0.97, 0.91, 0.74, 0.55)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 2
+border_color = Color(0.72, 0.50, 0.20, 0.55)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+content_margin_left = 10.0
+content_margin_top = 8.0
+content_margin_right = 10.0
+content_margin_bottom = 8.0
+
+[sub_resource type="StyleBoxFlat" id="SBF_recipe_locked"]
+bg_color = Color(0.30, 0.22, 0.16, 0.40)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 2
+border_color = Color(0.55, 0.40, 0.20, 0.40)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+content_margin_left = 10.0
+content_margin_top = 8.0
+content_margin_right = 10.0
+content_margin_bottom = 8.0
+
+[sub_resource type="StyleBoxFlat" id="SBF_nav_btn"]
+bg_color = Color(0.58, 0.32, 0.10, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 4
+border_color = Color(0.97, 0.74, 0.30, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+shadow_color = Color(1, 0.85, 0.45, 0.5)
+shadow_size = 6
+
+[sub_resource type="StyleBoxFlat" id="SBF_nav_btn_disabled"]
+bg_color = Color(0.28, 0.18, 0.08, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 3
+border_color = Color(0.45, 0.32, 0.15, 0.55)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+
+[sub_resource type="StyleBoxFlat" id="SBF_close"]
+bg_color = Color(0.55, 0.18, 0.12, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 3
+border_color = Color(0.97, 0.55, 0.35, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+content_margin_left = 12.0
+content_margin_top = 6.0
+content_margin_right = 12.0
+content_margin_bottom = 6.0
+
+[sub_resource type="StyleBoxFlat" id="SBF_bookmark"]
+bg_color = Color(0.65, 0.10, 0.18, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.95, 0.78, 0.30, 0.9)
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+shadow_color = Color(0.0, 0.0, 0.0, 0.45)
+shadow_size = 6
+
+[node name="RecipeBookPanel" type="PanelContainer"]
+custom_minimum_size = Vector2(1080, 740)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -540.0
+offset_top = -370.0
+offset_right = 540.0
+offset_bottom = 370.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(540, 370)
+mouse_filter = 1
+theme_override_styles/panel = SubResource("SBF_book_cover")
+script = ExtResource("1_rb")
+
+[node name="Bookmark" type="PanelContainer" parent="."]
+custom_minimum_size = Vector2(34, 130)
+layout_mode = 2
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -90.0
+offset_top = -16.0
+offset_right = -56.0
+offset_bottom = 114.0
+theme_override_styles/panel = SubResource("SBF_bookmark")
+
+[node name="BookmarkLabel" type="Label" parent="Bookmark"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+text = "✦"
+horizontal_alignment = 1
+vertical_alignment = 1
+theme_override_colors/font_color = Color(1, 0.92, 0.55, 1)
+theme_override_font_sizes/font_size = 18
+
+[node name="OrnTL" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 0
+offset_left = 18.0
+offset_top = 14.0
+offset_right = 60.0
+offset_bottom = 56.0
+text = "❦"
+theme_override_colors/font_color = Color(0.97, 0.74, 0.30, 0.9)
+theme_override_colors/font_outline_color = Color(0.12, 0.05, 0.0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 28
+
+[node name="OrnTR" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -56.0
+offset_top = 14.0
+offset_right = -18.0
+offset_bottom = 56.0
+text = "❦"
+horizontal_alignment = 2
+theme_override_colors/font_color = Color(0.97, 0.74, 0.30, 0.9)
+theme_override_colors/font_outline_color = Color(0.12, 0.05, 0.0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 28
+
+[node name="OrnBL" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 18.0
+offset_top = -54.0
+offset_right = 60.0
+offset_bottom = -12.0
+text = "❧"
+theme_override_colors/font_color = Color(0.97, 0.74, 0.30, 0.9)
+theme_override_colors/font_outline_color = Color(0.12, 0.05, 0.0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 28
+
+[node name="OrnBR" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -56.0
+offset_top = -54.0
+offset_right = -18.0
+offset_bottom = -12.0
+text = "❧"
+horizontal_alignment = 2
+theme_override_colors/font_color = Color(0.97, 0.74, 0.30, 0.9)
+theme_override_colors/font_outline_color = Color(0.12, 0.05, 0.0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 28
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 22
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 22
+theme_override_constants/margin_bottom = 22
+
+[node name="VBox" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="TitleRow" type="HBoxContainer" parent="Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="TitleBox" type="VBoxContainer" parent="Margin/VBox/TitleRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = -2
+
+[node name="Title" type="Label" parent="Margin/VBox/TitleRow/TitleBox"]
+layout_mode = 2
+text = "✦ Grimorio Arcano ✦"
+horizontal_alignment = 1
+theme_override_colors/font_color = Color(1, 0.92, 0.62, 1)
+theme_override_colors/font_outline_color = Color(0.12, 0.05, 0.0, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 32
+
+[node name="Subtitle" type="Label" parent="Margin/VBox/TitleRow/TitleBox"]
+layout_mode = 2
+text = "✥  Tomo de las Artes Místicas  ✥"
+horizontal_alignment = 1
+theme_override_colors/font_color = Color(0.95, 0.72, 0.30, 0.95)
+theme_override_colors/font_outline_color = Color(0.12, 0.05, 0.0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 13
+
+[node name="CloseButton" type="Button" parent="Margin/VBox/TitleRow"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_styles/normal = SubResource("SBF_close")
+text = "✕ Cerrar"
+theme_override_colors/font_color = Color(1, 0.95, 0.85, 1)
+theme_override_font_sizes/font_size = 14
+
+[node name="ProgressRow" type="HBoxContainer" parent="Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="ProgressLabel" type="Label" parent="Margin/VBox/ProgressRow"]
+custom_minimum_size = Vector2(110, 0)
+layout_mode = 2
+text = "📜 0 / 0"
+theme_override_colors/font_color = Color(1, 0.88, 0.55, 1)
+theme_override_colors/font_outline_color = Color(0.12, 0.05, 0.0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 14
+
+[node name="ProgressBar" type="ProgressBar" parent="Margin/VBox/ProgressRow"]
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+max_value = 100.0
+value = 0.0
+show_percentage = false
+
+[node name="ProgressPercent" type="Label" parent="Margin/VBox/ProgressRow"]
+custom_minimum_size = Vector2(56, 0)
+layout_mode = 2
+text = "0 %"
+horizontal_alignment = 2
+theme_override_colors/font_color = Color(1, 0.92, 0.62, 1)
+theme_override_colors/font_outline_color = Color(0.12, 0.05, 0.0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 13
+
+[node name="Filters" type="HBoxContainer" parent="Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="FilterAll" type="Button" parent="Margin/VBox/Filters"]
+layout_mode = 2
+toggle_mode = true
+button_pressed = true
+text = "Todas"
+theme_override_font_sizes/font_size = 12
+
+[node name="FilterUnlocked" type="Button" parent="Margin/VBox/Filters"]
+layout_mode = 2
+toggle_mode = true
+text = "✓ Conocidas"
+theme_override_font_sizes/font_size = 12
+
+[node name="FilterLocked" type="Button" parent="Margin/VBox/Filters"]
+layout_mode = 2
+toggle_mode = true
+text = "🔒 Ocultas"
+theme_override_font_sizes/font_size = 12
+
+[node name="Spacer" type="Control" parent="Margin/VBox/Filters"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SearchBox" type="LineEdit" parent="Margin/VBox/Filters"]
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+placeholder_text = "🔍 Buscar receta..."
+
+[node name="BookBody" type="HBoxContainer" parent="Margin/VBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 0
+
+[node name="LeftPage" type="PanelContainer" parent="Margin/VBox/BookBody"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("SBF_page")
+
+[node name="LeftVBox" type="VBoxContainer" parent="Margin/VBox/BookBody/LeftPage"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Spine" type="PanelContainer" parent="Margin/VBox/BookBody"]
+custom_minimum_size = Vector2(12, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("SBF_spine")
+
+[node name="RightPage" type="PanelContainer" parent="Margin/VBox/BookBody"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("SBF_page")
+
+[node name="RightVBox" type="VBoxContainer" parent="Margin/VBox/BookBody/RightPage"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Footer" type="HBoxContainer" parent="Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="PrevButton" type="Button" parent="Margin/VBox/Footer"]
+custom_minimum_size = Vector2(160, 40)
+layout_mode = 2
+theme_override_styles/normal = SubResource("SBF_nav_btn")
+theme_override_styles/hover = SubResource("SBF_nav_btn")
+theme_override_styles/pressed = SubResource("SBF_nav_btn")
+theme_override_styles/disabled = SubResource("SBF_nav_btn_disabled")
+text = "«  Página anterior"
+theme_override_colors/font_color = Color(1, 0.93, 0.78, 1)
+theme_override_colors/font_disabled_color = Color(0.6, 0.5, 0.4, 0.7)
+theme_override_font_sizes/font_size = 14
+
+[node name="PageLabel" type="Label" parent="Margin/VBox/Footer"]
+custom_minimum_size = Vector2(160, 0)
+layout_mode = 2
+text = "Página 1 / 1"
+horizontal_alignment = 1
+theme_override_colors/font_color = Color(1, 0.92, 0.62, 1)
+theme_override_colors/font_outline_color = Color(0.12, 0.05, 0.0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 18
+
+[node name="NextButton" type="Button" parent="Margin/VBox/Footer"]
+custom_minimum_size = Vector2(160, 40)
+layout_mode = 2
+theme_override_styles/normal = SubResource("SBF_nav_btn")
+theme_override_styles/hover = SubResource("SBF_nav_btn")
+theme_override_styles/pressed = SubResource("SBF_nav_btn")
+theme_override_styles/disabled = SubResource("SBF_nav_btn_disabled")
+text = "Página siguiente  »"
+theme_override_colors/font_color = Color(1, 0.93, 0.78, 1)
+theme_override_colors/font_disabled_color = Color(0.6, 0.5, 0.4, 0.7)
+theme_override_font_sizes/font_size = 14

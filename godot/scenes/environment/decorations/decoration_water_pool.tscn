@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3 uid="uid://b5j8r7n9m1d39"]
+
+[ext_resource type="Texture2D" path="res://art/sprites/environment/decoration_water_pool.png" id="1_tex"]
+[ext_resource type="AudioStream" path="res://audio/sfx/ambient_water.wav" id="2_amb"]
+
+[node name="DecoWaterPool" type="Node2D"]
+y_sort_enabled = true
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+scale = Vector2(2, 2)
+texture = ExtResource("1_tex")
+
+[node name="AmbientSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("2_amb")
+volume_db = -18.0
+autoplay = true
+max_distance = 380.0
+attenuation = 1.4
+bus = &"SFX"

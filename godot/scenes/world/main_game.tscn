@@ -1,0 +1,247 @@
+[gd_scene format=3 uid="uid://b5j8r7oam1e01"]
+
+[ext_resource type="Script" uid="uid://chwh7xqr0glaj" path="res://scripts/core/game_bootstrap.gd" id="1_boot"]
+[ext_resource type="PackedScene" uid="uid://b5j8r7oam1a02" path="res://scenes/environment/resource_generator_herbs.tscn" id="2_gen"]
+[ext_resource type="PackedScene" uid="uid://b5j8r7oam1a03" path="res://scenes/characters/worker_duende.tscn" id="3_duende"]
+[ext_resource type="PackedScene" uid="uid://b5j8r7oam1a06" path="res://scenes/environment/workstation_cauldron.tscn" id="4_caul"]
+[ext_resource type="PackedScene" uid="uid://b5j8r7oam1a07" path="res://scenes/ui/hud.tscn" id="5_hud"]
+[ext_resource type="PackedScene" uid="uid://b5j8r7oam1a05" path="res://scenes/characters/worker_apprentice.tscn" id="6_app"]
+[ext_resource type="PackedScene" uid="uid://b5j8r7oam1f02" path="res://scenes/ui/inventory_panel.tscn" id="7_inv"]
+[ext_resource type="PackedScene" uid="uid://b5j8r7oam1f03" path="res://scenes/ui/workstation_panel.tscn" id="8_ws"]
+[ext_resource type="PackedScene" uid="uid://b5j8r7oam1f04" path="res://scenes/ui/build_menu_panel.tscn" id="9_bm"]
+[ext_resource type="PackedScene" uid="uid://b5j8r7oam1a10" path="res://scenes/environment/resource_generator_crystal.tscn" id="10_gencry"]
+[ext_resource type="PackedScene" uid="uid://b5j8r7oam1a04" path="res://scenes/characters/worker_golem.tscn" id="11_golem"]
+[ext_resource type="PackedScene" uid="uid://b5j8r7oam1a11" path="res://scenes/environment/workstation_forge.tscn" id="12_forge"]
+[ext_resource type="PackedScene" uid="uid://b5j8r7oam1a12" path="res://scenes/characters/protagonist.tscn" id="13_proto"]
+[ext_resource type="PackedScene" uid="uid://b5j8r7oam1a13" path="res://scenes/environment/research_station_library.tscn" id="14_lib"]
+[ext_resource type="PackedScene" uid="uid://b5j8r7oam1f05" path="res://scenes/ui/research_panel.tscn" id="15_rp"]
+[ext_resource type="Script" uid="uid://bqu1sdmxraws7" path="res://scripts/gameplay/zone_region.gd" id="16_zone"]
+[ext_resource type="PackedScene" uid="uid://b5j8r7oam1f06" path="res://scenes/ui/shop_panel.tscn" id="17_shop"]
+[ext_resource type="PackedScene" uid="uid://b5j8r7oam1f07" path="res://scenes/ui/generator_panel.tscn" id="18_gp"]
+[ext_resource type="PackedScene" uid="uid://b5j8r7oam1f08" path="res://scenes/ui/orders_panel.tscn" id="19_op"]
+[ext_resource type="PackedScene" uid="uid://b5j8r7oam1f1a" path="res://scenes/ui/tooltip.tscn" id="20_tt"]
+[ext_resource type="PackedScene" uid="uid://b5j8r7oam1f10" path="res://scenes/ui/tutorial_overlay.tscn" id="21_to"]
+[ext_resource type="PackedScene" uid="uid://b5j8r7oam1f11" path="res://scenes/ui/settings_panel.tscn" id="22_set"]
+[ext_resource type="PackedScene" uid="uid://b5j8r7oam1a21" path="res://scenes/window/desktop_companion.tscn" id="23_dc"]
+[ext_resource type="PackedScene" uid="uid://b5j8r7oam1a22" path="res://scenes/window/compact_ui.tscn" id="24_cui"]
+[ext_resource type="PackedScene" uid="uid://b5j8r7oam1f12" path="res://scenes/window/pomodoro_widget.tscn" id="25_pw"]
+[ext_resource type="PackedScene" uid="uid://b5j8r7oam1f13" path="res://scenes/window/notes_widget.tscn" id="26_nw"]
+[ext_resource type="PackedScene" uid="uid://b5j8r7oam1f14" path="res://scenes/window/todo_widget.tscn" id="27_tw"]
+[ext_resource type="PackedScene" uid="uid://b5j8r7oam1f15" path="res://scenes/window/ambient_mixer.tscn" id="28_am"]
+[ext_resource type="PackedScene" uid="uid://b5j8r7oam1f16" path="res://scenes/ui/toast_overlay.tscn" id="29_toast"]
+[ext_resource type="PackedScene" uid="uid://b5j8r7oam1f17" path="res://scenes/ui/stats_panel.tscn" id="30_stats"]
+[ext_resource type="PackedScene" uid="uid://b5j8r7oam1f18" path="res://scenes/ui/event_indicator.tscn" id="31_evt"]
+[ext_resource type="Script" uid="uid://cupog7aksocou" path="res://scripts/gameplay/world_modulate.gd" id="32_wmod"]
+[ext_resource type="PackedScene" uid="uid://b5j8r7oam1f2a" path="res://scenes/ui/pause_menu.tscn" id="33_pause"]
+[ext_resource type="PackedScene" uid="uid://cppurrj8a80vs" path="res://scenes/ui/achievements_panel.tscn" id="34_ach"]
+[ext_resource type="Script" uid="uid://cmmky2x24hdv5" path="res://scripts/gameplay/zone_camera_controller.gd" id="35_zcam"]
+[ext_resource type="Script" uid="uid://cil3vugn12qwc" path="res://scripts/ui/hotkey_legend.gd" id="36_hotkey"]
+[ext_resource type="Texture2D" path="res://art/sprites/tiles/taller_background.png" id="38_wood"]
+[ext_resource type="Texture2D" path="res://art/sprites/tiles/recepcion_background.png" id="39_recep"]
+[ext_resource type="Texture2D" path="res://art/sprites/tiles/natural_background.png" id="40_natgrass"]
+[ext_resource type="Script" path="res://scripts/world/natural_background.gd" id="41_natbg"]
+[ext_resource type="PackedScene" uid="uid://b5j8r7n9m1p01" path="res://scenes/world/ambient_particles.tscn" id="42_amb"]
+[ext_resource type="PackedScene" uid="uid://b5j8r7n9m99003" path="res://scenes/ui/ending_overlay.tscn" id="43_end"]
+[ext_resource type="AudioStream" path="res://audio/sfx/ambient_birds.wav" id="44_amb_birds"]
+[ext_resource type="AudioStream" path="res://audio/sfx/ambient_wind.wav" id="45_amb_wind"]
+[ext_resource type="PackedScene" uid="uid://b5j8r7n9m1f29" path="res://scenes/ui/recipe_book_panel.tscn" id="46_rbook"]
+[ext_resource type="PackedScene" uid="uid://b5j8r7n9mq01" path="res://scenes/ui/customer_queue_panel.tscn" id="47_cq"]
+
+[node name="MainGame" type="Node2D" unique_id=881335330]
+script = ExtResource("1_boot")
+generator_panel_path = NodePath("UICanvas/GeneratorPanel")
+hud_canvas_path = NodePath("HUD")
+desktop_companion_path = NodePath("DesktopCompanion")
+
+[node name="WorldModulate" type="CanvasModulate" parent="." unique_id=838449711]
+script = ExtResource("32_wmod")
+
+[node name="AmbientParticles" parent="." instance=ExtResource("42_amb")]
+z_index = 5
+
+[node name="EndingOverlay" parent="." instance=ExtResource("43_end")]
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=325837965 groups=["zone_camera"]]
+zoom = Vector2(1.5, 1.5)
+script = ExtResource("35_zcam")
+
+[node name="Zones" type="Node2D" parent="." unique_id=1061597007]
+
+[node name="ZoneNature" type="Node2D" parent="Zones" unique_id=1234173312 groups=["natural_visual"]]
+visible = false
+position = Vector2(1400, 0)
+script = ExtResource("16_zone")
+size = Vector2(800, 400)
+fill_color = Color(0.18, 0.42, 0.22, 0.04)
+border_color = Color(0.4, 0.85, 0.45, 0.55)
+label_text = "Patio Natural"
+
+[node name="AmbientBirds" type="AudioStreamPlayer2D" parent="Zones/ZoneNature"]
+position = Vector2(400, 200)
+stream = ExtResource("44_amb_birds")
+volume_db = -22.0
+autoplay = true
+max_distance = 1200.0
+attenuation = 1.2
+bus = &"SFX"
+
+[node name="AmbientWind" type="AudioStreamPlayer2D" parent="Zones/ZoneNature"]
+position = Vector2(400, 200)
+stream = ExtResource("45_amb_wind")
+volume_db = -24.0
+autoplay = true
+max_distance = 1400.0
+attenuation = 1.0
+bus = &"SFX"
+
+[node name="ZoneWorkshop" type="Node2D" parent="Zones" unique_id=444723087 groups=["taller_visual"]]
+position = Vector2(-1500, 0)
+script = ExtResource("16_zone")
+zone_type = 2
+size = Vector2(900, 350)
+fill_color = Color(0.55, 0.4, 0.2, 0.04)
+border_color = Color(0.9, 0.65, 0.35, 0.55)
+label_text = "Zona Taller"
+
+[node name="ZoneReception" type="Node2D" parent="Zones" unique_id=909242934 groups=["recepcion_visual"]]
+visible = false
+position = Vector2(-300, 0)
+script = ExtResource("16_zone")
+zone_type = 3
+size = Vector2(700, 350)
+fill_color = Color(0.45, 0.3, 0.55, 0.04)
+border_color = Color(0.8, 0.55, 0.95, 0.55)
+label_text = "Recepción"
+
+[node name="World" type="Node2D" parent="." unique_id=1569569277 groups=["world_container"]]
+
+[node name="BuildingBackground" type="Sprite2D" parent="World" unique_id=731287798 groups=["taller_visual"]]
+z_index = -10
+texture_filter = 1
+position = Vector2(-1315, 0)
+texture = ExtResource("38_wood")
+centered = true
+
+[node name="ReceptionBackground" type="Sprite2D" parent="World" unique_id=576107528 groups=["recepcion_visual"]]
+visible = false
+z_index = -10
+texture_filter = 1
+position = Vector2(-285, 0)
+texture = ExtResource("39_recep")
+centered = true
+
+[node name="NaturalBackground" type="Sprite2D" parent="World" groups=["natural_visual"]]
+visible = false
+z_index = -10
+texture_filter = 1
+texture = ExtResource("40_natgrass")
+centered = false
+region_enabled = true
+region_rect = Rect2(0, 0, 800, 400)
+script = ExtResource("41_natbg")
+
+[node name="GeneratorHerbsA" parent="World" unique_id=597643415 groups=["natural_visual"] instance=ExtResource("2_gen")]
+visible = false
+position = Vector2(1200, 0)
+
+[node name="GeneratorCrystalA" parent="World" unique_id=1841393458 groups=["natural_visual"] instance=ExtResource("10_gencry")]
+visible = false
+position = Vector2(1600, 0)
+
+[node name="WorkstationCauldron" parent="World" unique_id=660767602 groups=["taller_visual"] instance=ExtResource("4_caul")]
+position = Vector2(-1800, -60)
+
+[node name="WorkstationForge" parent="World" unique_id=646045672 groups=["taller_visual"] instance=ExtResource("12_forge")]
+position = Vector2(-1500, -60)
+
+[node name="ResearchStationLibrary" parent="World" unique_id=88846618 groups=["taller_visual"] instance=ExtResource("14_lib")]
+position = Vector2(-1200, -60)
+
+[node name="WorkerDuendeA" parent="World" unique_id=1937209968 groups=["natural_visual"] instance=ExtResource("3_duende")]
+visible = false
+position = Vector2(1300, 60)
+
+[node name="WorkerDuendeB" parent="World" unique_id=322682284 groups=["natural_visual"] instance=ExtResource("3_duende")]
+visible = false
+position = Vector2(1500, 60)
+
+[node name="WorkerGolem" parent="World" unique_id=715955840 groups=["natural_visual"] instance=ExtResource("11_golem")]
+visible = false
+position = Vector2(1700, 60)
+
+[node name="WorkerApprentice" parent="World" unique_id=906591990 groups=["taller_visual"] instance=ExtResource("6_app")]
+position = Vector2(-1150, 80)
+
+[node name="Protagonist" parent="World" unique_id=570927467 instance=ExtResource("13_proto")]
+position = Vector2(-1500, 140)
+
+[node name="CustomerSpawn" type="Marker2D" parent="World" unique_id=1988268228 groups=["customer_spawn"]]
+position = Vector2(40, 0)
+
+[node name="CustomerCounter" type="Marker2D" parent="World" unique_id=2047066778 groups=["customer_counter"]]
+position = Vector2(-300, 0)
+
+[node name="CustomerExit" type="Marker2D" parent="World" unique_id=293067354 groups=["customer_exit"]]
+position = Vector2(40, -80)
+
+[node name="CounterMark" type="Polygon2D" parent="World" unique_id=40942927 groups=["recepcion_visual"]]
+visible = false
+position = Vector2(-300, 0)
+color = Color(0.7, 0.5, 0.25, 1)
+polygon = PackedVector2Array(-40, -8, 40, -8, 40, 8, -40, 8)
+
+[node name="HUD" parent="." unique_id=2072773052 instance=ExtResource("5_hud")]
+
+[node name="UICanvas" type="CanvasLayer" parent="." unique_id=1681431980]
+layer = 5
+
+[node name="InventoryPanel" parent="UICanvas" unique_id=1157411287 instance=ExtResource("7_inv")]
+
+[node name="WorkstationPanel" parent="UICanvas" unique_id=689257882 instance=ExtResource("8_ws")]
+
+[node name="BuildMenuPanel" parent="UICanvas" unique_id=273503379 instance=ExtResource("9_bm")]
+
+[node name="ResearchPanel" parent="UICanvas" unique_id=1366854883 instance=ExtResource("15_rp")]
+
+[node name="ShopPanel" parent="UICanvas" unique_id=487077481 instance=ExtResource("17_shop")]
+
+[node name="GeneratorPanel" parent="UICanvas" unique_id=700916783 instance=ExtResource("18_gp")]
+
+[node name="OrdersPanel" parent="UICanvas" unique_id=1149769899 instance=ExtResource("19_op")]
+
+[node name="RecipeBookPanel" parent="UICanvas" instance=ExtResource("46_rbook")]
+
+[node name="CustomerQueuePanel" parent="UICanvas" instance=ExtResource("47_cq")]
+
+[node name="SettingsPanel" parent="UICanvas" unique_id=786044220 instance=ExtResource("22_set")]
+
+[node name="Tooltip" parent="UICanvas" unique_id=2143995796 instance=ExtResource("20_tt")]
+
+[node name="PomodoroWidget" parent="UICanvas" unique_id=361338814 instance=ExtResource("25_pw")]
+
+[node name="NotesWidget" parent="UICanvas" unique_id=729801152 instance=ExtResource("26_nw")]
+
+[node name="TodoWidget" parent="UICanvas" unique_id=1758961558 instance=ExtResource("27_tw")]
+
+[node name="AmbientMixer" parent="UICanvas" unique_id=1861394591 instance=ExtResource("28_am")]
+
+[node name="StatsPanel" parent="UICanvas" unique_id=1400221443 instance=ExtResource("30_stats")]
+
+[node name="AchievementsPanel" parent="UICanvas" unique_id=879639038 instance=ExtResource("34_ach")]
+
+[node name="EventIndicator" parent="UICanvas" unique_id=431657684 instance=ExtResource("31_evt")]
+
+[node name="TutorialOverlay" parent="." unique_id=1091500234 instance=ExtResource("21_to")]
+
+[node name="ToastOverlay" parent="." unique_id=224974885 instance=ExtResource("29_toast")]
+
+[node name="HotkeyLegend" type="CanvasLayer" parent="." unique_id=1805958236]
+script = ExtResource("36_hotkey")
+
+[node name="PauseMenu" parent="." unique_id=848324397 instance=ExtResource("33_pause")]
+
+[node name="CompactUI" parent="." unique_id=1855769903 instance=ExtResource("24_cui")]
+
+[node name="DesktopCompanion" parent="." unique_id=1196592710 instance=ExtResource("23_dc")]
+visible = false
+position = Vector2(640, 100)

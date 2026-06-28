@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ResearchData" load_steps=3 format=3 uid="uid://b5j8r7n9m63115"]
+
+[ext_resource type="Script" path="res://scripts/data/research_data.gd" id="1_re"]
+[ext_resource type="Resource" path="res://data/buildables/escritorio_escriba.tres" id="3_bld"]
+
+[resource]
+script = ExtResource("1_re")
+id = &"res_escritura_arcana"
+display_name = "Escritura Arcana"
+description = "Investigación tier 3."
+required_station_type = 4
+research_time = 32
+coin_cost = 320
+buildable_to_unlock = ExtResource("3_bld")
+tier = 3

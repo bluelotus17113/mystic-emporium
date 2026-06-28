@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ResearchData" load_steps=4 format=3 uid="uid://b5j8r7n9mc764b"]
+
+[ext_resource type="Script" path="res://scripts/data/research_data.gd" id="1_re"]
+[ext_resource type="Resource" uid="uid://b5j8r7n9e65d785" path="res://data/recipes/pluma_grifo.tres" id="rcp_pluma_grifo"]
+
+
+[resource]
+script = ExtResource("1_re")
+id = &"res_zoologia_arcana"
+display_name = "Zoología Arcana"
+description = "Investigación tier 4."
+required_station_type = 5
+research_time = 70
+coin_cost = 720
+
+tier = 4
+recipe_to_unlock = ExtResource("rcp_pluma_grifo")

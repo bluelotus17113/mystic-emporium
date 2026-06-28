@@ -1,0 +1,128 @@
+[gd_scene load_steps=4 format=3 uid="uid://b5j8r7n9m1f10"]
+
+[ext_resource type="Script" path="res://scripts/ui/tutorial_overlay.gd" id="1_to"]
+
+[sub_resource type="StyleBoxFlat" id="SBF_tut_panel"]
+bg_color = Color(0.12, 0.10, 0.20, 0.97)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 2
+border_color = Color(0.95, 0.78, 0.35, 0.95)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+shadow_color = Color(0.55, 0.35, 0.95, 0.45)
+shadow_size = 10
+shadow_offset = Vector2(0, 4)
+anti_aliasing = true
+
+[sub_resource type="StyleBoxFlat" id="SBF_tut_btn"]
+bg_color = Color(0.78, 0.55, 0.25, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 2
+border_color = Color(1, 0.92, 0.55, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+content_margin_left = 14.0
+content_margin_top = 6.0
+content_margin_right = 14.0
+content_margin_bottom = 6.0
+shadow_color = Color(1, 0.85, 0.45, 0.55)
+shadow_size = 4
+anti_aliasing = true
+
+[node name="TutorialOverlay" type="CanvasLayer"]
+layer = 10
+script = ExtResource("1_to")
+
+[node name="Panel" type="PanelContainer" parent="."]
+anchor_left = 0.5
+anchor_top = 0.0
+anchor_right = 0.5
+anchor_bottom = 0.0
+offset_left = -260.0
+offset_top = 60.0
+offset_right = 260.0
+offset_bottom = 230.0
+grow_horizontal = 2
+mouse_filter = 1
+theme_override_styles/panel = SubResource("SBF_tut_panel")
+
+[node name="Margin" type="MarginContainer" parent="Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 14
+
+[node name="VBox" type="VBoxContainer" parent="Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Header" type="HBoxContainer" parent="Panel/Margin/VBox"]
+layout_mode = 2
+
+[node name="StepLabel" type="Label" parent="Panel/Margin/VBox/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Paso 1 de 6"
+theme_override_font_sizes/font_size = 11
+modulate = Color(0.78, 0.66, 0.36, 1)
+
+[node name="SkipButton" type="Button" parent="Panel/Margin/VBox/Header"]
+layout_mode = 2
+text = "Saltar"
+flat = true
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0.78, 0.78, 0.85, 1)
+theme_override_colors/font_hover_color = Color(1, 0.85, 0.4, 1)
+
+[node name="Progress" type="ProgressBar" parent="Panel/Margin/VBox"]
+custom_minimum_size = Vector2(0, 4)
+layout_mode = 2
+max_value = 6.0
+value = 1.0
+show_percentage = false
+modulate = Color(0.95, 0.78, 0.35, 0.9)
+
+[node name="TitleLabel" type="Label" parent="Panel/Margin/VBox"]
+layout_mode = 2
+text = "Título del paso"
+autowrap_mode = 2
+theme_override_font_sizes/font_size = 17
+modulate = Color(1, 0.95, 0.8, 1)
+
+[node name="MessageLabel" type="Label" parent="Panel/Margin/VBox"]
+layout_mode = 2
+text = "Mensaje del paso..."
+autowrap_mode = 2
+theme_override_font_sizes/font_size = 13
+modulate = Color(0.95, 0.92, 0.88, 1)
+
+[node name="HintLabel" type="Label" parent="Panel/Margin/VBox"]
+layout_mode = 2
+text = "→ Pista"
+autowrap_mode = 2
+theme_override_font_sizes/font_size = 11
+modulate = Color(0.7, 0.95, 0.6, 1)
+
+[node name="ButtonRow" type="HBoxContainer" parent="Panel/Margin/VBox"]
+layout_mode = 2
+alignment = 2
+
+[node name="StartButton" type="Button" parent="Panel/Margin/VBox/ButtonRow"]
+layout_mode = 2
+text = "✦ Empezar"
+visible = false
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(1, 0.98, 0.85, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 0.9, 1)
+theme_override_styles/normal = SubResource("SBF_tut_btn")
+theme_override_styles/hover = SubResource("SBF_tut_btn")
+theme_override_styles/pressed = SubResource("SBF_tut_btn")

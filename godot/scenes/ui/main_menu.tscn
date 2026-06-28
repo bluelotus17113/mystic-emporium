@@ -1,0 +1,102 @@
+[gd_scene load_steps=2 format=3 uid="uid://b5j8r7n9m1f01"]
+
+[ext_resource type="Script" path="res://scripts/ui/main_menu.gd" id="1_mm"]
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_mm")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.06, 0.05, 0.1, 1)
+
+[node name="Glow" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -480.0
+offset_top = -300.0
+offset_right = 480.0
+offset_bottom = 300.0
+color = Color(0.22, 0.16, 0.36, 0.32)
+
+[node name="CenterRoot" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="VBox" type="VBoxContainer" parent="CenterRoot"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="TitleAccent" type="Label" parent="CenterRoot/VBox"]
+layout_mode = 2
+text = "✦"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 22
+modulate = Color(1, 0.85, 0.55, 1)
+
+[node name="Title" type="Label" parent="CenterRoot/VBox"]
+layout_mode = 2
+text = "Mystic Emporium"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 48
+modulate = Color(1, 0.95, 0.88, 1)
+
+[node name="Subtitle" type="Label" parent="CenterRoot/VBox"]
+layout_mode = 2
+text = "Automata"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 24
+modulate = Color(0.85, 0.7, 0.95, 1)
+
+[node name="Spacer1" type="Control" parent="CenterRoot/VBox"]
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+
+[node name="ContinueButton" type="Button" parent="CenterRoot/VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(280, 48)
+text = "▶ Continuar"
+
+[node name="ContinueInfo" type="Label" parent="CenterRoot/VBox"]
+layout_mode = 2
+text = "—"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 11
+modulate = Color(0.6, 0.6, 0.75, 1)
+
+[node name="Spacer2" type="Control" parent="CenterRoot/VBox"]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+
+[node name="NewGameButton" type="Button" parent="CenterRoot/VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(280, 42)
+text = "Nueva partida"
+
+[node name="QuitButton" type="Button" parent="CenterRoot/VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(280, 42)
+text = "Salir"
+
+[node name="Spacer3" type="Control" parent="CenterRoot/VBox"]
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+
+[node name="Version" type="Label" parent="CenterRoot/VBox"]
+layout_mode = 2
+text = "pre-alpha · Tab para atajos"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 10
+modulate = Color(0.45, 0.45, 0.6, 1)

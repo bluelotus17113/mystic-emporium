@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="BuildableData" load_steps=4 format=3 uid="uid://b5j8r7n9silla1"]
+
+[ext_resource type="Script" path="res://scripts/data/buildable_data.gd" id="1_bd"]
+[ext_resource type="PackedScene" uid="uid://b5j8r7n9chair01" path="res://scenes/environment/customer_chair.tscn" id="2_scene"]
+[ext_resource type="Texture2D" path="res://art/sprites/environment/rc_silla_espera.png" id="3_icon"]
+
+[resource]
+script = ExtResource("1_bd")
+icon = ExtResource("3_icon")
+id = &"build_silla_espera"
+display_name = "Silla de Espera"
+description = "Permite que un cliente más espere su pedido. Cada silla amplía la cola activa."
+scene = ExtResource("2_scene")
+cost = 40
+allowed_zone = 2
+size = Vector2i(1, 1)
+unlocked_by_default = true

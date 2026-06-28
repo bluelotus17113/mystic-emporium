@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=3 format=3 uid="uid://b5j8r7n9m226be"]
+
+[ext_resource type="Script" path="res://scripts/data/item_data.gd" id="1_id"]
+[ext_resource type="Texture2D" path="res://art/sprites/items/escama_dragon.png" id="2_icon"]
+
+[resource]
+script = ExtResource("1_id")
+icon = ExtResource("2_icon")
+id = &"escama_dragon"
+display_name = "Escama de Dragón Bebé"
+description = "Componente legendario."
+max_stack = 99
+category = 0
+base_value = 250
+tier = 5

@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ResearchData" load_steps=4 format=3 uid="uid://b5j8r7n9me1002"]
+
+[ext_resource type="Script" path="res://scripts/data/research_data.gd" id="1_re"]
+[ext_resource type="Resource" uid="uid://b5j8r7n9da6f97b" path="res://data/recipes/pergamino_teleport.tres" id="rcp_pergamino_teleport"]
+
+
+[resource]
+script = ExtResource("1_re")
+id = &"res_aelodynamic_familiares"
+display_name = "Familiares"
+description = "Investigación tier 5."
+required_station_type = 5
+research_time = 180
+coin_cost = 1920
+
+tier = 5
+recipe_to_unlock = ExtResource("rcp_pergamino_teleport")

@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="OrderData" load_steps=3 format=3 uid="uid://b5j8r7n9mfe208"]
+
+[ext_resource type="Script" path="res://scripts/data/order_data.gd" id="1_od"]
+[ext_resource type="Resource" path="res://data/items/amuleto_proteccion.tres" id="2_it"]
+
+[resource]
+script = ExtResource("1_od")
+id = &"ord_amuleto_protector"
+display_name = "Madre preocupada"
+requested_item = ExtResource("2_it")
+requested_quantity = 1
+coin_reward = 215
+reputation_reward = 2
+time_limit = 0.0
+tier = 3
+min_reputation = 20

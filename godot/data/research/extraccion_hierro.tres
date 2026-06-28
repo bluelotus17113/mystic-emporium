@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ResearchData" load_steps=3 format=3 uid="uid://b5j8r7n9m0b88e"]
+
+[ext_resource type="Script" path="res://scripts/data/research_data.gd" id="1_re"]
+[ext_resource type="Resource" path="res://data/buildables/generador_hierro.tres" id="3_bld"]
+
+[resource]
+script = ExtResource("1_re")
+id = &"res_extraccion_hierro"
+display_name = "Extracción Hierro"
+description = "Investigación tier 2."
+required_station_type = 2
+research_time = 22
+coin_cost = 210
+buildable_to_unlock = ExtResource("3_bld")
+tier = 2

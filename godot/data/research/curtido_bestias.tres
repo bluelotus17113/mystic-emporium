@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ResearchData" load_steps=4 format=3 uid="uid://b5j8r7n9m80ab5"]
+
+[ext_resource type="Script" path="res://scripts/data/research_data.gd" id="1_re"]
+[ext_resource type="Resource" uid="uid://b5j8r7n9dc51db4" path="res://data/recipes/aceite_bestia.tres" id="rcp_aceite_bestia"]
+
+
+[resource]
+script = ExtResource("1_re")
+id = &"res_curtido_bestias"
+display_name = "Curtido de Bestias"
+description = "Investigación tier 3."
+required_station_type = 5
+research_time = 35
+coin_cost = 350
+
+tier = 3
+recipe_to_unlock = ExtResource("rcp_aceite_bestia")

@@ -1,0 +1,112 @@
+[gd_scene load_steps=4 format=3 uid="uid://b5j8r7n9m1f03"]
+
+[ext_resource type="Script" path="res://scripts/ui/workstation_panel.gd" id="1_ws"]
+
+[sub_resource type="StyleBoxFlat" id="SBF_craft_bar_bg"]
+bg_color = Color(0.06, 0.05, 0.12, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.3, 0.25, 0.45, 0.8)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="SBF_craft_bar_fg"]
+bg_color = Color(0.95, 0.78, 0.35, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[node name="WorkstationPanel" type="PanelContainer"]
+custom_minimum_size = Vector2(440, 0)
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 20.0
+offset_top = -300.0
+offset_right = 460.0
+offset_bottom = 300.0
+grow_vertical = 2
+script = ExtResource("1_ws")
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 12
+
+[node name="VBox" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Header" type="HBoxContainer" parent="Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="Margin/VBox/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Caldero"
+theme_override_font_sizes/font_size = 22
+
+[node name="LevelLabel" type="Label" parent="Margin/VBox/Header"]
+layout_mode = 2
+text = "Nv 1"
+theme_override_font_sizes/font_size = 14
+modulate = Color(1, 0.92, 0.45, 1)
+
+[node name="UpgradeButton" type="Button" parent="Margin/VBox/Header"]
+custom_minimum_size = Vector2(112, 32)
+layout_mode = 2
+text = "⬆ 100⚜"
+theme_override_font_sizes/font_size = 13
+
+[node name="CloseButton" type="Button" parent="Margin/VBox/Header"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+text = "✕"
+theme_override_font_sizes/font_size = 14
+
+[node name="CraftProgressBox" type="VBoxContainer" parent="Margin/VBox"]
+layout_mode = 2
+visible = false
+theme_override_constants/separation = 2
+
+[node name="CraftLabel" type="Label" parent="Margin/VBox/CraftProgressBox"]
+layout_mode = 2
+text = "⚗ Crafteando…"
+theme_override_font_sizes/font_size = 13
+modulate = Color(1, 0.92, 0.55, 1)
+
+[node name="CraftBar" type="ProgressBar" parent="Margin/VBox/CraftProgressBox"]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+max_value = 1.0
+step = 0.001
+value = 0.0
+show_percentage = false
+theme_override_styles/background = SubResource("SBF_craft_bar_bg")
+theme_override_styles/fill = SubResource("SBF_craft_bar_fg")
+
+[node name="Scroll" type="ScrollContainer" parent="Margin/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="RecipeList" type="VBoxContainer" parent="Margin/VBox/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 4
+
+[node name="StatusLabel" type="Label" parent="Margin/VBox"]
+layout_mode = 2
+text = ""
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 12
+modulate = Color(0.7, 0.95, 0.7, 1)

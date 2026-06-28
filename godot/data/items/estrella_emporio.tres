@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=3 format=3 uid="uid://b5j8r7n9m99001"]
+
+[ext_resource type="Script" path="res://scripts/data/item_data.gd" id="1_id"]
+[ext_resource type="Texture2D" path="res://art/sprites/items/estrella_emporio.png" id="2_icon"]
+
+[resource]
+script = ExtResource("1_id")
+id = &"estrella_emporio"
+display_name = "★ Estrella del Emporio"
+description = "La culminación de tu arte. Un artefacto legendario forjado con los componentes más raros del reino. Símbolo del Emporio Místico completado."
+icon = ExtResource("2_icon")
+max_stack = 1
+category = 0
+base_value = 9999
+tier = 5

@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=3 format=3 uid="uid://b5j8r7n9mc597d"]
+
+[ext_resource type="Script" path="res://scripts/data/item_data.gd" id="1_id"]
+[ext_resource type="Texture2D" path="res://art/sprites/items/cuerno_unicornio.png" id="2_icon"]
+
+[resource]
+script = ExtResource("1_id")
+icon = ExtResource("2_icon")
+id = &"cuerno_unicornio"
+display_name = "Cuerno de Unicornio"
+description = "Componente legendario de pureza."
+max_stack = 99
+category = 0
+base_value = 250
+tier = 5

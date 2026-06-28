@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://b5j8r7n9m1a04"]
+
+[ext_resource type="Script" path="res://scripts/ai/worker_golem.gd" id="1_wg"]
+[ext_resource type="Texture2D" path="res://art/sprites/characters/golem.png" id="2_tex"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_1"]
+radius = 9.0
+
+[node name="WorkerGolem" type="CharacterBody2D"]
+script = ExtResource("1_wg")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+offset = Vector2(0, -32)
+texture = ExtResource("2_tex")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_1")
