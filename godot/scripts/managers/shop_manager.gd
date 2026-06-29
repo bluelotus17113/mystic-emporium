@@ -54,7 +54,20 @@ func try_buy(worker_type: int) -> void:
 		return
 
 	var scene: PackedScene = worker_scenes[worker_type]
+	# Defensa: si el load del PackedScene falló (ej. sprites sin .import generado),
+	# el valor es null. instantiate() sobre null crashea el juego, así que abortamos.
+	if scene == null:
+		purchase_failed.emit("Escena del worker no se pudo cargar. Reiniciá Godot.")
+		# Reembolsar las coins porque ya las gastamos arriba.
+		InventoryManager.add_coins(cost)
+		print("[Shop] FAIL: scene is null for type %d (load failed)" % worker_type)
+		return
 	var instance = scene.instantiate()
+	if instance == null:
+		purchase_failed.emit("No se pudo instanciar el worker.")
+		InventoryManager.add_coins(cost)
+		print("[Shop] FAIL: instantiate returned null for type %d" % worker_type)
+		return
 	spawn_container.add_child(instance)
 	if spawn_position_provider.is_valid():
 		instance.global_position = spawn_position_provider.call()
