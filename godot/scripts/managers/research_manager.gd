@@ -87,11 +87,12 @@ func is_completed(r: ResearchData) -> bool:
 func start_research(r: ResearchData) -> bool:
 	if r == null or r in _completed or not _prereqs_met(r):
 		return false
-	# Validar items ANTES de cobrar coins. Si falta material, no se descuenta nada.
+	# Validar items ANTES de cobrar coins. Si falta material, fallar SILENCIOSAMENTE:
+	# la UI del research panel ya muestra ✓/✗ por item y deshabilita el botón.
+	# Postear ALERT acá causa spam cuando IdleAutomationManager intenta cada tick.
 	var reqs: Array = get_required_items_for(r)
 	for req in reqs:
 		if not req.ok:
-			NotificationManager.post("Faltan materiales para %s" % r.display_name, NotificationManager.Kind.ALERT)
 			return false
 	if not InventoryManager.spend_coins(r.coin_cost):
 		return false

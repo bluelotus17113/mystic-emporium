@@ -160,7 +160,9 @@ func _drive_research() -> void:
 		# Empezar la más barata que podamos pagar.
 		available.sort_custom(func(a, b): return a.coin_cost < b.coin_cost)
 		for r in available:
-			if InventoryManager.arcane_coins >= r.coin_cost:
+			# can_afford chequea coins + items requeridos. Sin esto, intentaríamos
+			# cada tick aunque falten materiales y el start fallaría en bucle.
+			if ResearchManager.can_afford(r):
 				if ResearchManager.start_research(r):
 					return
 
