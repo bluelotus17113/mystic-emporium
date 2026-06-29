@@ -20,6 +20,12 @@ const MAX_LEVEL: int = 5
 var _current_recipe: RecipeData = null
 var _is_crafting: bool = false
 var _craft_timer: float = 0.0
+## Override por-estación del auto-craft. Cuando IdleAutomationManager itera
+## stations, se salta las que tengan esto en false. El toggle global de
+## auto_craft sigue funcionando; este es un filtro fino encima.
+var auto_craft_enabled: bool = true
+
+signal auto_craft_changed(enabled: bool)
 
 # Idle "respiración" del sprite — más sutil cuando idle, más intenso al craftear.
 var _bob_time: float = 0.0
@@ -222,6 +228,7 @@ func get_state_dict() -> Dictionary:
 		"crafting": _is_crafting,
 		"recipe_id": recipe_id,
 		"craft_timer": _craft_timer,
+		"auto_craft": auto_craft_enabled,
 	}
 
 
@@ -229,6 +236,7 @@ func apply_state_dict(d: Dictionary) -> void:
 	current_level = int(d.get("level", 1))
 	crafting_time_multiplier = float(d.get("time_mult", 1.0))
 	upgrade_cost = int(d.get("upgrade_cost", upgrade_cost))
+	auto_craft_enabled = bool(d.get("auto_craft", true))
 	if bool(d.get("crafting", false)):
 		var rid: String = d.get("recipe_id", "")
 		if rid != "":
@@ -238,6 +246,13 @@ func apply_state_dict(d: Dictionary) -> void:
 				_is_crafting = true
 				_craft_timer = float(d.get("craft_timer", 0.0))
 				craft_started.emit(recipe)
+
+
+func set_auto_craft(enabled: bool) -> void:
+	if auto_craft_enabled == enabled:
+		return
+	auto_craft_enabled = enabled
+	auto_craft_changed.emit(enabled)
 
 
 func try_upgrade() -> bool:

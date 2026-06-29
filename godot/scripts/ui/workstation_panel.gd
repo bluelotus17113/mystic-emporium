@@ -14,6 +14,8 @@ const PANEL_NAME: StringName = &"workstation"
 
 var active_station: Workstation = null
 var _upgrade_pressed_handler: Callable = Callable()
+var _auto_button: Button = null
+var _auto_pressed_handler: Callable = Callable()
 
 # ponytail: en companion mode el panel se posiciona junto a MenuColumn (igual que
 # los tiles), no sobre DeliverPanel. Guardamos el layout normal para restaurar al salir.
@@ -29,6 +31,20 @@ func _ready() -> void:
 	WorkstationManager.workstation_clicked.connect(_on_workstation_clicked)
 	WindowController.mode_changed.connect(_on_mode_changed)
 	_on_mode_changed(WindowController.is_compact())
+	_build_auto_button()
+
+
+func _build_auto_button() -> void:
+	_auto_button = Button.new()
+	_auto_button.custom_minimum_size = Vector2(120, 32)
+	_auto_button.add_theme_font_size_override(&"font_size", 12)
+	_auto_button.toggle_mode = true
+	_auto_button.text = "🤖 Auto: ON"
+	var header: HBoxContainer = $"Margin/VBox/Header"
+	header.add_child(_auto_button)
+	# Reordenamos para que quede entre UpgradeButton y CloseButton.
+	var close_idx: int = close_button.get_index()
+	header.move_child(_auto_button, close_idx)
 
 
 func _save_layout() -> void:
@@ -112,7 +128,23 @@ func _rebuild() -> void:
 	var maxed: bool = active_station.current_level >= Workstation.MAX_LEVEL
 	upgrade_button.disabled = maxed
 	upgrade_button.text = "MAX" if maxed else "⬆ %d⚜" % active_station.upgrade_cost
+	# Auto-craft toggle: refresca texto + reconecta handler con la station activa.
+	if _auto_pressed_handler.is_valid() and _auto_button.pressed.is_connected(_auto_pressed_handler):
+		_auto_button.pressed.disconnect(_auto_pressed_handler)
+	_auto_pressed_handler = Callable(self, "_on_auto_toggled")
+	_auto_button.pressed.connect(_auto_pressed_handler)
+	_auto_button.set_pressed_no_signal(active_station.auto_craft_enabled)
+	_auto_button.text = "🤖 Auto: ON" if active_station.auto_craft_enabled else "⏸ Auto: OFF"
+	_auto_button.modulate = Color(0.85, 1, 0.85, 1) if active_station.auto_craft_enabled else Color(1, 0.85, 0.85, 1)
 	status_label.text = ""
+
+
+func _on_auto_toggled() -> void:
+	if active_station == null:
+		return
+	active_station.set_auto_craft(_auto_button.button_pressed)
+	_auto_button.text = "🤖 Auto: ON" if active_station.auto_craft_enabled else "⏸ Auto: OFF"
+	_auto_button.modulate = Color(0.85, 1, 0.85, 1) if active_station.auto_craft_enabled else Color(1, 0.85, 0.85, 1)
 	_populate_recipes()
 
 

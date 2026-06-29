@@ -76,6 +76,8 @@ func _drive_crafting() -> void:
 		if not (ws is Workstation):
 			continue
 		var station := ws as Workstation
+		if not station.auto_craft_enabled:
+			continue
 		if not station.is_ready_to_work():
 			continue
 		var best: RecipeData = _pick_best_recipe_for(station)
