@@ -15,5 +15,5 @@ coin_cost = 720
 
 tier = 4
 recipe_to_unlock = ExtResource("rcp_pluma_grifo")
-required_item_ids = PackedStringArray("madera_arcana", "cristal_cuarzo")
-required_item_qty = PackedInt32Array(20, 12)
+required_item_ids = PackedStringArray("madera_arcana", "cristal_cuarzo", "hierba_lunar")
+required_item_qty = PackedInt32Array(20, 12, 4)

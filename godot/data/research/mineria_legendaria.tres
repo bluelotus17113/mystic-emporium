@@ -16,4 +16,4 @@ coin_cost = 1280
 tier = 5
 recipe_to_unlock = ExtResource("rcp_lagrima_hada")
 required_item_ids = PackedStringArray("cristal_cuarzo", "mena_hierro", "fragmento_amatista")
-required_item_qty = PackedInt32Array(35, 20, 8)
+required_item_qty = PackedInt32Array(30, 18, 6)

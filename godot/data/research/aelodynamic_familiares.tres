@@ -16,4 +16,4 @@ coin_cost = 1920
 tier = 5
 recipe_to_unlock = ExtResource("rcp_pergamino_teleport")
 required_item_ids = PackedStringArray("cristal_cuarzo", "hierba_lunar", "esencia_espiritual")
-required_item_qty = PackedInt32Array(35, 20, 8)
+required_item_qty = PackedInt32Array(40, 24, 10)

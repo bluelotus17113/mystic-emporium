@@ -13,5 +13,5 @@ research_time = 45
 coin_cost = 450
 recipe_to_unlock = ExtResource("3_rcp")
 tier = 3
-required_item_ids = PackedStringArray("hierba_lunar", "agua_arcana")
+required_item_ids = PackedStringArray("hierba_lunar", "cristal_cuarzo")
 required_item_qty = PackedInt32Array(12, 8)

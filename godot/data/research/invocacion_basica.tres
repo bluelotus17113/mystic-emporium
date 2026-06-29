@@ -15,5 +15,5 @@ coin_cost = 720
 
 tier = 4
 recipe_to_unlock = ExtResource("rcp_invitacion_vip")
-required_item_ids = PackedStringArray("cristal_cuarzo", "agua_arcana", "esencia_espiritual")
+required_item_ids = PackedStringArray("cristal_cuarzo", "agua_arcana", "hierba_lunar")
 required_item_qty = PackedInt32Array(20, 12, 4)

@@ -14,4 +14,4 @@ scene = ExtResource("2_scene")
 cost = 90
 allowed_zone = 1
 size = Vector2i(1, 1)
-unlocked_by_default = false
+unlocked_by_default = true
