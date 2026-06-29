@@ -47,8 +47,10 @@ func _physics_process(delta: float) -> void:
 			if target == null or not is_instance_valid(target):
 				_release_target()
 				_change_state(GameEnums.WorkerState.IDLE)
-			elif not target.has_method("is_available") or not target.is_available():
-				# Otro worker o el sistema lo colectó/desreservó: soltarlo y volver a IDLE.
+			elif target is ResourceNode and not target.is_available():
+				# Otro worker o el sistema colectó este recurso mientras viajábamos:
+				# soltar y volver a IDLE. Solo aplica a ResourceNode; workstations
+				# manejan su propio ciclo de busy/idle internamente.
 				_release_target()
 				_change_state(GameEnums.WorkerState.IDLE)
 			elif _has_arrived(target):
