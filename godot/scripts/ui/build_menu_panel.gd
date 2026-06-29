@@ -169,6 +169,7 @@ const GRID_COLUMNS: int = 3
 @onready var deco_filters: HBoxContainer = $"Margin/VBox/Tabs/✨ Decoración/Filters"
 @onready var close_button: Button = $Margin/VBox/Header/CloseButton
 @onready var status_label: Label = $Margin/VBox/StatusLabel
+@onready var tabs: TabContainer = $"Margin/VBox/Tabs"
 
 var _deco_filter: StringName = &""
 var _filter_buttons: Dictionary = {}  # category_id -> Button
@@ -193,10 +194,23 @@ func _ready() -> void:
 		g.add_theme_constant_override(&"h_separation", 10)
 		g.add_theme_constant_override(&"v_separation", 10)
 	_build_deco_filters()
+	_build_hotkey_hint()
 	# Reaccionar al cambio de zona para que el panel se refresque mientras está abierto.
 	var cam := get_tree().get_first_node_in_group("zone_camera")
 	if cam != null and cam.has_signal("zone_changed"):
 		cam.zone_changed.connect(_on_zone_changed)
+
+
+func _build_hotkey_hint() -> void:
+	var hint := Label.new()
+	hint.text = "⌨ B abrir/cerrar · Click izq colocar · Click der / Esc cancelar · R rotar · Tab cambiar pestaña"
+	hint.add_theme_font_size_override(&"font_size", 10)
+	hint.modulate = Color(0.7, 0.72, 0.8, 1)
+	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	var vbox: VBoxContainer = $"Margin/VBox"
+	vbox.add_child(hint)
+	vbox.move_child(hint, 1)  # debajo del Header
 
 
 func _on_zone_changed(_zone_name: StringName) -> void:
@@ -243,6 +257,12 @@ func _on_visibility_changed() -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_toggle_build"):
 		UIManager.toggle(PANEL_NAME)
+		return
+	# Tab alterna pestañas mientras el panel está abierto (Funcional ↔ Decoración).
+	if visible and event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_TAB:
+		if tabs != null and tabs.get_tab_count() > 0:
+			tabs.current_tab = (tabs.current_tab + 1) % tabs.get_tab_count()
+			get_viewport().set_input_as_handled()
 
 
 func _on_buildable_unlocked(_b: BuildableData) -> void:

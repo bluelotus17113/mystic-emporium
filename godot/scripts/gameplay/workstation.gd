@@ -28,12 +28,17 @@ var _sprite_base_y: float = 0.0
 var _sprite_base_scale: Vector2 = Vector2.ONE
 
 
+var _hover_label: Label = null
+
+
 func _ready() -> void:
 	add_to_group("workstations")
 	WorkstationManager.register(self)
 	var area: Area2D = get_node_or_null("Area2D") as Area2D
 	if area != null:
 		area.input_event.connect(_on_area_input_event)
+		area.mouse_entered.connect(_on_hover_enter)
+		area.mouse_exited.connect(_on_hover_exit)
 	_sprite = get_node_or_null("AnimatedSprite2D")
 	if _sprite == null:
 		_sprite = get_node_or_null("Sprite2D")
@@ -41,6 +46,63 @@ func _ready() -> void:
 		_sprite_base_y = _sprite.position.y
 		_sprite_base_scale = _sprite.scale
 		_bob_time = randf() * TAU  # offset así no se sincronizan todas
+	_build_hover_label()
+
+
+func _build_hover_label() -> void:
+	_hover_label = Label.new()
+	_hover_label.position = Vector2(-70, -80)
+	_hover_label.custom_minimum_size = Vector2(140, 0)
+	_hover_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_hover_label.add_theme_font_size_override(&"font_size", 11)
+	_hover_label.add_theme_color_override(&"font_color", Color(1, 0.95, 0.7, 1))
+	_hover_label.add_theme_color_override(&"font_outline_color", Color(0, 0, 0, 0.85))
+	_hover_label.add_theme_constant_override(&"outline_size", 4)
+	_hover_label.visible = false
+	_hover_label.z_index = 100
+	add_child(_hover_label)
+
+
+func _on_hover_enter() -> void:
+	if _hover_label != null:
+		_hover_label.visible = true
+		_refresh_hover_text()
+
+
+func _on_hover_exit() -> void:
+	if _hover_label != null:
+		_hover_label.visible = false
+
+
+func _refresh_hover_text() -> void:
+	if _hover_label == null or not _hover_label.visible:
+		return
+	var lines: Array[String] = []
+	lines.append("%s · Nv %d" % [_station_display_name(), current_level])
+	if _is_crafting and _current_recipe != null:
+		var total: float = _current_recipe.crafting_time * crafting_time_multiplier
+		var remaining: float = max(0.0, total - _craft_timer)
+		lines.append("⚗ %s" % _current_recipe.display_name)
+		lines.append("⏱ %.1fs" % remaining)
+	elif _has_craftable_recipe():
+		lines.append("✓ Receta disponible")
+	else:
+		lines.append("— sin recetas")
+	if current_level < MAX_LEVEL:
+		lines.append("⬆ %d⚜" % upgrade_cost)
+	_hover_label.text = "\n".join(lines)
+
+
+func _station_display_name() -> String:
+	match station_type:
+		GameEnums.StationType.CAULDRON: return "⚗ Caldero"
+		GameEnums.StationType.MYSTIC_FORGE: return "🔨 Forja"
+		GameEnums.StationType.ENCHANTING_TABLE: return "✨ Encantamiento"
+		GameEnums.StationType.SCRIBE_DESK: return "📜 Escritorio"
+		GameEnums.StationType.SUMMONING_CIRCLE: return "🔮 Invocación"
+		GameEnums.StationType.ARCANE_LIBRARY: return "📚 Biblioteca"
+		GameEnums.StationType.ASTRO_OBSERVATORY: return "🔭 Observatorio"
+		_: return "Estación"
 
 
 func _on_area_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
@@ -54,6 +116,8 @@ func _exit_tree() -> void:
 
 func _process(delta: float) -> void:
 	_apply_idle_bob(delta)
+	if _hover_label != null and _hover_label.visible:
+		_refresh_hover_text()
 	if not _is_crafting or _current_recipe == null:
 		return
 	_craft_timer += delta

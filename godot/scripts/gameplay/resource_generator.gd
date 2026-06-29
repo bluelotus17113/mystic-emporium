@@ -27,6 +27,7 @@ const MAX_LEVEL: int = 5
 var _current_node: ResourceNode = null
 var _timer: float = 0.0
 var _waiting: bool = true
+var _hover_label: Label = null
 
 
 func _ready() -> void:
@@ -34,10 +35,55 @@ func _ready() -> void:
 	var area: Area2D = get_node_or_null("Area2D") as Area2D
 	if area != null:
 		area.input_event.connect(_on_area_input_event)
+		area.mouse_entered.connect(_on_hover_enter)
+		area.mouse_exited.connect(_on_hover_exit)
 	ZoneExpansionManager.natural_level_changed.connect(_on_natural_level_changed)
 	_apply_gating(ZoneExpansionManager.natural_level)
+	_build_hover_label()
 	# Defer initial spawn so parent finishes mounting its children first.
 	call_deferred("_try_generate")
+
+
+func _build_hover_label() -> void:
+	_hover_label = Label.new()
+	_hover_label.position = Vector2(-60, -70)
+	_hover_label.custom_minimum_size = Vector2(120, 0)
+	_hover_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_hover_label.add_theme_font_size_override(&"font_size", 11)
+	_hover_label.add_theme_color_override(&"font_color", Color(1, 0.95, 0.7, 1))
+	_hover_label.add_theme_color_override(&"font_outline_color", Color(0, 0, 0, 0.85))
+	_hover_label.add_theme_constant_override(&"outline_size", 4)
+	_hover_label.visible = false
+	_hover_label.z_index = 100
+	add_child(_hover_label)
+
+
+func _on_hover_enter() -> void:
+	if _hover_label != null:
+		_hover_label.visible = true
+		_refresh_hover_text()
+
+
+func _on_hover_exit() -> void:
+	if _hover_label != null:
+		_hover_label.visible = false
+
+
+func _refresh_hover_text() -> void:
+	if _hover_label == null or not _hover_label.visible:
+		return
+	var name_txt: String = item_data.display_name if item_data != null else "Recurso"
+	var lines: Array[String] = []
+	lines.append("%s · Nv %d" % [name_txt, current_level])
+	if _current_node != null and is_instance_valid(_current_node) and _current_node.is_available():
+		lines.append("✓ Listo para recolectar")
+	else:
+		var remaining: float = max(0.0, get_effective_cooldown() - _timer)
+		lines.append("⏱ %.1fs" % remaining)
+	lines.append("📦 %d/cosecha" % yield_per_node)
+	if current_level < MAX_LEVEL:
+		lines.append("⬆ %d⚜" % upgrade_cost)
+	_hover_label.text = "\n".join(lines)
 
 
 func _on_natural_level_changed(new_level: int) -> void:
@@ -87,6 +133,8 @@ func try_upgrade() -> bool:
 
 
 func _process(delta: float) -> void:
+	if _hover_label != null and _hover_label.visible:
+		_refresh_hover_text()
 	if _current_node != null and _current_node.is_available():
 		# Node still there, nothing to do
 		return

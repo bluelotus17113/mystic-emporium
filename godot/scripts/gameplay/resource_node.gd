@@ -17,7 +17,16 @@ signal collected(node: ResourceNode)
 
 func _ready() -> void:
 	add_to_group("resource_nodes")
-	ResourceManager.register_node(self)
+	# Diferir el registro: el generator hace add_child y SOLO DESPUÉS setea
+	# global_position. Si registramos en _ready, los workers ven el nodo en
+	# la pos del parent (0,0 raíz) y caminan fuera del mapa un frame antes
+	# de que el reposicionamiento ocurra.
+	call_deferred("_deferred_register")
+
+
+func _deferred_register() -> void:
+	if is_inside_tree():
+		ResourceManager.register_node(self)
 
 
 func _exit_tree() -> void:
