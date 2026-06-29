@@ -248,6 +248,10 @@ func _wire_scene_objects() -> void:
 		GameEnums.ResourceType.AMETHYST_FRAGMENT: _find_item_by_id(&"fragmento_amatista"),
 		GameEnums.ResourceType.IRON_INGOT: _find_item_by_id(&"lingote_hierro"),
 	}
+	# Registrar el mapeo en ResourceManager para que generadores construidos
+	# en runtime puedan auto-asignar su item_data via assign_item_to_generator.
+	for t in item_by_type:
+		ResourceManager.register_type_item(t, item_by_type[t])
 	for g in get_tree().get_nodes_in_group("generators"):
 		var gen := g as ResourceGenerator
 		if gen == null:

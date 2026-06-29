@@ -1,11 +1,37 @@
 extends Node
 ## Registers ResourceNodes spawned in the world so AI can query the closest
 ## available node by type without doing scene-wide scans.
+## También mantiene el mapeo ResourceType → ItemData para que generadores
+## construidos en runtime puedan auto-asignar su item_data sin depender de
+## que game_bootstrap los descubra (eso solo pasa al inicio del juego).
 
 signal node_registered(node)
 signal node_unregistered(node)
 
 var _registered_nodes: Array = []  # Array of ResourceNode (Node2D)
+var _type_to_item: Dictionary = {}  # ResourceType (int) → ItemData
+
+
+func register_type_item(resource_type: int, item: ItemData) -> void:
+	if item == null:
+		return
+	_type_to_item[resource_type] = item
+
+
+func get_item_for_type(resource_type: int) -> ItemData:
+	return _type_to_item.get(resource_type)
+
+
+## Asigna el item_data del generador si está vacío. Llamado por cada
+## ResourceGenerator en su _ready. Resuelve el problema de gens construidos
+## en runtime que no pasan por el wire inicial del bootstrap.
+func assign_item_to_generator(gen) -> void:
+	if gen == null:
+		return
+	if "item_data" in gen and gen.item_data == null and "resource_type" in gen:
+		var item: ItemData = get_item_for_type(int(gen.resource_type))
+		if item != null:
+			gen.item_data = item
 
 
 func register_node(node) -> void:

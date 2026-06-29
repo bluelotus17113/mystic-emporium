@@ -32,6 +32,9 @@ var _hover_label: Label = null
 
 func _ready() -> void:
 	add_to_group("generators")
+	# Auto-asignar item_data si falta (necesario para generadores construidos en
+	# runtime; el wire inicial del bootstrap solo cubre los que existen al cargar).
+	ResourceManager.assign_item_to_generator(self)
 	var area: Area2D = get_node_or_null("Area2D") as Area2D
 	if area != null:
 		area.input_event.connect(_on_area_input_event)
