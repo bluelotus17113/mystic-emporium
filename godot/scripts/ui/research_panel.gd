@@ -3,8 +3,8 @@ extends PanelContainer
 ## con líneas dibujadas entre prereq → research.
 
 const PANEL_NAME: StringName = &"research"
-const CARD_W: int = 220
-const CARD_H: int = 110
+const CARD_W: int = 240
+const CARD_H: int = 170
 const COL_GAP: int = 50
 const ROW_GAP: int = 16
 const ROW_HEIGHT: int = CARD_H + ROW_GAP
@@ -137,6 +137,17 @@ func _build_card(r: ResearchData) -> Control:
 	meta.modulate = Color(0.85, 0.85, 0.95, 1)
 	v.add_child(meta)
 
+	# Items requeridos: una línea por item con check ✓/✗ y conteo have/need.
+	var reqs: Array = ResearchManager.get_required_items_for(r)
+	for req in reqs:
+		var rl := Label.new()
+		var item_name: String = req.item.display_name if req.item != null else String(req.get("id", "?"))
+		var mark: String = "✓" if req.ok else "✗"
+		rl.text = "  %s %d/%d %s" % [mark, req.have, req.qty, item_name]
+		rl.add_theme_font_size_override(&"font_size", 10)
+		rl.modulate = Color(0.62, 1.0, 0.65, 1) if req.ok else Color(1.0, 0.75, 0.75, 1)
+		v.add_child(rl)
+
 	var state: StringName = _state_of(r)
 	var state_label := Label.new()
 	v.add_child(state_label)
@@ -166,7 +177,7 @@ func _build_card(r: ResearchData) -> Control:
 			state_label.modulate = Color(1, 0.92, 0.45, 1)
 			btn.text = "Investigar"
 			var has_active: bool = ResearchManager.get_active() != null
-			btn.disabled = has_active or InventoryManager.arcane_coins < r.coin_cost
+			btn.disabled = has_active or not ResearchManager.can_afford(r)
 			btn.pressed.connect(_on_start_pressed.bind(r))
 		_:
 			card.modulate = Color(0.65, 0.6, 0.75, 1)

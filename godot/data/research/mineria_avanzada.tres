@@ -15,3 +15,5 @@ coin_cost = 640
 
 tier = 4
 recipe_to_unlock = ExtResource("rcp_oro_elfico")
+required_item_ids = PackedStringArray("cristal_cuarzo", "mena_hierro", "fragmento_amatista")
+required_item_qty = PackedInt32Array(20, 12, 4)

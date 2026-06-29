@@ -14,3 +14,5 @@ required_station_type = 3
 research_time = 40.0
 coin_cost = 420
 buildable_to_unlock = ExtResource("3_b")
+required_item_ids = PackedStringArray("madera_arcana", "cristal_cuarzo")
+required_item_qty = PackedInt32Array(12, 8)

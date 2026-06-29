@@ -11,6 +11,10 @@ extends Resource
 @export var required_station_type: GameEnums.StationType = GameEnums.StationType.ARCANE_LIBRARY
 @export var research_time: float = 30.0
 @export var coin_cost: int = 100
+## Materiales que se consumen al iniciar la investigación. Pares paralelos:
+## required_item_ids[i] se consume en required_item_qty[i] unidades.
+@export var required_item_ids: PackedStringArray = PackedStringArray()
+@export var required_item_qty: PackedInt32Array = PackedInt32Array()
 
 @export_group("Rewards")
 @export var recipe_to_unlock: RecipeData

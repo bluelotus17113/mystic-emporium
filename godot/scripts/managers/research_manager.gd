@@ -9,10 +9,47 @@ var _all_research: Array[ResearchData] = []
 var _completed: Array[ResearchData] = []
 var _active_research: ResearchData = null
 var _progress: float = 0.0
+var _items_catalog: Array[ItemData] = []
 
 
 func set_catalog(catalog: Array[ResearchData]) -> void:
 	_all_research = catalog.duplicate()
+
+
+func set_item_catalog(catalog: Array[ItemData]) -> void:
+	_items_catalog = catalog.duplicate()
+
+
+func _find_item(id: StringName) -> ItemData:
+	for i in _items_catalog:
+		if i != null and i.id == id:
+			return i
+	return null
+
+
+## Devuelve la lista de items requeridos resueltos: [{item, qty, have, ok}].
+func get_required_items_for(r: ResearchData) -> Array:
+	var out: Array = []
+	if r == null:
+		return out
+	var n: int = min(r.required_item_ids.size(), r.required_item_qty.size())
+	for i in n:
+		var item: ItemData = _find_item(StringName(r.required_item_ids[i]))
+		var qty: int = int(r.required_item_qty[i])
+		var have: int = InventoryManager.get_item_count(item) if item != null else 0
+		out.append({"item": item, "qty": qty, "have": have, "ok": have >= qty})
+	return out
+
+
+func can_afford(r: ResearchData) -> bool:
+	if r == null:
+		return false
+	if InventoryManager.arcane_coins < r.coin_cost:
+		return false
+	for req in get_required_items_for(r):
+		if not req.ok:
+			return false
+	return true
 
 
 func get_available_for_station(station_type: GameEnums.StationType) -> Array[ResearchData]:
@@ -50,8 +87,18 @@ func is_completed(r: ResearchData) -> bool:
 func start_research(r: ResearchData) -> bool:
 	if r == null or r in _completed or not _prereqs_met(r):
 		return false
+	# Validar items ANTES de cobrar coins. Si falta material, no se descuenta nada.
+	var reqs: Array = get_required_items_for(r)
+	for req in reqs:
+		if not req.ok:
+			NotificationManager.post("Faltan materiales para %s" % r.display_name, NotificationManager.Kind.ALERT)
+			return false
 	if not InventoryManager.spend_coins(r.coin_cost):
 		return false
+	# Consumir materiales (ya validamos arriba que están disponibles).
+	for req in reqs:
+		if req.item != null:
+			InventoryManager.remove_item(req.item, req.qty)
 	_active_research = r
 	_progress = 0.0
 	research_started.emit(r)

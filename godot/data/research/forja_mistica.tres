@@ -13,3 +13,5 @@ research_time = 30
 coin_cost = 290
 buildable_to_unlock = ExtResource("3_bld")
 tier = 2
+required_item_ids = PackedStringArray("mena_hierro", "cristal_cuarzo")
+required_item_qty = PackedInt32Array(12, 8)

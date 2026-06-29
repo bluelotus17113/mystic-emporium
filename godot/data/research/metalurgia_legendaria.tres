@@ -15,3 +15,5 @@ coin_cost = 1440
 
 tier = 5
 recipe_to_unlock = ExtResource("rcp_lingote_mithril")
+required_item_ids = PackedStringArray("mena_hierro", "cristal_cuarzo", "lingote_hierro")
+required_item_qty = PackedInt32Array(35, 20, 8)

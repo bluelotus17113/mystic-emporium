@@ -13,3 +13,5 @@ research_time = 40
 coin_cost = 350
 recipe_to_unlock = ExtResource("3_rcp")
 tier = 3
+required_item_ids = PackedStringArray("madera_arcana", "cristal_cuarzo")
+required_item_qty = PackedInt32Array(12, 8)

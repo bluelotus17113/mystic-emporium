@@ -183,6 +183,7 @@ func _load_resources_from_dir(path: String) -> Array:
 func _wire_managers() -> void:
 	OrderManager.set_catalog(_orders_catalog)
 	ResearchManager.set_catalog(_research_catalog)
+	ResearchManager.set_item_catalog(_items_catalog)
 	RecipeManager.set_catalog(_recipes_catalog)
 	BuildManager.set_catalog(_buildables_catalog)
 	BuildManager.unlock_default_buildables(_buildables_catalog)

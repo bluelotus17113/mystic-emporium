@@ -13,3 +13,5 @@ research_time = 32
 coin_cost = 320
 buildable_to_unlock = ExtResource("3_bld")
 tier = 3
+required_item_ids = PackedStringArray("madera_arcana", "hierba_lunar")
+required_item_qty = PackedInt32Array(12, 8)

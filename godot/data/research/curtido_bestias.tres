@@ -15,3 +15,5 @@ coin_cost = 350
 
 tier = 3
 recipe_to_unlock = ExtResource("rcp_aceite_bestia")
+required_item_ids = PackedStringArray("madera_arcana", "hierba_lunar")
+required_item_qty = PackedInt32Array(12, 8)

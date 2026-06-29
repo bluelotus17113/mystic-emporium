@@ -15,3 +15,5 @@ coin_cost = 380
 
 tier = 3
 recipe_to_unlock = ExtResource("rcp_esencia_estabilizada")
+required_item_ids = PackedStringArray("hierba_lunar", "agua_arcana")
+required_item_qty = PackedInt32Array(12, 8)

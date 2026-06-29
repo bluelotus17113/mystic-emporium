@@ -13,3 +13,5 @@ required_station_type = 1
 research_time = 15.0
 coin_cost = 80
 recipe_to_unlock = ExtResource("2_recipe")
+required_item_ids = PackedStringArray("hierba_lunar", "agua_arcana")
+required_item_qty = PackedInt32Array(6, 3)

@@ -15,3 +15,5 @@ coin_cost = 1280
 
 tier = 5
 recipe_to_unlock = ExtResource("rcp_reloj_arena_tiempo")
+required_item_ids = PackedStringArray("cristal_cuarzo", "agua_arcana", "esencia_espiritual")
+required_item_qty = PackedInt32Array(35, 20, 8)
