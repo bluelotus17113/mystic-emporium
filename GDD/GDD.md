@@ -1,15 +1,17 @@
 # Mystic Emporium Automata — Game Design Document
 
-**Versión:** 1.0 (Pre-Alpha · Re-orientado a Godot 4.6)
-**Motor objetivo del port:** Godot 4.6.x
-**Estado del código original:** Implementado en Unity 6.1 (URP 2D, C#) — base completa, listo para portar
-**Fecha:** 2026-06-15
+**Versión:** 1.1 (Pre-Beta · Mecánicamente Completo en Godot 4.6.2)
+**Motor:** Godot 4.6.2
+**Estado:** Bucle de juego completo, automatización funcionando, contenido implementado. Pendiente: pulido visual y QoL menor.
+**Fecha:** 2026-06-28
 **Autor:** vaknadesu
+**Repo:** https://github.com/bluelotus17113/mystic-emporium
 
 ---
 
 ## Índice
 
+0. Changelog v1.1 — Estado Actual
 1. Visión General del Juego
 2. Mecánicas de Juego Principales
 3. Arquitectura Técnica (Godot 4)
@@ -19,6 +21,77 @@
 7. Hoja de Ruta de Desarrollo Futuro
 8. Plan de Port Unity → Godot (mapeo de equivalencias)
 9. Plan de Acción Inmediato
+
+---
+
+## 0. Changelog v1.1 — Estado Actual
+
+**Resumen:** el juego pasó de un esqueleto de port (v1.0) a un loop mecánicamente completo y jugable. Lo que cambió respecto a v1.0:
+
+### Sistemas terminados
+- **Bucle de juego completo** (recolectar → craftear → vender) con automatización funcional en los 5 ejes (Craft / Entregas / Research / Upgrade / Workers) controlable desde la HUD.
+- **Save/Load atómico** (`.tmp` → rename + `.bak` recovery). Persiste workstations, generadores, órdenes activas, evento en curso, precios del shop, workers comprados, expansión del patio.
+- **5 eventos dinámicos** con feedback rico (icono + descripción + countdown + glow). Festival Lunar, Eclipse Arcano, Inspección del Gremio, Asalto de Bandidos, Tormenta Arcana — todos con mecánica real.
+- **Sistema de zonas (Natural / Taller / Recepción)** con cámara que conmuta entre ellas. Buildables filtrados por zona activa en el panel de construcción.
+- **Cap dinámico de clientes** según sillas de espera (base 1 + 1 por silla).
+- **Paciencia de clientes 3–5 min** (180–312s según personalidad).
+- **Notificaciones anti-cascada**: sólo ALERT como toast; el resto va al "Diario" del panel de pedidos.
+
+### Contenido expandido respecto a v1.0
+| Aspecto | v1.0 estimado | v1.1 real |
+|---|---|---|
+| Ítems | ~25–30 | **86** |
+| Recetas | ~20 | **55** |
+| Investigaciones | 15–20 | **22** |
+| Edificios | 10–12 | **147** (incluye decoración) |
+| Ayudantes | 3 tipos | **5 tipos** |
+| Eventos | — | **5** |
+
+### Generadores nuevos (Patio Natural)
+| Generador | Item | Desbloqueo | Cooldown | Costo |
+|---|---|---|---|---|
+| Pozo Arcano | agua_arcana | Patio Nv 2 | 10s | 220⚜ |
+| Altar Lunar | polvo_lunar | Patio Nv 3 | 16s | 320⚜ |
+| Geoda Amatista | fragmento_amatista | Patio Nv 3 | 18s | 380⚜ |
+| Veta de Hierro Fundido | lingote_hierro | Patio Nv 4 | 22s | 480⚜ |
+| Santuario Espiritual | esencia_espiritual | Patio Nv 4 | 20s | 560⚜ |
+
+### Workers nuevos
+| Worker | Recolecta | Precio base | Velocidad |
+|---|---|---|---|
+| 🪓 Leñador | madera_arcana + mena_hierro | 180⚜ | 80 |
+| ✨ Espíritu | agua + polvo lunar + amatista + esencia + lingote | 450⚜ | 95 |
+
+Los workers ahora soportan `preferred_resource_types: Array[int]` (lista de tipos preferidos en orden) en vez de un único tipo. Sistema de reservas: dos workers nunca caminan al mismo nodo; si está reservado por otro, el segundo wander en lugar de competir.
+
+### Research con materiales
+Cada investigación ahora pide coins + materiales (auto-derivados por tema y tier):
+- T1 (≤200⚜): solo hierba + cristal (raws iniciales).
+- T2 (≤500): + madera + hierro.
+- T3 (≤1000): + agua_arcana + polvo_lunar (Patio Nv 2-3).
+- T4-5: + amatista + esencia + lingote (Patio Nv 3-4).
+
+### QoL agregado
+- **Tooltips ricos** en generadores y workstations (hover: cooldown restante, yield, nivel, próximo upgrade, receta activa).
+- **Hotkeys en build panel**: B abre/cierra, Tab cambia tab, click-der/Esc cancela, R rota.
+- **Toggle auto-craft por estación** (botón 🤖/⏸ en el panel del Caldero/Forja).
+- **Panel lateral de clientes** (derecha): sorted por tier (VIPs arriba), botón ✓ por cliente.
+- **Pedidos solo de items obtainable** (filtra catálogo por recetas unlocked + items PRIMARY).
+- **EventIndicator** grande arriba-derecha con icono/color/countdown.
+- **Filtrado de buildables por zona activa** en build panel.
+
+### Bugs notorios resueltos
+- Workers se salían del mapa al construir parcela (resource_node registrado antes de tener pos).
+- Cascadas de notificaciones congelaban el juego.
+- Auto-research disparaba toasts en bucle por items faltantes.
+- Items huérfanos (agua, polvo, amatista, lingote, esencia) ahora tienen generador propio.
+- Aprendiz no llegaba a biblioteca por guard mal puesto.
+
+### Pendiente
+- Pulido visual: los 12 sprites nuevos son procedurales (PIL); reemplazar por pixel-art autoral.
+- Más decoración temática para Recepción.
+- Modo Compañero (sección 5) sigue como roadmap.
+- Sistema de mercado tipo Stardew/Recettear para v1.2.
 
 ---
 
@@ -381,47 +454,66 @@ Doble clic / clic derecho en el compañero abre menú contextual:
 
 ## 6. Contenido del Juego (Versión de Lanzamiento 8–10h)
 
-### 6.1. Ítems (~25–30 totales)
+### 6.1. Ítems (86 totales — v1.1)
 
-**Recursos Primarios (4–5):**
-- Hierba Lunar (hierba)
-- Cristal de Cuarzo (mineral)
-- Mena de Hierro (mineral)
-- Madera Arcana (madera)
-- Esencia Espiritual (esencia)
+**Recursos Primarios — del mapa, vía generadores (9):**
+- Hierba Lunar (Parcela de Hierbas — default)
+- Cristal de Cuarzo (Filón de Cristal — default)
+- Madera Arcana (Arboleda Arcana — 90⚜, inicial)
+- Mena de Hierro (Depósito de Hierro — 110⚜, inicial)
+- Agua Arcana (Pozo Arcano — Patio Nv 2)
+- Polvo Lunar (Altar Lunar — Patio Nv 3)
+- Fragmento de Amatista (Geoda Amatista — Patio Nv 3)
+- Lingote de Hierro (Veta Fundida — Patio Nv 4)
+- Esencia Espiritual (Santuario — Patio Nv 4)
 
-**Ingredientes Procesados (6–8):**
-- Polvo Lunar, Lingote de Hierro, Cuarzo Purificado, Esencia Estabilizada, Tabla Encantada, Pergamino en Blanco.
+**Ingredientes Procesados (~30):** Cuarzo Purificado, Esencia Estabilizada, Tabla Encantada, Pergamino en Blanco, Pigmento Rúnico, Hilo de Tela Mágica, Resina Encantada, etc. — todos via recetas en las 5 estaciones.
 
-**Productos Finales (10–15):**
-- Poción de Curación Menor, Poción de Fuerza Menor, Daga Encantada, Amuleto de Protección, Pergamino de Celeridad, Golem de Arcilla Pequeño, etc.
+**Productos Finales (~45):** pociones (curación, fuerza, mana, velocidad, resistencia, invisibilidad, antídoto, elixir de vida...), armas mágicas (daga, espada, lanza, arco, bastón), amuletos, anillos, pergaminos elementales, golems, capas, escudos, etc.
 
-### 6.2. Edificios Construibles (~10–12)
+Ver `Catalogo_Maestro.xlsx → Items` para la lista completa con categoría, tier, valor base y obtainable.
 
-**Generadores (4–5):** Parcela de Hierbas, Filón de Cristal, Depósito de Hierro, Arboleda Arcana, Nodo de Esencia.
+### 6.2. Edificios Construibles (147 totales — v1.1)
 
-**Estaciones de Trabajo (4–5):** Caldero Alquímico, Forja Mística, Mesa de Encantamiento, Escritorio de Escriba, Círculo de Invocación (end-game).
+**Generadores funcionales (9):**
+- 4 iniciales (`unlocked_by_default = true`): Parcela de Hierbas, Filón de Cristal, Arboleda Arcana, Depósito de Hierro.
+- 5 gated por nivel del Patio: Pozo Arcano (Nv 2), Altar Lunar (Nv 3), Geoda Amatista (Nv 3), Veta Fundida (Nv 4), Santuario Espiritual (Nv 4).
 
-**Estaciones de Investigación (1–2):** Biblioteca Arcana (principal), Observatorio Astrológico (avanzado).
+**Estaciones de Trabajo (7):** Caldero Alquímico, Forja Mística, Mesa de Encantamiento, Escritorio de Escriba, Círculo de Invocación, Biblioteca Arcana, Observatorio Astrológico.
 
-**Soporte (1–2):** Cofre de Almacenamiento (con niveles de mejora).
+**Soporte (4):** Cofre de Almacenamiento, Mostrador, Silla de Espera (solo Recepción — suma +1 cap de clientes), Almacén.
 
-### 6.3. Ayudantes (3 tipos)
+**Decoración (~125):** distribuidas en 5 categorías (wall, floor, table, nature, sin categoría). Filtradas por tab "✨ Decoración" en el panel de construcción.
 
-| Ayudante | Especialidad | Notas |
-|---|---|---|
-| Duende | Hierbas, transporte ligero | Rápido y barato |
-| Gólem | Minerales, maquinaria pesada | Fuerte y resistente |
-| Aprendiz | Investigación, alquimia compleja | Inteligente, opera Biblioteca/Observatorio |
+Todos los buildables tienen `allowed_zone` (NATURE / WORKSHOP / RECEPTION / NONE). Panel de construcción muestra solo los compatibles con la zona activa.
 
-Cada uno se compra desde la tienda con `Arcane Coins` y se renombra al crearse con un nombre aleatorio (sistema de generación de nombres para inmersión).
+### 6.3. Ayudantes (5 tipos — v1.1)
 
-### 6.4. Árbol de Investigación (15–20 nodos)
+| Ayudante | Especialidad | Precio base | Velocidad | Notas |
+|---|---|---|---|---|
+| 🧚 Duende | hierba_lunar | 60⚜ | 90 | Rápido y barato |
+| 🗿 Gólem | cristal_cuarzo | 120⚜ | 60 | Lento, resistente |
+| 📚 Aprendiz | (investigación en estaciones) | 100⚜ | 75 | No recolecta — investiga |
+| 🪓 Leñador | madera_arcana + mena_hierro | 180⚜ | 80 | Mid-game, cubre 2 raws |
+| ✨ Espíritu | agua + polvo + amatista + esencia + lingote | 450⚜ | 95 | End-game, cubre 5 items raros |
 
-- Tier 0 (inicial, gratis): recetas básicas del Caldero.
-- Tier 1 (Biblioteca): desbloquea Forja, Mesa de Encantamiento.
-- Tier 2: recetas intermedias.
-- Tier 3 (Observatorio): recetas "legendarias" y Círculo de Invocación.
+Cada uno se compra desde el panel "Mercado" con `Arcane Coins` y recibe nombre aleatorio al crearse. El precio sube ×1.4 por cada compra adicional del mismo tipo.
+
+`WorkerBase.preferred_resource_types: Array[int]` permite que un worker recoja múltiples tipos: itera la lista y elige el nodo más cercano de cualquiera. Sistema de reservas (`ResourceNode.reserve(worker)`) evita que dos workers vayan al mismo target.
+
+### 6.4. Árbol de Investigación (22 nodos — v1.1)
+
+Cada research pide **coins + materiales** (no solo coins). Auto-derivado por tema (alquimia → hierba+agua, metalurgia → hierro+cristal, etc.) y por tier (más caro = más materiales y más raros).
+
+| Tier | Coste coins | Items requeridos | Investigaciones |
+|---|---|---|---|
+| T1 | ≤200⚜ | 6 + 3 (solo hierba/cristal) | Alquimia Básica, Cultivo Arcano, Minería Arcana, Metalurgia Básica |
+| T2 | 201–500⚜ | 12 + 8 (+madera/hierro) | Destilación, Encantamiento Básico/Avanzado, Escritura Arcana, Telar, Curtido, Forja Mística, Extracción Hierro, Alquimia Avanzada |
+| T3 | 501–1000⚜ | 20 + 12 + 4 raro (+agua/polvo) | Astrología, Observatorio, Invocación Básica, Zoología, Minería Avanzada |
+| T4 | 1001–1500⚜ | 30 + 18 + 6 raro (+amatista/esencia) | Invocación Avanzada, Minería Legendaria |
+| T5 | >1500⚜ | 35 + 20 + 8 raro (+lingote) | Metalurgia Legendaria, Familiares |
+
+Cada research desbloquea recetas y/o buildables. Ver `Catalogo_Maestro.xlsx → Investigaciones` para detalles completos.
 - Meta final: receta legendaria que sirve como objetivo de end-game para la versión de lanzamiento.
 
 ---
