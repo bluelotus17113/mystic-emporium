@@ -72,12 +72,17 @@ func generate_new_order() -> OrderData:
 	if randf() < PROCEDURAL_CHANCE:
 		order_data = _make_procedural_order()
 	if order_data == null:
-		# Filtrar catálogo por reputación actual.
+		# Filtrar catálogo por reputación Y por items que el jugador puede obtener.
+		# Sin el filtro de obtainable, aparecen pedidos de items con recetas
+		# locked (el jugador no tiene cómo entregarlos).
 		var eligible: Array[OrderData] = []
 		var rep: int = InventoryManager.reputation
 		for o in _possible_orders:
-			if o != null and o.min_reputation <= rep:
-				eligible.append(o)
+			if o == null or o.min_reputation > rep:
+				continue
+			if not _is_orderable(o.requested_item):
+				continue
+			eligible.append(o)
 		if not eligible.is_empty():
 			order_data = eligible.pick_random()
 	if order_data == null:
@@ -301,6 +306,21 @@ func expire_order(entry: ActiveOrder) -> void:
 	order_expired.emit(entry.data)
 	if entry.customer != null and is_instance_valid(entry.customer):
 		entry.customer.leave()
+
+
+func _is_orderable(item: ItemData) -> bool:
+	# Un item se puede pedir si:
+	#  - es PRIMARY (raw material, el jugador construye un generador), o
+	#  - hay receta unlocked que lo produce.
+	# Así evitamos pedidos imposibles de cumplir.
+	if item == null:
+		return false
+	if item.category == GameEnums.ItemCategory.PRIMARY:
+		return true
+	for r in RecipeManager.get_unlocked_recipes():
+		if r != null and r.output_item != null and r.output_item.id == item.id:
+			return true
+	return false
 
 
 func _make_procedural_order() -> OrderData:
