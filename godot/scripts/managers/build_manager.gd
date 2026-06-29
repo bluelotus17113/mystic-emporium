@@ -41,6 +41,18 @@ func unlock_default_buildables(catalog: Array[BuildableData]) -> void:
 	for b in catalog:
 		if b != null and b.unlocked_by_default:
 			unlock_buildable(b, true)
+	# También desbloqueamos los gated por nivel del Patio Natural que ya estén
+	# disponibles (por ejemplo si cargamos un save con natural_level alto).
+	apply_natural_level_unlocks(ZoneExpansionManager.natural_level)
+
+
+## Desbloquea buildables con min_natural_level <= level. Idempotente.
+func apply_natural_level_unlocks(level: int) -> void:
+	for b in _catalog:
+		if b == null or b in _unlocked_buildables:
+			continue
+		if b.min_natural_level > 0 and b.min_natural_level <= level:
+			unlock_buildable(b, false)
 
 
 func get_unlocked_buildables() -> Array[BuildableData]:

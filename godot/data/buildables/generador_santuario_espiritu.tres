@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="BuildableData" load_steps=3 format=3 uid="uid://b5j8r7n9newb05"]
+
+[ext_resource type="Script" path="res://scripts/data/buildable_data.gd" id="1_bd"]
+[ext_resource type="PackedScene" uid="uid://b5j8r7n9newg05" path="res://scenes/environment/resource_generator_santuario_espiritu.tscn" id="2_scene"]
+
+[resource]
+script = ExtResource("1_bd")
+id = &"build_generador_santuario_espiritu"
+display_name = "Santuario Espiritual"
+description = "Genera materiales raros. Requiere Patio Natural Nv 4."
+scene = ExtResource("2_scene")
+cost = 560
+allowed_zone = 1
+size = Vector2i(1, 1)
+unlocked_by_default = false
+min_natural_level = 4

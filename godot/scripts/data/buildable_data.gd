@@ -16,3 +16,6 @@ extends Resource
 @export var is_decorative: bool = false
 ## Sub-categoría dentro del tab Decoración: "wall" / "floor" / "table" / "nature"
 @export var decoration_category: StringName = &""
+## Si > 0, se desbloquea cuando el Patio Natural alcanza este nivel.
+## Aplica encima de unlocked_by_default (false + min_natural_level=2 = unlock al lvl 2).
+@export var min_natural_level: int = 0

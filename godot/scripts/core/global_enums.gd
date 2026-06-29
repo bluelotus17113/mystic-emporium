@@ -21,7 +21,11 @@ enum ResourceType {
 	CRYSTAL,
 	IRON_ORE,
 	ARCANE_WOOD,
-	SPIRIT_ESSENCE
+	SPIRIT_ESSENCE,
+	ARCANE_WATER,       # Pozo Arcano → agua_arcana
+	MOON_DUST,          # Altar Lunar → polvo_lunar
+	AMETHYST_FRAGMENT,  # Geoda Amatista → fragmento_amatista
+	IRON_INGOT,         # Veta Fundida → lingote_hierro
 }
 
 enum WorkerType { DUENDE, GOLEM, APPRENTICE, PROTAGONIST, CUSTOMER }

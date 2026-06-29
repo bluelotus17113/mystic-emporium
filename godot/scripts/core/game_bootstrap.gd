@@ -187,6 +187,8 @@ func _wire_managers() -> void:
 	RecipeManager.set_catalog(_recipes_catalog)
 	BuildManager.set_catalog(_buildables_catalog)
 	BuildManager.unlock_default_buildables(_buildables_catalog)
+	# Cuando el Patio Natural sube de nivel, desbloqueamos los buildables gated.
+	ZoneExpansionManager.natural_level_changed.connect(BuildManager.apply_natural_level_unlocks)
 
 	# Wire customer pipeline
 	var customer_scene = load(CUSTOMER_SCENE_PATH)
@@ -237,6 +239,10 @@ func _wire_scene_objects() -> void:
 		GameEnums.ResourceType.IRON_ORE: _find_item_by_id(&"mena_hierro"),
 		GameEnums.ResourceType.ARCANE_WOOD: _find_item_by_id(&"madera_arcana"),
 		GameEnums.ResourceType.SPIRIT_ESSENCE: _find_item_by_id(&"esencia_espiritual"),
+		GameEnums.ResourceType.ARCANE_WATER: _find_item_by_id(&"agua_arcana"),
+		GameEnums.ResourceType.MOON_DUST: _find_item_by_id(&"polvo_lunar"),
+		GameEnums.ResourceType.AMETHYST_FRAGMENT: _find_item_by_id(&"fragmento_amatista"),
+		GameEnums.ResourceType.IRON_INGOT: _find_item_by_id(&"lingote_hierro"),
 	}
 	for g in get_tree().get_nodes_in_group("generators"):
 		var gen := g as ResourceGenerator
