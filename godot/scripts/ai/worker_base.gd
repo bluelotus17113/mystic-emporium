@@ -6,6 +6,9 @@ extends CharacterBody2D
 @export var arrival_distance: float = 6.0
 @export var worker_type: GameEnums.WorkerType = GameEnums.WorkerType.DUENDE
 @export var preferred_resource_type: GameEnums.ResourceType = GameEnums.ResourceType.HERB
+## Si se llena, el worker busca el nodo más cercano de CUALQUIERA de estos tipos.
+## Cuando está vacío, se usa preferred_resource_type singular (compat Duende/Gólem).
+@export var preferred_resource_types: Array[int] = []
 
 var state: GameEnums.WorkerState = GameEnums.WorkerState.IDLE
 var target: Node2D = null
@@ -91,13 +94,31 @@ func _on_idle(delta: float) -> void:
 	if InventoryManager.get_total_count() >= InventoryManager.max_capacity:
 		_wander(delta)
 		return
-	var candidate = ResourceManager.get_closest_available_node(global_position, preferred_resource_type, self)
+	var candidate = _find_best_target()
 	if candidate != null and candidate.has_method("reserve") and candidate.reserve(self):
 		target = candidate
 		_change_state(GameEnums.WorkerState.FETCHING)
 		return
 	# No hay recursos libres (o todos reservados por otros workers): wander como ocioso.
 	_wander(delta)
+
+
+func _find_best_target():
+	# Si hay lista de tipos, picamos el más cercano de TODOS los tipos. Sin lista
+	# (compat workers viejos), usamos el tipo singular.
+	if preferred_resource_types.is_empty():
+		return ResourceManager.get_closest_available_node(global_position, preferred_resource_type, self)
+	var best = null
+	var best_dist_sq: float = INF
+	for t in preferred_resource_types:
+		var cand = ResourceManager.get_closest_available_node(global_position, t, self)
+		if cand == null:
+			continue
+		var d: float = cand.global_position.distance_squared_to(global_position)
+		if d < best_dist_sq:
+			best_dist_sq = d
+			best = cand
+	return best
 
 
 func _wander(delta: float) -> void:

@@ -28,7 +28,7 @@ enum ResourceType {
 	IRON_INGOT,         # Veta Fundida → lingote_hierro
 }
 
-enum WorkerType { DUENDE, GOLEM, APPRENTICE, PROTAGONIST, CUSTOMER }
+enum WorkerType { DUENDE, GOLEM, APPRENTICE, PROTAGONIST, CUSTOMER, LENADOR, ESPIRITU }
 
 enum WorkerState { IDLE, FETCHING, WORKING, DELIVERING, MOVING, WAITING, LEAVING, ARRIVING }
 

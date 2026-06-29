@@ -19,6 +19,8 @@ const CUSTOMER_SCENE_PATH: String = "res://scenes/characters/customer.tscn"
 const WORKER_DUENDE_PATH: String = "res://scenes/characters/worker_duende.tscn"
 const WORKER_GOLEM_PATH: String = "res://scenes/characters/worker_golem.tscn"
 const WORKER_APPRENTICE_PATH: String = "res://scenes/characters/worker_apprentice.tscn"
+const WORKER_LENADOR_PATH: String = "res://scenes/characters/worker_lenador.tscn"
+const WORKER_ESPIRITU_PATH: String = "res://scenes/characters/worker_espiritu.tscn"
 
 @export var initial_recipes_for_cauldron: Array[RecipeData] = []
 @export var generator_panel_path: NodePath
@@ -201,6 +203,8 @@ func _wire_managers() -> void:
 	ShopManager.register_worker_scene(GameEnums.WorkerType.DUENDE, load(WORKER_DUENDE_PATH))
 	ShopManager.register_worker_scene(GameEnums.WorkerType.GOLEM, load(WORKER_GOLEM_PATH))
 	ShopManager.register_worker_scene(GameEnums.WorkerType.APPRENTICE, load(WORKER_APPRENTICE_PATH))
+	ShopManager.register_worker_scene(GameEnums.WorkerType.LENADOR, load(WORKER_LENADOR_PATH))
+	ShopManager.register_worker_scene(GameEnums.WorkerType.ESPIRITU, load(WORKER_ESPIRITU_PATH))
 	var world: Node = get_tree().get_first_node_in_group("world_container")
 	if world == null:
 		world = get_node_or_null("World")

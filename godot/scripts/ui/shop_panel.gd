@@ -27,6 +27,20 @@ const WORKER_INFO: Array = [
 		"icon": "res://art/sprites/characters/apprentice.png",
 		"color": Color(0.65, 0.40, 0.85),
 	},
+	{
+		"type": GameEnums.WorkerType.LENADOR,
+		"name": "Leñador",
+		"desc": "Recolecta madera arcana y mena de hierro.",
+		"icon": "res://art/sprites/characters/lenador_anim.png",
+		"color": Color(0.45, 0.55, 0.30),
+	},
+	{
+		"type": GameEnums.WorkerType.ESPIRITU,
+		"name": "Espíritu",
+		"desc": "Recoge agua, polvo lunar, amatista, esencia y lingotes.",
+		"icon": "res://art/sprites/characters/espiritu_anim.png",
+		"color": Color(0.55, 0.40, 0.75),
+	},
 ]
 
 @onready var close_button: Button = $Margin/VBox/Header/CloseButton

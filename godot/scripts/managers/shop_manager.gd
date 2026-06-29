@@ -9,6 +9,8 @@ const DEFAULT_PRICES: Dictionary = {
 	GameEnums.WorkerType.DUENDE: 60,
 	GameEnums.WorkerType.GOLEM: 120,
 	GameEnums.WorkerType.APPRENTICE: 100,
+	GameEnums.WorkerType.LENADOR: 180,
+	GameEnums.WorkerType.ESPIRITU: 450,
 }
 
 var prices: Dictionary = DEFAULT_PRICES.duplicate()
@@ -69,6 +71,8 @@ func _type_name(worker_type: int) -> String:
 		GameEnums.WorkerType.DUENDE: return "Duende"
 		GameEnums.WorkerType.GOLEM: return "Gólem"
 		GameEnums.WorkerType.APPRENTICE: return "Aprendiz"
+		GameEnums.WorkerType.LENADOR: return "Leñador"
+		GameEnums.WorkerType.ESPIRITU: return "Espíritu"
 		_: return "Ayudante"
 
 
