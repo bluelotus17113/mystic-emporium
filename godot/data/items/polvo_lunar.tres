@@ -10,6 +10,6 @@ id = &"polvo_lunar"
 display_name = "Polvo Lunar"
 description = "Hierba Lunar procesada en polvo. Catalizador para pociones avanzadas."
 max_stack = 99
-category = 1
+category = 0
 base_value = 18
 tier = 2

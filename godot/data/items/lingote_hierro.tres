@@ -10,6 +10,6 @@ id = &"lingote_hierro"
 display_name = "Lingote de Hierro"
 description = "Mena fundida en lingote. Base para armas y artefactos."
 max_stack = 99
-category = 1
+category = 0
 base_value = 22
 tier = 2
