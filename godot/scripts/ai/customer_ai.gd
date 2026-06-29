@@ -7,14 +7,14 @@ signal expired(customer: CustomerAI)
 
 @export var move_speed: float = 60.0
 @export var arrival_distance: float = 6.0
-@export var patience_seconds: float = 45.0  ## tiempo máximo esperando en el mostrador
+@export var patience_seconds: float = 240.0  ## tiempo máximo esperando (4 min base; ×0.75-1.3 por personalidad → rango 3-5 min)
 
 # ponytail: personalidades inline. Si crece a >6 variantes movemos a Resource.
 # Cada una: {emoji, patience_mult, speed_mult, coin_mult, rep_mult, color, greetings}
 const PERSONALITIES: Array = [
 	{"id": &"normal",    "emoji": "",   "patience_mult": 1.0, "speed_mult": 1.0, "coin_mult": 1.0, "rep_mult": 1.0, "color": Color.WHITE,                "weight": 50,
 		"greetings": ["Buenas, ¿tienes lo mío?", "Hola, vengo por el pedido.", "¿Está listo?"]},
-	{"id": &"impatient", "emoji": "⏰", "patience_mult": 0.5, "speed_mult": 1.5, "coin_mult": 1.0, "rep_mult": 1.0, "color": Color(1, 0.7, 0.7, 1),       "weight": 20,
+	{"id": &"impatient", "emoji": "⏰", "patience_mult": 0.75, "speed_mult": 1.5, "coin_mult": 1.0, "rep_mult": 1.0, "color": Color(1, 0.7, 0.7, 1),       "weight": 20,
 		"greetings": ["¡Rápido, no tengo todo el día!", "Llego tarde, dame eso ya.", "Apúrate por favor."]},
 	{"id": &"generous",  "emoji": "💰", "patience_mult": 1.0, "speed_mult": 1.0, "coin_mult": 1.6, "rep_mult": 1.0, "color": Color(1, 0.95, 0.55, 1),     "weight": 15,
 		"greetings": ["Pagaré bien, sin prisa.", "Tu negocio es excelente.", "Toma tu tiempo, te lo compensaré."]},
