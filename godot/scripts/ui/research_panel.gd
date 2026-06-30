@@ -179,6 +179,12 @@ func _build_card(r: ResearchData) -> Control:
 			var has_active: bool = ResearchManager.get_active() != null
 			btn.disabled = has_active or not ResearchManager.can_afford(r)
 			btn.pressed.connect(_on_start_pressed.bind(r))
+		&"tier_locked":
+			card.modulate = Color(0.6, 0.55, 0.7, 1)
+			state_label.text = "🔒 Requiere 1 research T%d completado" % (r.tier - 1)
+			state_label.modulate = Color(0.7, 0.65, 0.85, 1)
+			btn.text = "Tier bloqueado"
+			btn.disabled = true
 		_:
 			card.modulate = Color(0.65, 0.6, 0.75, 1)
 			state_label.text = "🔒 Bloqueada"
@@ -193,10 +199,10 @@ func _state_of(r: ResearchData) -> StringName:
 		return &"completed"
 	if ResearchManager.get_active() == r:
 		return &"active"
-	# Prereqs cumplidos?
-	for prereq in r.prerequisites:
-		if not ResearchManager.is_completed(prereq):
-			return &"locked"
+	if not ResearchManager.explicit_prereqs_met(r):
+		return &"locked"
+	if not ResearchManager.is_tier_gate_met(r):
+		return &"tier_locked"
 	return &"available"
 
 

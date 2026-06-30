@@ -77,6 +77,29 @@ func _prereqs_met(r: ResearchData) -> bool:
 	for prereq in r.prerequisites:
 		if prereq not in _completed:
 			return false
+	# Gate por tier: para acceder a un research de tier N hay que tener al menos
+	# uno del tier inmediatamente anterior completado. Evita saltarse la curva de
+	# progresión yendo directo a T5 con coins+items. Tier 1 no tiene gate.
+	if not is_tier_gate_met(r):
+		return false
+	return true
+
+
+func is_tier_gate_met(r: ResearchData) -> bool:
+	if r == null or r.tier <= 1:
+		return true
+	for done in _completed:
+		if done != null and done.tier == r.tier - 1:
+			return true
+	return false
+
+
+func explicit_prereqs_met(r: ResearchData) -> bool:
+	if r == null:
+		return false
+	for prereq in r.prerequisites:
+		if prereq not in _completed:
+			return false
 	return true
 
 
