@@ -16,5 +16,5 @@ output_item = ExtResource("5_out")
 output_quantity = 1
 crafting_time = 20.0
 required_station_type = 3
-unlocked_by_default = false
+unlocked_by_default = true
 tier = 3

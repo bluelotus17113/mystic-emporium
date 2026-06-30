@@ -14,5 +14,5 @@ ingredient_quantities = Array[int]([2])
 output_item = ExtResource("3_da")
 output_quantity = 1
 crafting_time = 12.0
-required_station_type = 2
+required_station_type = 3
 unlocked_by_default = true
