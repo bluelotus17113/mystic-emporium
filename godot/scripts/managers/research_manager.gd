@@ -145,6 +145,9 @@ func _complete_active() -> void:
 	_progress = 0.0
 	if r.recipe_to_unlock != null:
 		RecipeManager.unlock_recipe(r.recipe_to_unlock)
+	for extra in r.extra_recipes_to_unlock:
+		if extra != null:
+			RecipeManager.unlock_recipe(extra)
 	if r.buildable_to_unlock != null:
 		BuildManager.unlock_buildable(r.buildable_to_unlock)
 	var lib_pos := Vector2.ZERO
@@ -189,6 +192,9 @@ func load_save_state(data: Dictionary) -> void:
 			# Reaplicar los unlocks para que recetas/buildables persistan al cargar.
 			if r.recipe_to_unlock != null:
 				RecipeManager.unlock_recipe(r.recipe_to_unlock)
+			for extra in r.extra_recipes_to_unlock:
+				if extra != null:
+					RecipeManager.unlock_recipe(extra)
 			if r.buildable_to_unlock != null:
 				BuildManager.unlock_buildable(r.buildable_to_unlock)
 	var active_id: String = data.get("active_id", "")

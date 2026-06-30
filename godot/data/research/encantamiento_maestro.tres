@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="ResearchData" load_steps=6 format=3 uid="uid://b5j8r7n9resmaestro"]
+
+[ext_resource type="Script" path="res://scripts/data/research_data.gd" id="1_rd"]
+[ext_resource type="Resource" uid="uid://b5j8r7n9mfbe75" path="res://data/research/encantamiento_basico.tres" id="2_pre"]
+[ext_resource type="Resource" uid="uid://b5j8r7n9rcplinterna" path="res://data/recipes/linterna_eterna.tres" id="3_lin"]
+[ext_resource type="Resource" uid="uid://b5j8r7n9rcpllavemae" path="res://data/recipes/llave_maestra.tres" id="4_lla"]
+[ext_resource type="Resource" uid="uid://b5j8r7n9ma0b7d" path="res://data/recipes/anillo_sabiduria.tres" id="5_ani"]
+
+[resource]
+script = ExtResource("1_rd")
+id = &"res_encantamiento_maestro"
+display_name = "Encantamiento Maestro"
+description = "Patrones avanzados de encantamiento — desbloquea linterna eterna, llave maestra y anillo de sabiduría."
+prerequisites = Array[ResearchData]([ExtResource("2_pre")])
+required_station_type = 3
+research_time = 75.0
+coin_cost = 900
+required_item_ids = PackedStringArray("madera_arcana", "cristal_cuarzo", "lingote_hierro")
+required_item_qty = PackedInt32Array(20, 15, 10)
+recipe_to_unlock = ExtResource("3_lin")
+extra_recipes_to_unlock = Array[RecipeData]([ExtResource("4_lla"), ExtResource("5_ani")])
+tier = 4

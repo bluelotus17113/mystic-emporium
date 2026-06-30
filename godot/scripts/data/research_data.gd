@@ -18,5 +18,8 @@ extends Resource
 
 @export_group("Rewards")
 @export var recipe_to_unlock: RecipeData
+## Recetas extra desbloqueadas al completar (para que una investigación agrupe
+## varias recetas temáticamente, p.ej. "Encantamiento Maestro" → 3 amuletos T4).
+@export var extra_recipes_to_unlock: Array[RecipeData] = []
 @export var buildable_to_unlock: BuildableData
 @export_range(1, 5) var tier: int = 1
