@@ -174,6 +174,10 @@ const GRID_COLUMNS: int = 3
 var _deco_filter: StringName = &""
 var _filter_buttons: Dictionary = {}  # category_id -> Button
 
+# Cache de tiles construidos (solo cost_lbl + btn + buildable) para hacer refresh
+# de precios/disabled sin rebuild completo. Se resetea en cada _rebuild().
+var _active_tiles: Array = []  # [{btn, cost_lbl, buildable}]
+
 const ZONE_BY_NAME: Dictionary = {
 	&"natural": GameEnums.ZoneType.NATURE,
 	&"taller": GameEnums.ZoneType.WORKSHOP,
@@ -271,8 +275,10 @@ func _on_buildable_unlocked(_b: BuildableData) -> void:
 
 
 func _on_coins_changed(_amount: int) -> void:
+	# Coin changes son alta frecuencia (cada compra, cada tick de automation).
+	# Solo refrescamos precio/disabled sin destruir tiles → sin hitch.
 	if visible:
-		_rebuild()
+		_refresh_prices()
 
 
 func _on_build_mode_entered(_b: BuildableData) -> void:
@@ -287,6 +293,7 @@ func _rebuild() -> void:
 	for g in [func_grid, deco_grid]:
 		for child in g.get_children():
 			child.queue_free()
+	_active_tiles.clear()
 	var unlocked: Array[BuildableData] = BuildManager.get_unlocked_buildables()
 	var active_zone: GameEnums.ZoneType = _get_active_zone()
 	var has_func: bool = false
@@ -296,14 +303,17 @@ func _rebuild() -> void:
 		# con la zona activa de la cámara, lo ocultamos. NONE = universal (siempre visible).
 		if active_zone != GameEnums.ZoneType.NONE and b.allowed_zone != GameEnums.ZoneType.NONE and b.allowed_zone != active_zone:
 			continue
+		var tile: Dictionary = _build_tile(b)
 		if b.is_decorative:
 			if _deco_filter != &"" and b.decoration_category != _deco_filter:
+				tile.btn.queue_free()
 				continue
-			deco_grid.add_child(_build_tile(b))
+			deco_grid.add_child(tile.btn)
 			has_deco = true
 		else:
-			func_grid.add_child(_build_tile(b))
+			func_grid.add_child(tile.btn)
 			has_func = true
+		_active_tiles.append(tile)
 	if not has_func:
 		var l := Label.new()
 		l.text = "(sin edificios para esta zona)"
@@ -316,7 +326,7 @@ func _rebuild() -> void:
 		deco_grid.add_child(l)
 
 
-func _build_tile(b: BuildableData) -> Button:
+func _build_tile(b: BuildableData) -> Dictionary:
 	var btn := Button.new()
 	btn.custom_minimum_size = TILE_SIZE
 	btn.tooltip_text = b.description if b.description != "" else b.display_name
@@ -406,7 +416,18 @@ func _build_tile(b: BuildableData) -> Button:
 	btn.mouse_entered.connect(_tile_hover.bind(btn, true))
 	btn.mouse_exited.connect(_tile_hover.bind(btn, false))
 	btn.resized.connect(func(): btn.pivot_offset = btn.size * 0.5)
-	return btn
+	return {"btn": btn, "cost_lbl": cost_lbl, "buildable": b}
+
+
+## Actualiza precio y disabled state de los tiles ya construidos sin destruir nada.
+## Se llama en respuesta a coins_changed (alta frecuencia) para evitar hitch de rebuild.
+func _refresh_prices() -> void:
+	for tile in _active_tiles:
+		if not is_instance_valid(tile.btn):
+			continue
+		var affordable: bool = InventoryManager.arcane_coins >= tile.buildable.cost
+		tile.btn.disabled = not affordable
+		tile.cost_lbl.modulate = Color(1, 0.95, 0.55, 1) if affordable else Color(1, 0.55, 0.55, 1)
 
 
 func _tile_hover(btn: Button, entering: bool) -> void:

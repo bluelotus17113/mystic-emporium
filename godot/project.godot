@@ -12,7 +12,7 @@ config_version=5
 
 config/name="Mystic Emporium Automata"
 config/description="Simulación, gestión, automatización y compañero de escritorio."
-run/main_scene="res://scenes/core/app_launcher.tscn"
+run/main_scene="res://scenes/core/boot_loader.tscn"
 config/features=PackedStringArray("4.6", "GL Compatibility")
 config/icon="res://icon.svg"
 

@@ -1,0 +1,55 @@
+[gd_scene load_steps=2 format=3 uid="uid://b5j8r7n9bootload1"]
+
+[ext_resource type="Script" path="res://scripts/core/boot_loader.gd" id="1_boot"]
+
+[node name="BootLoader" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_boot")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.09, 0.07, 0.14, 1)
+
+[node name="Center" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="Center"]
+layout_mode = 2
+custom_minimum_size = Vector2(360, 120)
+theme_override_constants/separation = 16
+
+[node name="Title" type="Label" parent="Center/VBox"]
+layout_mode = 2
+text = "Mystic Emporium Automata"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(0.95, 0.88, 0.75, 1)
+
+[node name="ProgressBar" type="ProgressBar" parent="Center/VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 18)
+max_value = 100.0
+value = 0.0
+show_percentage = false
+
+[node name="StatusLabel" type="Label" parent="Center/VBox"]
+layout_mode = 2
+text = "Iniciando..."
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.75, 0.72, 0.85, 1)

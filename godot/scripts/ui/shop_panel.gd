@@ -47,6 +47,11 @@ const WORKER_INFO: Array = [
 @onready var grid: GridContainer = $Margin/VBox/Scroll/Grid
 @onready var status_label: Label = $Margin/VBox/StatusLabel
 
+# Cache de tiles construidas 1 sola vez. Refresh solo actualiza precio + disabled.
+# Antes: _rebuild() destruía todo con queue_free en cada visible=true → hitch de 20-50ms
+# por descarga+re-upload de texturas al VRAM. Ahora los tiles quedan vivos siempre.
+var _tiles: Array = []  # [{btn, cost_lbl, worker_type}]
+
 
 func _ready() -> void:
 	UIManager.register_panel(PANEL_NAME, self)
@@ -58,36 +63,48 @@ func _ready() -> void:
 	grid.columns = GRID_COLUMNS
 	grid.add_theme_constant_override(&"h_separation", 10)
 	grid.add_theme_constant_override(&"v_separation", 10)
-	_rebuild()
+	_build_tiles_once()
+	_refresh_all()
 
 
 func _on_visibility_changed() -> void:
 	if visible:
-		_rebuild()
+		_refresh_all()
 
 
 func _on_coins_changed(_amount: int) -> void:
 	if visible:
-		_rebuild()
+		_refresh_all()
 
 
 func _on_purchased(_worker_type: int, _instance) -> void:
 	if visible:
-		_rebuild()
+		_refresh_all()
 
 
 func _on_failed(reason: String) -> void:
 	status_label.text = reason
 
 
-func _rebuild() -> void:
-	for child in grid.get_children():
-		child.queue_free()
+## Construye todos los tiles una única vez. Se llama en _ready().
+func _build_tiles_once() -> void:
 	for w in WORKER_INFO:
-		grid.add_child(_build_tile(w))
+		var tile: Dictionary = _build_tile(w)
+		grid.add_child(tile.btn)
+		_tiles.append(tile)
 
 
-func _build_tile(w: Dictionary) -> Button:
+## Actualiza valores dinámicos (precio, disabled, color de precio) sin recrear nodos.
+func _refresh_all() -> void:
+	for tile in _tiles:
+		var price: int = ShopManager.get_price(tile.worker_type)
+		var affordable: bool = InventoryManager.arcane_coins >= price
+		tile.btn.disabled = not affordable
+		tile.cost_lbl.text = "%d ⚜" % price
+		tile.cost_lbl.modulate = Color(1, 0.95, 0.55, 1) if affordable else Color(1, 0.55, 0.55, 1)
+
+
+func _build_tile(w: Dictionary) -> Dictionary:
 	var price: int = ShopManager.get_price(w.type)
 	var btn := Button.new()
 	btn.custom_minimum_size = TILE_SIZE
@@ -186,7 +203,7 @@ func _build_tile(w: Dictionary) -> Button:
 	btn.mouse_entered.connect(_card_hover.bind(btn, true))
 	btn.mouse_exited.connect(_card_hover.bind(btn, false))
 	btn.resized.connect(func(): btn.pivot_offset = btn.size * 0.5)
-	return btn
+	return {"btn": btn, "cost_lbl": cost_lbl, "worker_type": w.type}
 
 
 func _card_hover(btn: Button, entering: bool) -> void:

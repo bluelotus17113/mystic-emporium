@@ -1,0 +1,22 @@
+{
+  "/tmp/graphify_docs/ARCHITECTURE.md": {
+    "mtime": 1782915932.7838364,
+    "ast_hash": "6b474424bb0bc4d34e8125bad9636ff5",
+    "semantic_hash": "6b474424bb0bc4d34e8125bad9636ff5"
+  },
+  "/tmp/graphify_docs/BUILD.md": {
+    "mtime": 1782915932.7853162,
+    "ast_hash": "06ad6c8337287c5df3e07a29de80786e",
+    "semantic_hash": "06ad6c8337287c5df3e07a29de80786e"
+  },
+  "/tmp/graphify_docs/GDD.md": {
+    "mtime": 1782915932.7833943,
+    "ast_hash": "a939e4b1b884d840dcfee25fe56fe969",
+    "semantic_hash": "a939e4b1b884d840dcfee25fe56fe969"
+  },
+  "/tmp/graphify_docs/README.md": {
+    "mtime": 1782915932.7862718,
+    "ast_hash": "e88d6851b2d5351e1eb21fdc7513afe4",
+    "semantic_hash": "e88d6851b2d5351e1eb21fdc7513afe4"
+  }
+}
