@@ -22,3 +22,9 @@ Thumbs.db
 *.log
 *.bak
 *~
+
+# Ziva plugin — 173 MB de binarios CEF/plugin, cada dev instala con
+# `curl -sL https://ziva.sh/install.sh | bash` (ver README).
+addons/ziva_agent/
+# Output de Ziva sprite gen — no versionamos (cada dev regenera si quiere).
+assets/generated/
