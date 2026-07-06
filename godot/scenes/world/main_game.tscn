@@ -36,16 +36,16 @@
 [ext_resource type="PackedScene" uid="uid://cppurrj8a80vs" path="res://scenes/ui/achievements_panel.tscn" id="34_ach"]
 [ext_resource type="Script" uid="uid://cmmky2x24hdv5" path="res://scripts/gameplay/zone_camera_controller.gd" id="35_zcam"]
 [ext_resource type="Script" uid="uid://cil3vugn12qwc" path="res://scripts/ui/hotkey_legend.gd" id="36_hotkey"]
-[ext_resource type="Texture2D" path="res://art/sprites/tiles/taller_background.png" id="38_wood"]
-[ext_resource type="Texture2D" path="res://art/sprites/tiles/recepcion_background.png" id="39_recep"]
-[ext_resource type="Texture2D" path="res://art/sprites/tiles/natural_background.png" id="40_natgrass"]
-[ext_resource type="Script" path="res://scripts/world/natural_background.gd" id="41_natbg"]
-[ext_resource type="PackedScene" uid="uid://b5j8r7n9m1p01" path="res://scenes/world/ambient_particles.tscn" id="42_amb"]
-[ext_resource type="PackedScene" uid="uid://b5j8r7n9m99003" path="res://scenes/ui/ending_overlay.tscn" id="43_end"]
-[ext_resource type="AudioStream" path="res://audio/sfx/ambient_birds.wav" id="44_amb_birds"]
-[ext_resource type="AudioStream" path="res://audio/sfx/ambient_wind.wav" id="45_amb_wind"]
-[ext_resource type="PackedScene" uid="uid://b5j8r7n9m1f29" path="res://scenes/ui/recipe_book_panel.tscn" id="46_rbook"]
-[ext_resource type="PackedScene" uid="uid://b5j8r7n9mq01" path="res://scenes/ui/customer_queue_panel.tscn" id="47_cq"]
+[ext_resource type="Texture2D" uid="uid://6hs1bakgg0uc" path="res://art/sprites/tiles/taller_background.png" id="38_wood"]
+[ext_resource type="Texture2D" uid="uid://dke6hslp76gox" path="res://art/sprites/tiles/recepcion_background.png" id="39_recep"]
+[ext_resource type="Texture2D" uid="uid://d3nguo3gl6pol" path="res://art/sprites/tiles/natural_background.png" id="40_natgrass"]
+[ext_resource type="Script" uid="uid://djhhks40il6kb" path="res://scripts/world/natural_background.gd" id="41_natbg"]
+[ext_resource type="PackedScene" uid="uid://b5j8r7oam1p01" path="res://scenes/world/ambient_particles.tscn" id="42_amb"]
+[ext_resource type="PackedScene" uid="uid://cppurrkl810vu" path="res://scenes/ui/ending_overlay.tscn" id="43_end"]
+[ext_resource type="AudioStream" uid="uid://olv7u3ep034i" path="res://audio/sfx/ambient_birds.wav" id="44_amb_birds"]
+[ext_resource type="AudioStream" uid="uid://cqnqsl02llgi4" path="res://audio/sfx/ambient_wind.wav" id="45_amb_wind"]
+[ext_resource type="PackedScene" uid="uid://b5j8r7oam1f3a" path="res://scenes/ui/recipe_book_panel.tscn" id="46_rbook"]
+[ext_resource type="PackedScene" uid="uid://b5j8r7oamq01" path="res://scenes/ui/customer_queue_panel.tscn" id="47_cq"]
 
 [node name="MainGame" type="Node2D" unique_id=881335330]
 script = ExtResource("1_boot")
@@ -56,10 +56,10 @@ desktop_companion_path = NodePath("DesktopCompanion")
 [node name="WorldModulate" type="CanvasModulate" parent="." unique_id=838449711]
 script = ExtResource("32_wmod")
 
-[node name="AmbientParticles" parent="." instance=ExtResource("42_amb")]
+[node name="AmbientParticles" parent="." unique_id=1847414508 instance=ExtResource("42_amb")]
 z_index = 5
 
-[node name="EndingOverlay" parent="." instance=ExtResource("43_end")]
+[node name="EndingOverlay" parent="." unique_id=443786090 instance=ExtResource("43_end")]
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=325837965 groups=["zone_camera"]]
 zoom = Vector2(1.5, 1.5)
@@ -76,23 +76,20 @@ fill_color = Color(0.18, 0.42, 0.22, 0.04)
 border_color = Color(0.4, 0.85, 0.45, 0.55)
 label_text = "Patio Natural"
 
-[node name="AmbientBirds" type="AudioStreamPlayer2D" parent="Zones/ZoneNature"]
+[node name="AmbientBirds" type="AudioStreamPlayer2D" parent="Zones/ZoneNature" unique_id=2043676253]
 position = Vector2(400, 200)
 stream = ExtResource("44_amb_birds")
 volume_db = -22.0
 autoplay = true
 max_distance = 1200.0
 attenuation = 1.2
-bus = &"SFX"
 
-[node name="AmbientWind" type="AudioStreamPlayer2D" parent="Zones/ZoneNature"]
+[node name="AmbientWind" type="AudioStreamPlayer2D" parent="Zones/ZoneNature" unique_id=967042544]
 position = Vector2(400, 200)
 stream = ExtResource("45_amb_wind")
 volume_db = -24.0
 autoplay = true
 max_distance = 1400.0
-attenuation = 1.0
-bus = &"SFX"
 
 [node name="ZoneWorkshop" type="Node2D" parent="Zones" unique_id=444723087 groups=["taller_visual"]]
 position = Vector2(-1500, 0)
@@ -120,7 +117,6 @@ z_index = -10
 texture_filter = 1
 position = Vector2(-1315, 0)
 texture = ExtResource("38_wood")
-centered = true
 
 [node name="ReceptionBackground" type="Sprite2D" parent="World" unique_id=576107528 groups=["recepcion_visual"]]
 visible = false
@@ -128,9 +124,8 @@ z_index = -10
 texture_filter = 1
 position = Vector2(-285, 0)
 texture = ExtResource("39_recep")
-centered = true
 
-[node name="NaturalBackground" type="Sprite2D" parent="World" groups=["natural_visual"]]
+[node name="NaturalBackground" type="Sprite2D" parent="World" unique_id=1765358327 groups=["natural_visual"]]
 visible = false
 z_index = -10
 texture_filter = 1
@@ -209,9 +204,9 @@ layer = 5
 
 [node name="OrdersPanel" parent="UICanvas" unique_id=1149769899 instance=ExtResource("19_op")]
 
-[node name="RecipeBookPanel" parent="UICanvas" instance=ExtResource("46_rbook")]
+[node name="RecipeBookPanel" parent="UICanvas" unique_id=843988213 instance=ExtResource("46_rbook")]
 
-[node name="CustomerQueuePanel" parent="UICanvas" instance=ExtResource("47_cq")]
+[node name="CustomerQueuePanel" parent="UICanvas" unique_id=234628675 instance=ExtResource("47_cq")]
 
 [node name="SettingsPanel" parent="UICanvas" unique_id=786044220 instance=ExtResource("22_set")]
 
