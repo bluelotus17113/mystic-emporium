@@ -27,6 +27,7 @@ var state: State = State.IDLE_HOME
 var home_position: Vector2 = Vector2.ZERO
 var _current_customer = null
 var _anim_sprite: AnimatedSprite2D = null
+var _sprite_base_scale: Vector2 = Vector2.ONE
 var _facing_x: float = 1.0
 var _drag_offset: Vector2 = Vector2.ZERO
 var _wobble_tween: Tween = null
@@ -44,6 +45,8 @@ func _ready() -> void:
 	add_to_group("protagonist")
 	home_position = global_position + home_position_offset
 	_anim_sprite = get_node_or_null("AnimatedSprite2D") as AnimatedSprite2D
+	if _anim_sprite != null:
+		_sprite_base_scale = _anim_sprite.scale
 	_create_bubble()
 	_wander_idle_delay = randf_range(WANDER_IDLE_DELAY_MIN, WANDER_IDLE_DELAY_MAX)
 
@@ -211,7 +214,7 @@ func _start_lift_visual() -> void:
 		_wobble_tween.kill()
 	_anim_sprite.modulate = Color(1.15, 1.05, 1.25)
 	var lift := create_tween().set_parallel(true).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-	lift.tween_property(_anim_sprite, "scale", Vector2(1.15, 1.15), 0.18)
+	lift.tween_property(_anim_sprite, "scale", _sprite_base_scale * 1.15, 0.18)
 	lift.tween_property(_anim_sprite, "position:y", -8.0, 0.18)
 	_wobble_tween = create_tween().set_loops()
 	_wobble_tween.tween_property(_anim_sprite, "rotation", deg_to_rad(10.0), 0.32).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
@@ -228,9 +231,9 @@ func _start_land_visual() -> void:
 	land.tween_property(_anim_sprite, "position:y", 0.0, 0.15).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 	land.tween_property(_anim_sprite, "modulate", Color.WHITE, 0.25)
 	var squash := create_tween()
-	squash.tween_property(_anim_sprite, "scale", Vector2(1.2, 0.85), 0.08).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	squash.tween_property(_anim_sprite, "scale", Vector2(0.92, 1.1), 0.09).set_trans(Tween.TRANS_QUAD)
-	squash.tween_property(_anim_sprite, "scale", Vector2.ONE, 0.18).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	squash.tween_property(_anim_sprite, "scale", _sprite_base_scale * Vector2(1.2, 0.85), 0.08).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	squash.tween_property(_anim_sprite, "scale", _sprite_base_scale * Vector2(0.92, 1.1), 0.09).set_trans(Tween.TRANS_QUAD)
+	squash.tween_property(_anim_sprite, "scale", _sprite_base_scale, 0.18).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 
 func _flash_teleport() -> void:
@@ -239,8 +242,8 @@ func _flash_teleport() -> void:
 	_anim_sprite.modulate = Color(2.4, 2.0, 2.8, 1.0)
 	var tw := create_tween().set_parallel(true)
 	tw.tween_property(_anim_sprite, "modulate", Color.WHITE, 0.45)
-	tw.tween_property(_anim_sprite, "scale", Vector2(1.15, 1.15), 0.08).set_trans(Tween.TRANS_QUAD)
-	tw.chain().tween_property(_anim_sprite, "scale", Vector2.ONE, 0.22).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tw.tween_property(_anim_sprite, "scale", _sprite_base_scale * 1.15, 0.08).set_trans(Tween.TRANS_QUAD)
+	tw.chain().tween_property(_anim_sprite, "scale", _sprite_base_scale, 0.22).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 
 func _update_anim() -> void:
