@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=3 uid="uid://b5j8r7n9m1a07"]
+[gd_scene load_steps=35 format=3 uid="uid://b5j8r7n9m1a07"]
 
 [ext_resource type="Script" path="res://scripts/ui/hud.gd" id="1_hud"]
 [ext_resource type="Texture2D" path="res://art/sprites/ui/icon_inventory.png" id="2_ico_inv"]
@@ -22,6 +22,9 @@
 [ext_resource type="Texture2D" path="res://art/sprites/ui/theme/tray_wood.png" id="th_tray"]
 [ext_resource type="Texture2D" path="res://art/sprites/ui/theme/scroll_parchment.png" id="th_scroll"]
 [ext_resource type="Texture2D" path="res://art/sprites/ui/theme/sign_wood.png" id="th_sign"]
+[ext_resource type="Texture2D" path="res://art/sprites/ui/theme/deco_ivy.png" id="th_ivy"]
+[ext_resource type="Texture2D" path="res://art/sprites/ui/theme/deco_pennant.png" id="th_pennant"]
+[ext_resource type="Texture2D" path="res://art/sprites/ui/theme/clock_ornate.png" id="th_clock"]
 
 [sub_resource type="StyleBoxTexture" id="SBF_info_panel"]
 texture = ExtResource("th_pw")
@@ -215,6 +218,43 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
+
+[node name="DecoIvyLeft" type="TextureRect" parent="Root"]
+layout_mode = 1
+anchors_preset = 0
+offset_left = -8.0
+offset_top = 44.0
+offset_right = 88.0
+offset_bottom = 140.0
+texture = ExtResource("th_ivy")
+mouse_filter = 2
+
+[node name="DecoIvyRight" type="TextureRect" parent="Root"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -88.0
+offset_top = 44.0
+offset_right = 8.0
+offset_bottom = 140.0
+flip_h = true
+texture = ExtResource("th_ivy")
+mouse_filter = 2
+
+[node name="DecoPennant" type="TextureRect" parent="Root"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -300.0
+offset_top = 128.0
+offset_right = 300.0
+offset_bottom = 176.0
+texture = ExtResource("th_pennant")
+expand_mode = 1
+stretch_mode = 5
 mouse_filter = 2
 
 [node name="TopBarBg" type="Panel" parent="Root"]
