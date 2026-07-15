@@ -4,31 +4,31 @@
 [ext_resource type="Texture2D" path="res://art/sprites/environment/forge_anim.png" id="2_tex"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
-size = Vector2(36, 36)
+size = Vector2(68, 68)
 
 [sub_resource type="AtlasTexture" id="ATX_f1"]
 atlas = ExtResource("2_tex")
-region = Rect2(0, 0, 32, 32)
+region = Rect2(0, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="ATX_f2"]
 atlas = ExtResource("2_tex")
-region = Rect2(32, 0, 32, 32)
+region = Rect2(64, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="ATX_f3"]
 atlas = ExtResource("2_tex")
-region = Rect2(64, 0, 32, 32)
+region = Rect2(128, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="ATX_f4"]
 atlas = ExtResource("2_tex")
-region = Rect2(96, 0, 32, 32)
+region = Rect2(192, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="ATX_f5"]
 atlas = ExtResource("2_tex")
-region = Rect2(128, 0, 32, 32)
+region = Rect2(256, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="ATX_f6"]
 atlas = ExtResource("2_tex")
-region = Rect2(160, 0, 32, 32)
+region = Rect2(320, 0, 64, 64)
 
 [sub_resource type="SpriteFrames" id="SF_forge"]
 animations = [{

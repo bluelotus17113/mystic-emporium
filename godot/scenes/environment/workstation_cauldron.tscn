@@ -4,31 +4,31 @@
 [ext_resource type="Texture2D" path="res://art/sprites/environment/cauldron_anim.png" id="2_tex"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
-size = Vector2(36, 36)
+size = Vector2(52, 52)
 
 [sub_resource type="AtlasTexture" id="ATX_c1"]
 atlas = ExtResource("2_tex")
-region = Rect2(0, 0, 32, 32)
+region = Rect2(0, 0, 48, 48)
 
 [sub_resource type="AtlasTexture" id="ATX_c2"]
 atlas = ExtResource("2_tex")
-region = Rect2(32, 0, 32, 32)
+region = Rect2(48, 0, 48, 48)
 
 [sub_resource type="AtlasTexture" id="ATX_c3"]
 atlas = ExtResource("2_tex")
-region = Rect2(64, 0, 32, 32)
+region = Rect2(96, 0, 48, 48)
 
 [sub_resource type="AtlasTexture" id="ATX_c4"]
 atlas = ExtResource("2_tex")
-region = Rect2(96, 0, 32, 32)
+region = Rect2(144, 0, 48, 48)
 
 [sub_resource type="AtlasTexture" id="ATX_c5"]
 atlas = ExtResource("2_tex")
-region = Rect2(128, 0, 32, 32)
+region = Rect2(192, 0, 48, 48)
 
 [sub_resource type="AtlasTexture" id="ATX_c6"]
 atlas = ExtResource("2_tex")
-region = Rect2(160, 0, 32, 32)
+region = Rect2(240, 0, 48, 48)
 
 [sub_resource type="SpriteFrames" id="SF_caldron"]
 animations = [{
