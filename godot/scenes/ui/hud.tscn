@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://b5j8r7n9m1a07"]
+[gd_scene load_steps=27 format=3 uid="uid://b5j8r7n9m1a07"]
 
 [ext_resource type="Script" path="res://scripts/ui/hud.gd" id="1_hud"]
 [ext_resource type="Texture2D" path="res://art/sprites/ui/icon_inventory.png" id="2_ico_inv"]
@@ -12,243 +12,173 @@
 [ext_resource type="Texture2D" path="res://art/sprites/ui/icon_companion.png" id="10_ico_comp"]
 [ext_resource type="Texture2D" path="res://art/sprites/ui/icon_craft.png" id="11_ico_book"]
 
-[sub_resource type="StyleBoxFlat" id="SBF_info_panel"]
-bg_color = Color(0.12, 0.10, 0.20, 0.94)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 2
-border_color = Color(0.78, 0.66, 0.36, 0.85)
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
-shadow_color = Color(0.4, 0.2, 0.6, 0.35)
-shadow_size = 6
-shadow_offset = Vector2(0, 2)
-anti_aliasing = true
+[ext_resource type="Texture2D" path="res://art/sprites/ui/theme/panel_wood.png" id="th_pw"]
+[ext_resource type="Texture2D" path="res://art/sprites/ui/theme/panel_leather.png" id="th_pl"]
+[ext_resource type="Texture2D" path="res://art/sprites/ui/theme/button_normal.png" id="th_bn"]
+[ext_resource type="Texture2D" path="res://art/sprites/ui/theme/button_hover.png" id="th_bh"]
+[ext_resource type="Texture2D" path="res://art/sprites/ui/theme/button_pressed.png" id="th_bp"]
+[ext_resource type="Texture2D" path="res://art/sprites/ui/theme/bar_bg.png" id="th_bb"]
+[ext_resource type="Texture2D" path="res://art/sprites/ui/theme/bar_fill.png" id="th_bf"]
 
-[sub_resource type="StyleBoxFlat" id="SBF_research_panel"]
-bg_color = Color(0.14, 0.10, 0.22, 0.94)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 2
-border_color = Color(0.65, 0.45, 0.95, 0.9)
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
-shadow_color = Color(0.55, 0.35, 0.95, 0.4)
-shadow_size = 6
-shadow_offset = Vector2(0, 2)
-anti_aliasing = true
+[sub_resource type="StyleBoxTexture" id="SBF_info_panel"]
+texture = ExtResource("th_pw")
+texture_margin_left = 18.0
+texture_margin_top = 18.0
+texture_margin_right = 18.0
+texture_margin_bottom = 18.0
+content_margin_left = 16.0
+content_margin_top = 12.0
+content_margin_right = 16.0
+content_margin_bottom = 12.0
 
-[sub_resource type="StyleBoxFlat" id="SBF_research_bar_bg"]
-bg_color = Color(0.06, 0.05, 0.12, 1)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.3, 0.25, 0.45, 0.8)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
+[sub_resource type="StyleBoxTexture" id="SBF_research_panel"]
+texture = ExtResource("th_pw")
+texture_margin_left = 18.0
+texture_margin_top = 18.0
+texture_margin_right = 18.0
+texture_margin_bottom = 18.0
+content_margin_left = 16.0
+content_margin_top = 12.0
+content_margin_right = 16.0
+content_margin_bottom = 12.0
 
-[sub_resource type="StyleBoxFlat" id="SBF_research_bar_fg"]
-bg_color = Color(0.78, 0.55, 0.95, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
+[sub_resource type="StyleBoxTexture" id="SBF_research_bar_bg"]
+texture = ExtResource("th_bb")
+texture_margin_left = 6.0
+texture_margin_top = 6.0
+texture_margin_right = 6.0
+texture_margin_bottom = 6.0
 
-[sub_resource type="StyleBoxFlat" id="SBF_action_btn"]
-bg_color = Color(0.18, 0.14, 0.28, 0.96)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 2
-border_color = Color(0.78, 0.66, 0.36, 0.75)
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
-content_margin_left = 6.0
+[sub_resource type="StyleBoxTexture" id="SBF_research_bar_fg"]
+texture = ExtResource("th_bf")
+texture_margin_left = 6.0
+texture_margin_top = 6.0
+texture_margin_right = 6.0
+texture_margin_bottom = 6.0
+
+[sub_resource type="StyleBoxTexture" id="SBF_action_btn"]
+texture = ExtResource("th_bn")
+texture_margin_left = 8.0
+texture_margin_top = 8.0
+texture_margin_right = 8.0
+texture_margin_bottom = 8.0
+content_margin_left = 8.0
 content_margin_top = 6.0
-content_margin_right = 6.0
+content_margin_right = 8.0
 content_margin_bottom = 6.0
-shadow_color = Color(0.4, 0.2, 0.6, 0.3)
-shadow_size = 4
-shadow_offset = Vector2(0, 2)
-anti_aliasing = true
 
-[sub_resource type="StyleBoxFlat" id="SBF_action_btn_hover"]
-bg_color = Color(0.28, 0.22, 0.40, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 3
-border_color = Color(1, 0.92, 0.55, 1)
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
-content_margin_left = 6.0
+[sub_resource type="StyleBoxTexture" id="SBF_action_btn_hover"]
+texture = ExtResource("th_bh")
+texture_margin_left = 8.0
+texture_margin_top = 8.0
+texture_margin_right = 8.0
+texture_margin_bottom = 8.0
+content_margin_left = 8.0
 content_margin_top = 6.0
-content_margin_right = 6.0
+content_margin_right = 8.0
 content_margin_bottom = 6.0
-shadow_color = Color(1, 0.85, 0.45, 0.55)
-shadow_size = 8
-shadow_offset = Vector2(0, 2)
-anti_aliasing = true
 
-[sub_resource type="StyleBoxFlat" id="SBF_action_btn_pressed"]
-bg_color = Color(0.10, 0.08, 0.16, 1)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.95, 0.78, 0.35, 1)
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
-content_margin_left = 6.0
+[sub_resource type="StyleBoxTexture" id="SBF_action_btn_pressed"]
+texture = ExtResource("th_bp")
+texture_margin_left = 8.0
+texture_margin_top = 8.0
+texture_margin_right = 8.0
+texture_margin_bottom = 8.0
+content_margin_left = 8.0
 content_margin_top = 7.0
-content_margin_right = 6.0
+content_margin_right = 8.0
 content_margin_bottom = 5.0
-anti_aliasing = true
 
-[sub_resource type="StyleBoxFlat" id="SBF_topbar_bg"]
-bg_color = Color(0.10, 0.08, 0.18, 0.88)
-border_width_bottom = 1
-border_color = Color(0.78, 0.66, 0.36, 0.55)
-corner_radius_top_left = 0
-corner_radius_top_right = 0
-corner_radius_bottom_right = 16
-corner_radius_bottom_left = 16
-shadow_color = Color(0.4, 0.2, 0.6, 0.35)
-shadow_size = 5
-shadow_offset = Vector2(0, 2)
-anti_aliasing = true
+[sub_resource type="StyleBoxTexture" id="SBF_topbar_bg"]
+texture = ExtResource("th_pl")
+texture_margin_left = 8.0
+texture_margin_top = 8.0
+texture_margin_right = 8.0
+texture_margin_bottom = 8.0
+content_margin_left = 10.0
+content_margin_top = 4.0
+content_margin_right = 10.0
+content_margin_bottom = 4.0
 
-[sub_resource type="StyleBoxFlat" id="SBF_clockbox_bg"]
-bg_color = Color(0.13, 0.10, 0.22, 0.92)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 2
-border_color = Color(0.78, 0.66, 0.36, 0.85)
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
-shadow_color = Color(0.55, 0.35, 0.95, 0.4)
-shadow_size = 8
-shadow_offset = Vector2(0, 2)
-anti_aliasing = true
-
-[sub_resource type="StyleBoxFlat" id="SBF_zone_btn"]
-bg_color = Color(0.20, 0.15, 0.32, 1)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 2
-border_color = Color(0.78, 0.66, 0.36, 0.85)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
-anti_aliasing = true
-
-[sub_resource type="StyleBoxFlat" id="SBF_zone_btn_hover"]
-bg_color = Color(0.32, 0.22, 0.46, 1)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 2
-border_color = Color(1, 0.92, 0.55, 1)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
-shadow_color = Color(1, 0.85, 0.45, 0.5)
-shadow_size = 4
-anti_aliasing = true
-
-[sub_resource type="StyleBoxFlat" id="SBF_deliver_top_btn"]
-bg_color = Color(0.78, 0.55, 0.25, 1)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 2
-border_color = Color(0.95, 0.78, 0.35, 1)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
+[sub_resource type="StyleBoxTexture" id="SBF_clockbox_bg"]
+texture = ExtResource("th_pw")
+texture_margin_left = 18.0
+texture_margin_top = 18.0
+texture_margin_right = 18.0
+texture_margin_bottom = 18.0
 content_margin_left = 14.0
-content_margin_top = 5.0
+content_margin_top = 8.0
 content_margin_right = 14.0
-content_margin_bottom = 5.0
-shadow_color = Color(0.95, 0.78, 0.35, 0.4)
-shadow_size = 3
-anti_aliasing = true
+content_margin_bottom = 8.0
 
-[sub_resource type="StyleBoxFlat" id="SBF_deliver_top_btn_hover"]
-bg_color = Color(0.92, 0.68, 0.35, 1)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 2
-border_color = Color(1, 0.92, 0.55, 1)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
-content_margin_left = 14.0
-content_margin_top = 5.0
-content_margin_right = 14.0
-content_margin_bottom = 5.0
-shadow_color = Color(1, 0.95, 0.55, 0.5)
-shadow_size = 5
-anti_aliasing = true
+[sub_resource type="StyleBoxTexture" id="SBF_zone_btn"]
+texture = ExtResource("th_bn")
+texture_margin_left = 8.0
+texture_margin_top = 8.0
+texture_margin_right = 8.0
+texture_margin_bottom = 8.0
+content_margin_left = 10.0
+content_margin_top = 4.0
+content_margin_right = 10.0
+content_margin_bottom = 4.0
 
-[sub_resource type="StyleBoxFlat" id="SBF_deliver_top_btn_disabled"]
-bg_color = Color(0.26, 0.22, 0.32, 1)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 2
-border_color = Color(0.4, 0.36, 0.46, 1)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
-content_margin_left = 14.0
+[sub_resource type="StyleBoxTexture" id="SBF_zone_btn_hover"]
+texture = ExtResource("th_bh")
+texture_margin_left = 8.0
+texture_margin_top = 8.0
+texture_margin_right = 8.0
+texture_margin_bottom = 8.0
+content_margin_left = 10.0
+content_margin_top = 4.0
+content_margin_right = 10.0
+content_margin_bottom = 4.0
+
+[sub_resource type="StyleBoxTexture" id="SBF_deliver_top_btn"]
+texture = ExtResource("th_bn")
+texture_margin_left = 8.0
+texture_margin_top = 8.0
+texture_margin_right = 8.0
+texture_margin_bottom = 8.0
+content_margin_left = 12.0
 content_margin_top = 5.0
-content_margin_right = 14.0
+content_margin_right = 12.0
 content_margin_bottom = 5.0
 
-[sub_resource type="StyleBoxFlat" id="SBF_daily_quest_bg"]
-bg_color = Color(0.06, 0.05, 0.12, 1)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.3, 0.25, 0.45, 0.8)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
+[sub_resource type="StyleBoxTexture" id="SBF_deliver_top_btn_hover"]
+texture = ExtResource("th_bh")
+texture_margin_left = 8.0
+texture_margin_top = 8.0
+texture_margin_right = 8.0
+texture_margin_bottom = 8.0
+content_margin_left = 12.0
+content_margin_top = 5.0
+content_margin_right = 12.0
+content_margin_bottom = 5.0
 
-[sub_resource type="StyleBoxFlat" id="SBF_daily_quest_fg"]
-bg_color = Color(0.55, 0.95, 0.45, 1)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
+[sub_resource type="StyleBoxTexture" id="SBF_deliver_top_btn_disabled"]
+texture = ExtResource("th_bp")
+texture_margin_left = 8.0
+texture_margin_top = 8.0
+texture_margin_right = 8.0
+texture_margin_bottom = 8.0
+content_margin_left = 12.0
+content_margin_top = 5.0
+content_margin_right = 12.0
+content_margin_bottom = 5.0
+
+[sub_resource type="StyleBoxTexture" id="SBF_daily_quest_bg"]
+texture = ExtResource("th_bb")
+texture_margin_left = 6.0
+texture_margin_top = 6.0
+texture_margin_right = 6.0
+texture_margin_bottom = 6.0
+
+[sub_resource type="StyleBoxTexture" id="SBF_daily_quest_fg"]
+texture = ExtResource("th_bf")
+texture_margin_left = 6.0
+texture_margin_top = 6.0
+texture_margin_right = 6.0
+texture_margin_bottom = 6.0
 
 [node name="HUD" type="CanvasLayer"]
 script = ExtResource("1_hud")
