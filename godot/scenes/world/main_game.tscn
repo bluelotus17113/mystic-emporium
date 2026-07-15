@@ -95,7 +95,7 @@ max_distance = 1400.0
 position = Vector2(-1315, 0)
 script = ExtResource("16_zone")
 zone_type = 2
-size = Vector2(1700, 640)
+size = Vector2(1820, 700)
 fill_color = Color(0.55, 0.4, 0.2, 0.04)
 border_color = Color(0.9, 0.65, 0.35, 0.55)
 label_text = "Zona Taller"
@@ -116,6 +116,7 @@ label_text = "Recepción"
 z_index = -10
 texture_filter = 1
 position = Vector2(-1315, 0)
+scale = Vector2(2, 2)
 texture = ExtResource("38_wood")
 
 [node name="ReceptionBackground" type="Sprite2D" parent="World" unique_id=576107528 groups=["recepcion_visual"]]
@@ -144,13 +145,13 @@ visible = false
 position = Vector2(1600, 0)
 
 [node name="WorkstationCauldron" parent="World" unique_id=660767602 groups=["taller_visual"] instance=ExtResource("4_caul")]
-position = Vector2(-1780, -80)
+position = Vector2(-995, 150)
 
 [node name="WorkstationForge" parent="World" unique_id=646045672 groups=["taller_visual"] instance=ExtResource("12_forge")]
-position = Vector2(-1400, -195)
+position = Vector2(-820, 175)
 
 [node name="ResearchStationLibrary" parent="World" unique_id=88846618 groups=["taller_visual"] instance=ExtResource("14_lib")]
-position = Vector2(-775, -230)
+position = Vector2(-560, -90)
 
 [node name="WorkerDuendeA" parent="World" unique_id=1937209968 groups=["natural_visual"] instance=ExtResource("3_duende")]
 visible = false
