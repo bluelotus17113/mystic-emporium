@@ -25,10 +25,10 @@
 
 [sub_resource type="StyleBoxTexture" id="SBF_info_panel"]
 texture = ExtResource("th_pw")
-texture_margin_left = 18.0
-texture_margin_top = 18.0
-texture_margin_right = 18.0
-texture_margin_bottom = 18.0
+texture_margin_left = 16.0
+texture_margin_top = 16.0
+texture_margin_right = 16.0
+texture_margin_bottom = 16.0
 content_margin_left = 16.0
 content_margin_top = 12.0
 content_margin_right = 16.0
@@ -36,10 +36,10 @@ content_margin_bottom = 12.0
 
 [sub_resource type="StyleBoxTexture" id="SBF_research_panel"]
 texture = ExtResource("th_pw")
-texture_margin_left = 18.0
-texture_margin_top = 18.0
-texture_margin_right = 18.0
-texture_margin_bottom = 18.0
+texture_margin_left = 16.0
+texture_margin_top = 16.0
+texture_margin_right = 16.0
+texture_margin_bottom = 16.0
 content_margin_left = 16.0
 content_margin_top = 12.0
 content_margin_right = 16.0
@@ -105,10 +105,10 @@ content_margin_bottom = 4.0
 
 [sub_resource type="StyleBoxTexture" id="SBF_clockbox_bg"]
 texture = ExtResource("th_pw")
-texture_margin_left = 18.0
-texture_margin_top = 18.0
-texture_margin_right = 18.0
-texture_margin_bottom = 18.0
+texture_margin_left = 16.0
+texture_margin_top = 16.0
+texture_margin_right = 16.0
+texture_margin_bottom = 16.0
 content_margin_left = 14.0
 content_margin_top = 8.0
 content_margin_right = 14.0
