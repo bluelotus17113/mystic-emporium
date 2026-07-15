@@ -36,6 +36,9 @@ func _ready() -> void:
 	_zone_center = z.pos
 	_zone_half_size = _get_zone_half_size(z.name)
 	call_deferred("_apply_zone_visibility", z.name)
+	# Ambiente sonoro por zona (fuego en taller, aves en patio…)
+	zone_changed.connect(AudioManager.on_zone_changed)
+	AudioManager.call_deferred("on_zone_changed", z.name)
 
 
 func _on_natural_level_changed(level: int) -> void:

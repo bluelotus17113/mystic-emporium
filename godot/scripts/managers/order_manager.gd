@@ -116,6 +116,7 @@ func _spawn_customer_for(entry: ActiveOrder) -> void:
 		return
 	spawn_point.get_parent().add_child(c)
 	c.global_position = spawn_point.global_position
+	AudioManager.play_named(&"customer_bell")
 	# ponytail: si hay silla libre, el cliente va a esa silla concreta; si no, slot del counter.
 	var chair := _find_free_chair()
 	var target_point: Node2D = counter_point

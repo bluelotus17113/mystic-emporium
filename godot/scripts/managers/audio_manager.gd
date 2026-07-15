@@ -47,12 +47,31 @@ const SFX_PATHS: Dictionary = {
 	&"level_up": "res://audio/sfx/level_up.wav",
 	&"research_complete": "res://audio/sfx/research_complete.wav",
 	&"notification": "res://audio/sfx/notification.wav",
+	&"customer_bell": "res://audio/sfx/customer_bell.wav",
 	# Ambient loops (para usar con loop_mode forward, no como one-shot)
 	&"ambient_birds": "res://audio/sfx/ambient_birds.wav",
 	&"ambient_wind": "res://audio/sfx/ambient_wind.wav",
 	&"ambient_water": "res://audio/sfx/ambient_water.wav",
 	&"ambient_fire": "res://audio/sfx/ambient_fire.wav",
+	&"ambient_cauldron": "res://audio/sfx/ambient_cauldron.wav",
 }
+
+# ---- ambiente por zona (crossfade al cambiar con Q/E) ----
+const ZONE_AMBIENCE: Dictionary = {
+	&"taller":    {&"ambient_fire": -20.0},
+	&"natural":   {&"ambient_birds": -14.0, &"ambient_wind": -22.0},
+	&"recepcion": {&"ambient_wind": -30.0},
+}
+const AMBIENT_FADE_SECONDS: float = 1.6
+const AMBIENT_SILENT_DB: float = -60.0
+var _ambient_players: Dictionary = {}   # sfx_name -> AudioStreamPlayer
+var _ambient_tweens: Dictionary = {}    # sfx_name -> Tween
+
+# ---- ducking: jingles que bajan la música momentáneamente ----
+const DUCK_SFX: Array[StringName] = [&"achievement_unlock", &"order_complete",
+	&"level_up", &"research_complete"]
+const DUCK_DB: float = -8.0
+var _duck_tween: Tween = null
 
 
 func _ready() -> void:
@@ -171,6 +190,68 @@ func play_named(sfx_name: StringName, pitch_variation: float = 0.06) -> void:
 	var stream: AudioStream = _sfx_cache.get(sfx_name)
 	if stream != null:
 		play_sfx(stream, pitch_variation)
+		if sfx_name in DUCK_SFX:
+			_duck_music()
+
+
+## Devuelve el stream en versión loop (para posicionales/ambientes).
+func get_loop_stream(sfx_name: StringName) -> AudioStream:
+	var stream: AudioStream = _sfx_cache.get(sfx_name)
+	if stream is AudioStreamWAV:
+		var wav := stream as AudioStreamWAV
+		wav.loop_mode = AudioStreamWAV.LOOP_FORWARD
+		wav.loop_begin = 0
+		wav.loop_end = wav.data.size() / 2   # 16-bit mono → samples
+	return stream
+
+
+## Ambiente según la zona activa de la cámara (fuego en taller, aves en patio).
+func on_zone_changed(zone_name: StringName) -> void:
+	var want: Dictionary = ZONE_AMBIENCE.get(zone_name, {})
+	for key in _ambient_players:
+		if not want.has(key):
+			_fade_ambient(key, AMBIENT_SILENT_DB)
+	for key in want:
+		var p: AudioStreamPlayer = _ambient_players.get(key)
+		if p == null:
+			var stream: AudioStream = get_loop_stream(key)
+			if stream == null:
+				continue
+			p = AudioStreamPlayer.new()
+			p.bus = SFX_BUS
+			p.stream = stream
+			p.volume_db = AMBIENT_SILENT_DB
+			add_child(p)
+			_ambient_players[key] = p
+		if not p.playing:
+			p.play()
+		_fade_ambient(key, float(want[key]))
+
+
+func _fade_ambient(key: StringName, target_db: float) -> void:
+	var p: AudioStreamPlayer = _ambient_players.get(key)
+	if p == null:
+		return
+	var old: Tween = _ambient_tweens.get(key)
+	if old != null and old.is_valid():
+		old.kill()
+	var tw := create_tween()
+	tw.tween_property(p, "volume_db", target_db, AMBIENT_FADE_SECONDS)
+	_ambient_tweens[key] = tw
+
+
+func _duck_music() -> void:
+	# No pelear con el crossfade de música
+	if _music_crossfade_tween != null and _music_crossfade_tween.is_running():
+		return
+	if _duck_tween != null and _duck_tween.is_valid():
+		_duck_tween.kill()
+	_duck_tween = create_tween()
+	_duck_tween.tween_property(_music_player, "volume_db",
+		music_master_volume_db + DUCK_DB, 0.12)
+	_duck_tween.tween_interval(0.6)
+	_duck_tween.tween_property(_music_player, "volume_db",
+		music_master_volume_db, 1.4)
 
 
 func _ensure_buses() -> void:

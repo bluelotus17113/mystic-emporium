@@ -53,6 +53,31 @@ func _ready() -> void:
 		_sprite_base_scale = _sprite.scale
 		_bob_time = randf() * TAU  # offset así no se sincronizan todas
 	_build_hover_label()
+	_setup_positional_loop()
+
+
+## Sonido ambiental posicional: el caldero burbujea y la forja cruje
+## solo cuando la cámara está cerca (atenuación 2D).
+func _setup_positional_loop() -> void:
+	var loop_key: StringName
+	match station_type:
+		GameEnums.StationType.CAULDRON:
+			loop_key = &"ambient_cauldron"
+		GameEnums.StationType.MYSTIC_FORGE:
+			loop_key = &"ambient_fire"
+		_:
+			return
+	var stream: AudioStream = AudioManager.get_loop_stream(loop_key)
+	if stream == null:
+		return
+	var p := AudioStreamPlayer2D.new()
+	p.stream = stream
+	p.bus = &"SFX"
+	p.volume_db = -16.0
+	p.max_distance = 520.0
+	p.attenuation = 1.4
+	add_child(p)
+	p.play()
 
 
 func _build_hover_label() -> void:
