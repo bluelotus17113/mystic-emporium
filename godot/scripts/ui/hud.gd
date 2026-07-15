@@ -155,27 +155,33 @@ func _build_auto_chips() -> void:
 
 
 func _apply_chip_style(btn: Button) -> void:
-	# Pressed = verde brillante (on). Normal = gris apagado (off).
+	# Tema madera: ON = tablilla dorada iluminada, OFF = madera apagada.
+	btn.add_theme_color_override(&"font_color", Color(0.72, 0.62, 0.5, 1))
+	btn.add_theme_color_override(&"font_pressed_color", Color(0.2, 0.12, 0.06, 1))
+	btn.add_theme_color_override(&"font_hover_color", Color(0.95, 0.9, 0.78, 1))
 	var on_sb := StyleBoxFlat.new()
-	on_sb.bg_color = Color(0.20, 0.55, 0.28, 0.9)
-	on_sb.border_color = Color(0.55, 0.95, 0.55, 0.9)
-	on_sb.set_border_width_all(1)
-	on_sb.set_corner_radius_all(4)
+	on_sb.bg_color = Color(0.94, 0.75, 0.35, 1)          # dorado encendido
+	on_sb.border_color = Color(0.55, 0.36, 0.1, 1)
+	on_sb.set_border_width_all(2)
+	on_sb.set_corner_radius_all(3)
+	on_sb.shadow_color = Color(0.95, 0.7, 0.3, 0.5)
+	on_sb.shadow_size = 4
 	on_sb.content_margin_left = 8
 	on_sb.content_margin_right = 8
 	on_sb.content_margin_top = 3
 	on_sb.content_margin_bottom = 3
 	var off_sb := StyleBoxFlat.new()
-	off_sb.bg_color = Color(0.18, 0.18, 0.22, 0.7)
-	off_sb.border_color = Color(0.42, 0.42, 0.48, 0.6)
-	off_sb.set_border_width_all(1)
-	off_sb.set_corner_radius_all(4)
+	off_sb.bg_color = Color(0.28, 0.17, 0.08, 0.92)      # madera oscura apagada
+	off_sb.border_color = Color(0.16, 0.1, 0.06, 1)
+	off_sb.set_border_width_all(2)
+	off_sb.set_corner_radius_all(3)
 	off_sb.content_margin_left = 8
 	off_sb.content_margin_right = 8
 	off_sb.content_margin_top = 3
 	off_sb.content_margin_bottom = 3
 	var hover_sb := off_sb.duplicate() as StyleBoxFlat
-	hover_sb.bg_color = Color(0.28, 0.28, 0.34, 0.8)
+	hover_sb.bg_color = Color(0.42, 0.28, 0.14, 0.95)
+	hover_sb.border_color = Color(0.6, 0.42, 0.16, 1)
 	btn.add_theme_stylebox_override(&"normal", off_sb)
 	btn.add_theme_stylebox_override(&"hover", hover_sb)
 	btn.add_theme_stylebox_override(&"pressed", on_sb)

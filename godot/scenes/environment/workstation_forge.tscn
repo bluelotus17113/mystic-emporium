@@ -1,8 +1,10 @@
-[gd_scene load_steps=11 format=3 uid="uid://b5j8r7n9m1a11"]
+[gd_scene load_steps=13 format=3 uid="uid://b5j8r7n9m1a11"]
 
 [ext_resource type="Script" path="res://scripts/gameplay/workstation.gd" id="1_ws"]
 [ext_resource type="Texture2D" path="res://art/sprites/environment/forge_anim.png" id="2_tex"]
 
+[ext_resource type="Texture2D" path="res://art/sprites/fx/light_soft.png" id="9_light"]
+[ext_resource type="Script" path="res://scripts/fx/flicker_light.gd" id="10_flick"]
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(68, 60)
 
@@ -48,6 +50,16 @@ scale = Vector2(2, 2)
 sprite_frames = SubResource("SF_forge")
 animation = &"idle"
 autoplay = "idle"
+
+[node name="FireLight" type="PointLight2D" parent="."]
+position = Vector2(0, -30)
+texture = ExtResource("9_light")
+texture_scale = 0.9
+color = Color(1.0, 0.6, 0.25, 1)
+energy = 1.5
+blend_mode = 0
+script = ExtResource("10_flick")
+base_energy = 1.5
 
 [node name="Label" type="Label" parent="."]
 offset_left = -34.0

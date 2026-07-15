@@ -40,6 +40,7 @@
 [ext_resource type="Texture2D" uid="uid://dke6hslp76gox" path="res://art/sprites/tiles/recepcion_background.png" id="39_recep"]
 [ext_resource type="Texture2D" uid="uid://d3nguo3gl6pol" path="res://art/sprites/tiles/natural_background.png" id="40_natgrass"]
 [ext_resource type="Script" uid="uid://djhhks40il6kb" path="res://scripts/world/natural_background.gd" id="41_natbg"]
+[ext_resource type="Texture2D" path="res://art/sprites/fx/vignette.png" id="50_vig"]
 [ext_resource type="PackedScene" uid="uid://b5j8r7oam1p01" path="res://scenes/world/ambient_particles.tscn" id="42_amb"]
 [ext_resource type="PackedScene" uid="uid://cppurrkl810vu" path="res://scenes/ui/ending_overlay.tscn" id="43_end"]
 [ext_resource type="AudioStream" uid="uid://olv7u3ep034i" path="res://audio/sfx/ambient_birds.wav" id="44_amb_birds"]
@@ -187,6 +188,23 @@ color = Color(0.7, 0.5, 0.25, 1)
 polygon = PackedVector2Array(-40, -8, 40, -8, 40, 8, -40, 8)
 
 [node name="HUD" parent="." unique_id=2072773052 instance=ExtResource("5_hud")]
+
+
+[node name="VignetteLayer" type="CanvasLayer" parent="." unique_id=771001991]
+layer = 4
+
+[node name="Vignette" type="TextureRect" parent="VignetteLayer"]
+texture_filter = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("50_vig")
+expand_mode = 1
+stretch_mode = 0
+mouse_filter = 2
+modulate = Color(1, 1, 1, 0.85)
 
 [node name="UICanvas" type="CanvasLayer" parent="." unique_id=1681431980]
 layer = 5
