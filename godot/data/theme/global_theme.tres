@@ -1,52 +1,82 @@
-[gd_resource type="Theme" format=3 uid="uid://ckbieeh5bdvuy"]
+[gd_resource type="Theme" load_steps=15 format=3 uid="uid://ckbieeh5bdvuy"]
 
-[sub_resource type="StyleBoxFlat" id="button_disabled"]
-content_margin_left = 16.0
-content_margin_top = 10.0
-content_margin_right = 16.0
-content_margin_bottom = 10.0
-bg_color = Color(0.12, 0.1, 0.16, 1)
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_width_bottom = 3
-border_color = Color(0.3, 0.27, 0.4, 1)
+[ext_resource type="FontFile" path="res://fonts/PixelifySans.ttf" id="1_font"]
+[ext_resource type="Texture2D" path="res://art/sprites/ui/theme/panel_wood.png" id="2_pw"]
+[ext_resource type="Texture2D" path="res://art/sprites/ui/theme/panel_leather.png" id="3_pl"]
+[ext_resource type="Texture2D" path="res://art/sprites/ui/theme/button_normal.png" id="4_bn"]
+[ext_resource type="Texture2D" path="res://art/sprites/ui/theme/button_hover.png" id="5_bh"]
+[ext_resource type="Texture2D" path="res://art/sprites/ui/theme/button_pressed.png" id="6_bp"]
+[ext_resource type="Texture2D" path="res://art/sprites/ui/theme/bar_bg.png" id="7_bb"]
+[ext_resource type="Texture2D" path="res://art/sprites/ui/theme/bar_fill.png" id="8_bf"]
 
-[sub_resource type="StyleBoxFlat" id="button_hover"]
-content_margin_left = 16.0
-content_margin_top = 10.0
-content_margin_right = 16.0
-content_margin_bottom = 10.0
-bg_color = Color(0.36, 0.26, 0.5, 1)
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_width_bottom = 3
-border_color = Color(1, 0.9, 0.45, 1)
+[sub_resource type="StyleBoxTexture" id="panel_main"]
+texture = ExtResource("2_pw")
+texture_margin_left = 14.0
+texture_margin_top = 14.0
+texture_margin_right = 14.0
+texture_margin_bottom = 14.0
+content_margin_left = 18.0
+content_margin_top = 16.0
+content_margin_right = 18.0
+content_margin_bottom = 16.0
 
-[sub_resource type="StyleBoxFlat" id="button_normal"]
-content_margin_left = 16.0
-content_margin_top = 10.0
-content_margin_right = 16.0
-content_margin_bottom = 10.0
-bg_color = Color(0.22, 0.16, 0.34, 1)
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_width_bottom = 3
-border_color = Color(0.6, 0.45, 0.85, 1)
-
-[sub_resource type="StyleBoxFlat" id="button_pressed"]
-content_margin_left = 16.0
-content_margin_top = 12.0
-content_margin_right = 16.0
+[sub_resource type="StyleBoxTexture" id="panel_tooltip"]
+texture = ExtResource("3_pl")
+texture_margin_left = 8.0
+texture_margin_top = 8.0
+texture_margin_right = 8.0
+texture_margin_bottom = 8.0
+content_margin_left = 10.0
+content_margin_top = 8.0
+content_margin_right = 10.0
 content_margin_bottom = 8.0
-bg_color = Color(0.14, 0.1, 0.22, 1)
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_width_bottom = 3
-border_color = Color(0.95, 0.78, 0.35, 1)
+
+[sub_resource type="StyleBoxTexture" id="button_normal"]
+texture = ExtResource("4_bn")
+texture_margin_left = 8.0
+texture_margin_top = 8.0
+texture_margin_right = 8.0
+texture_margin_bottom = 8.0
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+
+[sub_resource type="StyleBoxTexture" id="button_hover"]
+texture = ExtResource("5_bh")
+texture_margin_left = 8.0
+texture_margin_top = 8.0
+texture_margin_right = 8.0
+texture_margin_bottom = 8.0
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+
+[sub_resource type="StyleBoxTexture" id="button_pressed"]
+texture = ExtResource("6_bp")
+texture_margin_left = 8.0
+texture_margin_top = 8.0
+texture_margin_right = 8.0
+texture_margin_bottom = 8.0
+content_margin_left = 14.0
+content_margin_top = 9.0
+content_margin_right = 14.0
+content_margin_bottom = 7.0
+
+[sub_resource type="StyleBoxTexture" id="progress_bg"]
+texture = ExtResource("7_bb")
+texture_margin_left = 6.0
+texture_margin_top = 6.0
+texture_margin_right = 6.0
+texture_margin_bottom = 6.0
+
+[sub_resource type="StyleBoxTexture" id="progress_fill"]
+texture = ExtResource("8_bf")
+texture_margin_left = 6.0
+texture_margin_top = 6.0
+texture_margin_right = 6.0
+texture_margin_bottom = 6.0
 
 [sub_resource type="StyleBoxFlat" id="checkbox_bg"]
 content_margin_left = 6.0
@@ -55,83 +85,38 @@ content_margin_right = 6.0
 content_margin_bottom = 4.0
 bg_color = Color(0, 0, 0, 0)
 
-[sub_resource type="StyleBoxFlat" id="line_edit_focus"]
-content_margin_left = 10.0
-content_margin_top = 6.0
-content_margin_right = 10.0
-content_margin_bottom = 6.0
-bg_color = Color(0.13, 0.1, 0.2, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.95, 0.78, 0.35, 1)
-
-[sub_resource type="StyleBoxFlat" id="line_edit_normal"]
-content_margin_left = 10.0
-content_margin_top = 6.0
-content_margin_right = 10.0
-content_margin_bottom = 6.0
-bg_color = Color(0.1, 0.08, 0.16, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.5, 0.4, 0.7, 1)
-
-[sub_resource type="StyleBoxFlat" id="panel_main"]
-content_margin_left = 14.0
-content_margin_top = 12.0
-content_margin_right = 14.0
-content_margin_bottom = 12.0
-bg_color = Color(0.09, 0.07, 0.13, 0.96)
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_width_bottom = 3
-border_color = Color(0.95, 0.78, 0.35, 1)
-expand_margin_left = 2.0
-expand_margin_top = 2.0
-expand_margin_right = 2.0
-expand_margin_bottom = 2.0
-shadow_color = Color(0, 0, 0, 0.8)
-shadow_size = 10
-
-[sub_resource type="StyleBoxFlat" id="progress_bg"]
-bg_color = Color(0.1, 0.08, 0.14, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.5, 0.4, 0.7, 1)
-
-[sub_resource type="StyleBoxFlat" id="progress_fill"]
-bg_color = Color(0.95, 0.78, 0.35, 1)
+[sub_resource type="StyleBoxEmpty" id="focus_empty"]
 
 [resource]
+default_font = ExtResource("1_font")
 default_font_size = 15
-Button/colors/font_color = Color(1, 0.97, 0.85, 1)
-Button/colors/font_disabled_color = Color(0.55, 0.5, 0.65, 1)
-Button/colors/font_hover_color = Color(1, 1, 0.95, 1)
-Button/colors/font_outline_color = Color(0, 0, 0, 1)
-Button/colors/font_pressed_color = Color(1, 0.85, 0.5, 1)
+Button/colors/font_color = Color(0.95, 0.9, 0.78, 1)
+Button/colors/font_disabled_color = Color(0.62, 0.55, 0.45, 0.7)
+Button/colors/font_hover_color = Color(1, 0.97, 0.88, 1)
+Button/colors/font_outline_color = Color(0.16, 0.1, 0.06, 1)
+Button/colors/font_pressed_color = Color(0.88, 0.78, 0.6, 1)
 Button/constants/outline_size = 2
-Button/styles/disabled = SubResource("button_disabled")
+Button/styles/disabled = SubResource("button_pressed")
+Button/styles/focus = SubResource("focus_empty")
 Button/styles/hover = SubResource("button_hover")
 Button/styles/normal = SubResource("button_normal")
 Button/styles/pressed = SubResource("button_pressed")
-CheckBox/colors/font_color = Color(1, 0.97, 0.85, 1)
-CheckBox/colors/font_hover_color = Color(1, 1, 0.95, 1)
+CheckBox/colors/font_color = Color(0.95, 0.9, 0.78, 1)
+CheckBox/colors/font_hover_color = Color(1, 0.97, 0.88, 1)
 CheckBox/styles/hover = SubResource("checkbox_bg")
 CheckBox/styles/normal = SubResource("checkbox_bg")
-Label/colors/font_color = Color(1, 0.97, 0.88, 1)
-Label/colors/font_outline_color = Color(0, 0, 0, 1)
+Label/colors/font_color = Color(0.96, 0.93, 0.85, 1)
+Label/colors/font_outline_color = Color(0.13, 0.08, 0.14, 1)
 Label/constants/outline_size = 2
-LineEdit/colors/font_color = Color(1, 0.97, 0.85, 1)
-LineEdit/styles/focus = SubResource("line_edit_focus")
-LineEdit/styles/normal = SubResource("line_edit_normal")
+LineEdit/colors/font_color = Color(0.95, 0.9, 0.78, 1)
+LineEdit/styles/focus = SubResource("panel_tooltip")
+LineEdit/styles/normal = SubResource("panel_tooltip")
 PanelContainer/styles/panel = SubResource("panel_main")
+Panel/styles/panel = SubResource("panel_main")
 PopupPanel/styles/panel = SubResource("panel_main")
-ProgressBar/colors/font_color = Color(1, 0.97, 0.85, 1)
+TooltipPanel/styles/panel = SubResource("panel_tooltip")
+TooltipLabel/colors/font_color = Color(0.96, 0.93, 0.85, 1)
+ProgressBar/colors/font_color = Color(0.98, 0.95, 0.88, 1)
 ProgressBar/styles/background = SubResource("progress_bg")
 ProgressBar/styles/fill = SubResource("progress_fill")
+RichTextLabel/colors/default_color = Color(0.96, 0.93, 0.85, 1)
