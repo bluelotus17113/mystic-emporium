@@ -8,7 +8,7 @@ signal zone_changed(zone_name: StringName)
 # Los valores aquí son fallback iniciales.
 var ZONES: Array = [
 	{"name": &"natural",   "label": "Patio Natural", "pos": Vector2(1400, 0),  "zoom": 1.5},
-	{"name": &"taller",    "label": "Taller",        "pos": Vector2(-1500, 0), "zoom": 1.0},
+	{"name": &"taller",    "label": "Taller",        "pos": Vector2(-1315, 0), "zoom": 0.85},
 	{"name": &"recepcion", "label": "Recepción",     "pos": Vector2(-300, 0),  "zoom": 1.2},
 ]
 
