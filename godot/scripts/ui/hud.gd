@@ -155,40 +155,27 @@ func _build_auto_chips() -> void:
 
 
 func _apply_chip_style(btn: Button) -> void:
-	# Tema madera: ON = tablilla dorada iluminada, OFF = madera apagada.
-	btn.add_theme_color_override(&"font_color", Color(0.72, 0.62, 0.5, 1))
-	btn.add_theme_color_override(&"font_pressed_color", Color(0.2, 0.12, 0.06, 1))
+	# Cartel colgante de madera: ON = iluminado dorado, OFF = madera apagada.
+	var tex: Texture2D = load("res://art/sprites/ui/theme/sign_wood.png")
+	btn.add_theme_color_override(&"font_color", Color(0.66, 0.56, 0.44, 1))
+	btn.add_theme_color_override(&"font_pressed_color", Color(0.24, 0.14, 0.06, 1))
 	btn.add_theme_color_override(&"font_hover_color", Color(0.95, 0.9, 0.78, 1))
-	var on_sb := StyleBoxFlat.new()
-	on_sb.bg_color = Color(0.94, 0.75, 0.35, 1)          # dorado encendido
-	on_sb.border_color = Color(0.55, 0.36, 0.1, 1)
-	on_sb.set_border_width_all(2)
-	on_sb.set_corner_radius_all(3)
-	on_sb.shadow_color = Color(0.95, 0.7, 0.3, 0.5)
-	on_sb.shadow_size = 4
-	on_sb.content_margin_left = 8
-	on_sb.content_margin_right = 8
-	on_sb.content_margin_top = 3
-	on_sb.content_margin_bottom = 3
-	var off_sb := StyleBoxFlat.new()
-	off_sb.bg_color = Color(0.28, 0.17, 0.08, 0.92)      # madera oscura apagada
-	off_sb.border_color = Color(0.16, 0.1, 0.06, 1)
-	off_sb.set_border_width_all(2)
-	off_sb.set_corner_radius_all(3)
-	off_sb.content_margin_left = 8
-	off_sb.content_margin_right = 8
-	off_sb.content_margin_top = 3
-	off_sb.content_margin_bottom = 3
-	var hover_sb := off_sb.duplicate() as StyleBoxFlat
-	hover_sb.bg_color = Color(0.42, 0.28, 0.14, 0.95)
-	hover_sb.border_color = Color(0.6, 0.42, 0.16, 1)
-	btn.add_theme_stylebox_override(&"normal", off_sb)
-	btn.add_theme_stylebox_override(&"hover", hover_sb)
-	btn.add_theme_stylebox_override(&"pressed", on_sb)
-	# Cuando toggle_mode=true y button_pressed=true, Godot usa el stylebox "pressed".
-	# Para que también se vea verde al hover en estado on, override hover_pressed.
-	btn.add_theme_stylebox_override(&"hover_pressed", on_sb)
-
+	btn.add_theme_font_size_override(&"font_size", 12)
+	btn.custom_minimum_size = Vector2(0, 34)
+	var mk := func(mod: Color) -> StyleBoxTexture:
+		var sb := StyleBoxTexture.new()
+		sb.texture = tex
+		sb.set_texture_margin_all(12)
+		sb.content_margin_left = 10
+		sb.content_margin_right = 10
+		sb.content_margin_top = 8
+		sb.content_margin_bottom = 4
+		sb.modulate_color = mod
+		return sb
+	btn.add_theme_stylebox_override(&"normal", mk.call(Color(0.62, 0.52, 0.44, 1)))
+	btn.add_theme_stylebox_override(&"hover", mk.call(Color(0.82, 0.72, 0.58, 1)))
+	btn.add_theme_stylebox_override(&"pressed", mk.call(Color(1.0, 0.85, 0.45, 1)))
+	btn.add_theme_stylebox_override(&"hover_pressed", mk.call(Color(1.0, 0.9, 0.55, 1)))
 
 func _on_chip_toggled(on: bool, key: StringName) -> void:
 	IdleAutomationManager.set_auto(key, on)
