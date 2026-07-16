@@ -26,6 +26,8 @@ const WANDER_RADIUS: float = 120.0
 const WANDER_REPICK_MIN: float = 1.5
 const WANDER_REPICK_MAX: float = 3.5
 const WANDER_SPEED_FACTOR: float = 0.55  ## wander es más lento que ir a recolectar
+const TARGET_SEARCH_INTERVAL: float = 0.3  ## no escanear recursos cada frame; cada 0.3s basta
+var _target_search_cd: float = 0.0
 
 signal state_changed(new_state: GameEnums.WorkerState)
 
@@ -118,11 +120,16 @@ func _on_idle(delta: float) -> void:
 	if InventoryManager.get_total_count() >= InventoryManager.max_capacity:
 		_wander(delta)
 		return
-	var candidate = _find_best_target()
-	if candidate != null and candidate.has_method("reserve") and candidate.reserve(self):
-		target = candidate
-		_change_state(GameEnums.WorkerState.FETCHING)
-		return
+	# Escanear todos los nodos de recurso cada frame por worker es caro; basta
+	# con hacerlo cada TARGET_SEARCH_INTERVAL. Entre búsquedas, wander.
+	_target_search_cd -= delta
+	if _target_search_cd <= 0.0:
+		_target_search_cd = TARGET_SEARCH_INTERVAL
+		var candidate = _find_best_target()
+		if candidate != null and candidate.has_method("reserve") and candidate.reserve(self):
+			target = candidate
+			_change_state(GameEnums.WorkerState.FETCHING)
+			return
 	# No hay recursos libres (o todos reservados por otros workers): wander como ocioso.
 	_wander(delta)
 
