@@ -47,7 +47,7 @@ func _rebuild() -> void:
 func _build_row(entry) -> Control:
 	var card := PanelContainer.new()
 	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(0.10, 0.07, 0.18, 0.92)
+	sb.bg_color = Color(0.18, 0.13, 0.09, 0.94)
 	sb.border_color = _tier_color(entry.data.tier)
 	sb.set_border_width_all(2)
 	sb.set_corner_radius_all(6)

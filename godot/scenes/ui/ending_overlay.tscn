@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://scripts/ui/ending_overlay.gd" id="1_eo"]
 
 [sub_resource type="StyleBoxFlat" id="SBF_ending"]
-bg_color = Color(0.08, 0.06, 0.16, 0.97)
+bg_color = Color(0.16, 0.11, 0.07, 0.97)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
