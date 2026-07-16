@@ -1,23 +1,145 @@
-[gd_scene load_steps=5 format=3 uid="uid://b5j8r7n9m1a05"]
+[gd_scene load_steps=35 format=3 uid="uid://b5j8r7n9m1a05"]
 
 [ext_resource type="Script" path="res://scripts/ai/worker_apprentice.gd" id="1_wa"]
-[ext_resource type="Texture2D" path="res://art/sprites/characters/apprentice.png" id="2_tex"]
+[ext_resource type="Texture2D" path="res://art/sprites/characters/apprentice_anim.png" id="2_tex"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_1"]
 radius = 7.0
 
-[sub_resource type="AtlasTexture" id="ATX_app"]
+[sub_resource type="AtlasTexture" id="ATX_a1"]
 atlas = ExtResource("2_tex")
 region = Rect2(0, 0, 48, 48)
+[sub_resource type="AtlasTexture" id="ATX_a2"]
+atlas = ExtResource("2_tex")
+region = Rect2(48, 0, 48, 48)
+[sub_resource type="AtlasTexture" id="ATX_a3"]
+atlas = ExtResource("2_tex")
+region = Rect2(96, 0, 48, 48)
+[sub_resource type="AtlasTexture" id="ATX_a4"]
+atlas = ExtResource("2_tex")
+region = Rect2(144, 0, 48, 48)
+[sub_resource type="AtlasTexture" id="ATX_a5"]
+atlas = ExtResource("2_tex")
+region = Rect2(0, 48, 48, 48)
+[sub_resource type="AtlasTexture" id="ATX_a6"]
+atlas = ExtResource("2_tex")
+region = Rect2(48, 48, 48, 48)
+[sub_resource type="AtlasTexture" id="ATX_a7"]
+atlas = ExtResource("2_tex")
+region = Rect2(96, 48, 48, 48)
+[sub_resource type="AtlasTexture" id="ATX_a8"]
+atlas = ExtResource("2_tex")
+region = Rect2(144, 48, 48, 48)
+[sub_resource type="AtlasTexture" id="ATX_a9"]
+atlas = ExtResource("2_tex")
+region = Rect2(192, 48, 48, 48)
+[sub_resource type="AtlasTexture" id="ATX_a10"]
+atlas = ExtResource("2_tex")
+region = Rect2(240, 48, 48, 48)
+[sub_resource type="AtlasTexture" id="ATX_a11"]
+atlas = ExtResource("2_tex")
+region = Rect2(0, 96, 48, 48)
+[sub_resource type="AtlasTexture" id="ATX_a12"]
+atlas = ExtResource("2_tex")
+region = Rect2(48, 96, 48, 48)
+[sub_resource type="AtlasTexture" id="ATX_a13"]
+atlas = ExtResource("2_tex")
+region = Rect2(96, 96, 48, 48)
+[sub_resource type="AtlasTexture" id="ATX_a14"]
+atlas = ExtResource("2_tex")
+region = Rect2(144, 96, 48, 48)
+[sub_resource type="AtlasTexture" id="ATX_a15"]
+atlas = ExtResource("2_tex")
+region = Rect2(0, 144, 48, 48)
+[sub_resource type="AtlasTexture" id="ATX_a16"]
+atlas = ExtResource("2_tex")
+region = Rect2(48, 144, 48, 48)
+[sub_resource type="AtlasTexture" id="ATX_a17"]
+atlas = ExtResource("2_tex")
+region = Rect2(96, 144, 48, 48)
+[sub_resource type="AtlasTexture" id="ATX_a18"]
+atlas = ExtResource("2_tex")
+region = Rect2(144, 144, 48, 48)
+[sub_resource type="AtlasTexture" id="ATX_a19"]
+atlas = ExtResource("2_tex")
+region = Rect2(192, 144, 48, 48)
+[sub_resource type="AtlasTexture" id="ATX_a20"]
+atlas = ExtResource("2_tex")
+region = Rect2(240, 144, 48, 48)
+[sub_resource type="AtlasTexture" id="ATX_a21"]
+atlas = ExtResource("2_tex")
+region = Rect2(0, 192, 48, 48)
+[sub_resource type="AtlasTexture" id="ATX_a22"]
+atlas = ExtResource("2_tex")
+region = Rect2(48, 192, 48, 48)
+[sub_resource type="AtlasTexture" id="ATX_a23"]
+atlas = ExtResource("2_tex")
+region = Rect2(96, 192, 48, 48)
+[sub_resource type="AtlasTexture" id="ATX_a24"]
+atlas = ExtResource("2_tex")
+region = Rect2(144, 192, 48, 48)
+[sub_resource type="AtlasTexture" id="ATX_a25"]
+atlas = ExtResource("2_tex")
+region = Rect2(0, 240, 48, 48)
+[sub_resource type="AtlasTexture" id="ATX_a26"]
+atlas = ExtResource("2_tex")
+region = Rect2(48, 240, 48, 48)
+[sub_resource type="AtlasTexture" id="ATX_a27"]
+atlas = ExtResource("2_tex")
+region = Rect2(96, 240, 48, 48)
+[sub_resource type="AtlasTexture" id="ATX_a28"]
+atlas = ExtResource("2_tex")
+region = Rect2(144, 240, 48, 48)
+[sub_resource type="AtlasTexture" id="ATX_a29"]
+atlas = ExtResource("2_tex")
+region = Rect2(192, 240, 48, 48)
+[sub_resource type="AtlasTexture" id="ATX_a30"]
+atlas = ExtResource("2_tex")
+region = Rect2(240, 240, 48, 48)
+
+[sub_resource type="SpriteFrames" id="SF_apprentice"]
+animations = [{
+"frames": [{"duration": 1.0, "texture": SubResource("ATX_a1")}, {"duration": 1.0, "texture": SubResource("ATX_a2")}, {"duration": 1.0, "texture": SubResource("ATX_a3")}, {"duration": 1.0, "texture": SubResource("ATX_a4")}],
+"loop": true,
+"name": &"idle_down",
+"speed": 6.0
+}, {
+"frames": [{"duration": 1.0, "texture": SubResource("ATX_a5")}, {"duration": 1.0, "texture": SubResource("ATX_a6")}, {"duration": 1.0, "texture": SubResource("ATX_a7")}, {"duration": 1.0, "texture": SubResource("ATX_a8")}, {"duration": 1.0, "texture": SubResource("ATX_a9")}, {"duration": 1.0, "texture": SubResource("ATX_a10")}],
+"loop": true,
+"name": &"walk_down",
+"speed": 8.0
+}, {
+"frames": [{"duration": 1.0, "texture": SubResource("ATX_a11")}, {"duration": 1.0, "texture": SubResource("ATX_a12")}, {"duration": 1.0, "texture": SubResource("ATX_a13")}, {"duration": 1.0, "texture": SubResource("ATX_a14")}],
+"loop": true,
+"name": &"idle_up",
+"speed": 6.0
+}, {
+"frames": [{"duration": 1.0, "texture": SubResource("ATX_a15")}, {"duration": 1.0, "texture": SubResource("ATX_a16")}, {"duration": 1.0, "texture": SubResource("ATX_a17")}, {"duration": 1.0, "texture": SubResource("ATX_a18")}, {"duration": 1.0, "texture": SubResource("ATX_a19")}, {"duration": 1.0, "texture": SubResource("ATX_a20")}],
+"loop": true,
+"name": &"walk_up",
+"speed": 8.0
+}, {
+"frames": [{"duration": 1.0, "texture": SubResource("ATX_a21")}, {"duration": 1.0, "texture": SubResource("ATX_a22")}, {"duration": 1.0, "texture": SubResource("ATX_a23")}, {"duration": 1.0, "texture": SubResource("ATX_a24")}],
+"loop": true,
+"name": &"idle_side",
+"speed": 6.0
+}, {
+"frames": [{"duration": 1.0, "texture": SubResource("ATX_a25")}, {"duration": 1.0, "texture": SubResource("ATX_a26")}, {"duration": 1.0, "texture": SubResource("ATX_a27")}, {"duration": 1.0, "texture": SubResource("ATX_a28")}, {"duration": 1.0, "texture": SubResource("ATX_a29")}, {"duration": 1.0, "texture": SubResource("ATX_a30")}],
+"loop": true,
+"name": &"walk_side",
+"speed": 8.0
+}]
 
 [node name="WorkerApprentice" type="CharacterBody2D"]
 script = ExtResource("1_wa")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 texture_filter = 1
 scale = Vector2(2, 2)
 offset = Vector2(0, -24)
-texture = SubResource("ATX_app")
+sprite_frames = SubResource("SF_apprentice")
+animation = &"idle_down"
+autoplay = "idle_down"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_1")
