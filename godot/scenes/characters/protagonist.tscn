@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=3 uid="uid://b5j8r7oam1a12"]
+[gd_scene load_steps=42 format=3 uid="uid://b5j8r7oam1a12"]
 
 [ext_resource type="Script" path="res://scripts/ai/protagonist_ai.gd" id="1_proto"]
 [ext_resource type="Texture2D" path="res://art/sprites/characters/protagonist_anim.png" id="2_tex"]
@@ -9,128 +9,146 @@ radius = 8.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_pick"]
 radius = 48.0
 
-[sub_resource type="AtlasTexture" id="ATX_1"]
+[sub_resource type="AtlasTexture" id="ATX_p1"]
 atlas = ExtResource("2_tex")
-region = Rect2(0, 0, 48, 48)
-[sub_resource type="AtlasTexture" id="ATX_2"]
+region = Rect2(0, 0, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_p2"]
 atlas = ExtResource("2_tex")
-region = Rect2(48, 0, 48, 48)
-[sub_resource type="AtlasTexture" id="ATX_3"]
+region = Rect2(64, 0, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_p3"]
 atlas = ExtResource("2_tex")
-region = Rect2(96, 0, 48, 48)
-[sub_resource type="AtlasTexture" id="ATX_4"]
+region = Rect2(128, 0, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_p4"]
 atlas = ExtResource("2_tex")
-region = Rect2(144, 0, 48, 48)
-[sub_resource type="AtlasTexture" id="ATX_5"]
+region = Rect2(192, 0, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_p5"]
 atlas = ExtResource("2_tex")
-region = Rect2(0, 48, 48, 48)
-[sub_resource type="AtlasTexture" id="ATX_6"]
+region = Rect2(0, 64, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_p6"]
 atlas = ExtResource("2_tex")
-region = Rect2(48, 48, 48, 48)
-[sub_resource type="AtlasTexture" id="ATX_7"]
+region = Rect2(64, 64, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_p7"]
 atlas = ExtResource("2_tex")
-region = Rect2(96, 48, 48, 48)
-[sub_resource type="AtlasTexture" id="ATX_8"]
+region = Rect2(128, 64, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_p8"]
 atlas = ExtResource("2_tex")
-region = Rect2(144, 48, 48, 48)
-[sub_resource type="AtlasTexture" id="ATX_9"]
+region = Rect2(192, 64, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_p9"]
 atlas = ExtResource("2_tex")
-region = Rect2(192, 48, 48, 48)
-[sub_resource type="AtlasTexture" id="ATX_10"]
+region = Rect2(256, 64, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_p10"]
 atlas = ExtResource("2_tex")
-region = Rect2(240, 48, 48, 48)
-[sub_resource type="AtlasTexture" id="ATX_11"]
+region = Rect2(320, 64, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_p11"]
 atlas = ExtResource("2_tex")
-region = Rect2(0, 96, 48, 48)
-[sub_resource type="AtlasTexture" id="ATX_12"]
+region = Rect2(384, 64, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_p12"]
 atlas = ExtResource("2_tex")
-region = Rect2(48, 96, 48, 48)
-[sub_resource type="AtlasTexture" id="ATX_13"]
+region = Rect2(448, 64, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_p13"]
 atlas = ExtResource("2_tex")
-region = Rect2(96, 96, 48, 48)
-[sub_resource type="AtlasTexture" id="ATX_14"]
+region = Rect2(0, 128, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_p14"]
 atlas = ExtResource("2_tex")
-region = Rect2(144, 96, 48, 48)
-[sub_resource type="AtlasTexture" id="ATX_15"]
+region = Rect2(64, 128, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_p15"]
 atlas = ExtResource("2_tex")
-region = Rect2(0, 144, 48, 48)
-[sub_resource type="AtlasTexture" id="ATX_16"]
+region = Rect2(128, 128, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_p16"]
 atlas = ExtResource("2_tex")
-region = Rect2(48, 144, 48, 48)
-[sub_resource type="AtlasTexture" id="ATX_17"]
+region = Rect2(192, 128, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_p17"]
 atlas = ExtResource("2_tex")
-region = Rect2(96, 144, 48, 48)
-[sub_resource type="AtlasTexture" id="ATX_18"]
+region = Rect2(0, 192, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_p18"]
 atlas = ExtResource("2_tex")
-region = Rect2(144, 144, 48, 48)
-[sub_resource type="AtlasTexture" id="ATX_19"]
+region = Rect2(64, 192, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_p19"]
 atlas = ExtResource("2_tex")
-region = Rect2(192, 144, 48, 48)
-[sub_resource type="AtlasTexture" id="ATX_20"]
+region = Rect2(128, 192, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_p20"]
 atlas = ExtResource("2_tex")
-region = Rect2(240, 144, 48, 48)
-[sub_resource type="AtlasTexture" id="ATX_21"]
+region = Rect2(192, 192, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_p21"]
 atlas = ExtResource("2_tex")
-region = Rect2(0, 192, 48, 48)
-[sub_resource type="AtlasTexture" id="ATX_22"]
+region = Rect2(256, 192, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_p22"]
 atlas = ExtResource("2_tex")
-region = Rect2(48, 192, 48, 48)
-[sub_resource type="AtlasTexture" id="ATX_23"]
+region = Rect2(320, 192, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_p23"]
 atlas = ExtResource("2_tex")
-region = Rect2(96, 192, 48, 48)
-[sub_resource type="AtlasTexture" id="ATX_24"]
+region = Rect2(384, 192, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_p24"]
 atlas = ExtResource("2_tex")
-region = Rect2(144, 192, 48, 48)
-[sub_resource type="AtlasTexture" id="ATX_25"]
+region = Rect2(448, 192, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_p25"]
 atlas = ExtResource("2_tex")
-region = Rect2(0, 240, 48, 48)
-[sub_resource type="AtlasTexture" id="ATX_26"]
+region = Rect2(0, 256, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_p26"]
 atlas = ExtResource("2_tex")
-region = Rect2(48, 240, 48, 48)
-[sub_resource type="AtlasTexture" id="ATX_27"]
+region = Rect2(64, 256, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_p27"]
 atlas = ExtResource("2_tex")
-region = Rect2(96, 240, 48, 48)
-[sub_resource type="AtlasTexture" id="ATX_28"]
+region = Rect2(128, 256, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_p28"]
 atlas = ExtResource("2_tex")
-region = Rect2(144, 240, 48, 48)
-[sub_resource type="AtlasTexture" id="ATX_29"]
+region = Rect2(192, 256, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_p29"]
 atlas = ExtResource("2_tex")
-region = Rect2(192, 240, 48, 48)
-[sub_resource type="AtlasTexture" id="ATX_30"]
+region = Rect2(0, 320, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_p30"]
 atlas = ExtResource("2_tex")
-region = Rect2(240, 240, 48, 48)
+region = Rect2(64, 320, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_p31"]
+atlas = ExtResource("2_tex")
+region = Rect2(128, 320, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_p32"]
+atlas = ExtResource("2_tex")
+region = Rect2(192, 320, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_p33"]
+atlas = ExtResource("2_tex")
+region = Rect2(256, 320, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_p34"]
+atlas = ExtResource("2_tex")
+region = Rect2(320, 320, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_p35"]
+atlas = ExtResource("2_tex")
+region = Rect2(384, 320, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_p36"]
+atlas = ExtResource("2_tex")
+region = Rect2(448, 320, 64, 64)
 
 [sub_resource type="SpriteFrames" id="SF_proto"]
 animations = [{
-"frames": [{"duration": 1.0, "texture": SubResource("ATX_1")}, {"duration": 1.0, "texture": SubResource("ATX_2")}, {"duration": 1.0, "texture": SubResource("ATX_3")}, {"duration": 1.0, "texture": SubResource("ATX_4")}],
+"frames": [{"duration": 1.0, "texture": SubResource("ATX_p1")}, {"duration": 1.0, "texture": SubResource("ATX_p2")}, {"duration": 1.0, "texture": SubResource("ATX_p3")}, {"duration": 1.0, "texture": SubResource("ATX_p4")}],
 "loop": true,
 "name": &"idle_down",
 "speed": 6.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("ATX_5")}, {"duration": 1.0, "texture": SubResource("ATX_6")}, {"duration": 1.0, "texture": SubResource("ATX_7")}, {"duration": 1.0, "texture": SubResource("ATX_8")}, {"duration": 1.0, "texture": SubResource("ATX_9")}, {"duration": 1.0, "texture": SubResource("ATX_10")}],
+"frames": [{"duration": 1.0, "texture": SubResource("ATX_p5")}, {"duration": 1.0, "texture": SubResource("ATX_p6")}, {"duration": 1.0, "texture": SubResource("ATX_p7")}, {"duration": 1.0, "texture": SubResource("ATX_p8")}, {"duration": 1.0, "texture": SubResource("ATX_p9")}, {"duration": 1.0, "texture": SubResource("ATX_p10")}, {"duration": 1.0, "texture": SubResource("ATX_p11")}, {"duration": 1.0, "texture": SubResource("ATX_p12")}],
 "loop": true,
 "name": &"walk_down",
-"speed": 8.0
+"speed": 10.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("ATX_11")}, {"duration": 1.0, "texture": SubResource("ATX_12")}, {"duration": 1.0, "texture": SubResource("ATX_13")}, {"duration": 1.0, "texture": SubResource("ATX_14")}],
+"frames": [{"duration": 1.0, "texture": SubResource("ATX_p13")}, {"duration": 1.0, "texture": SubResource("ATX_p14")}, {"duration": 1.0, "texture": SubResource("ATX_p15")}, {"duration": 1.0, "texture": SubResource("ATX_p16")}],
 "loop": true,
 "name": &"idle_up",
 "speed": 6.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("ATX_15")}, {"duration": 1.0, "texture": SubResource("ATX_16")}, {"duration": 1.0, "texture": SubResource("ATX_17")}, {"duration": 1.0, "texture": SubResource("ATX_18")}, {"duration": 1.0, "texture": SubResource("ATX_19")}, {"duration": 1.0, "texture": SubResource("ATX_20")}],
+"frames": [{"duration": 1.0, "texture": SubResource("ATX_p17")}, {"duration": 1.0, "texture": SubResource("ATX_p18")}, {"duration": 1.0, "texture": SubResource("ATX_p19")}, {"duration": 1.0, "texture": SubResource("ATX_p20")}, {"duration": 1.0, "texture": SubResource("ATX_p21")}, {"duration": 1.0, "texture": SubResource("ATX_p22")}, {"duration": 1.0, "texture": SubResource("ATX_p23")}, {"duration": 1.0, "texture": SubResource("ATX_p24")}],
 "loop": true,
 "name": &"walk_up",
-"speed": 8.0
+"speed": 10.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("ATX_21")}, {"duration": 1.0, "texture": SubResource("ATX_22")}, {"duration": 1.0, "texture": SubResource("ATX_23")}, {"duration": 1.0, "texture": SubResource("ATX_24")}],
+"frames": [{"duration": 1.0, "texture": SubResource("ATX_p25")}, {"duration": 1.0, "texture": SubResource("ATX_p26")}, {"duration": 1.0, "texture": SubResource("ATX_p27")}, {"duration": 1.0, "texture": SubResource("ATX_p28")}],
 "loop": true,
 "name": &"idle_side",
 "speed": 6.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("ATX_25")}, {"duration": 1.0, "texture": SubResource("ATX_26")}, {"duration": 1.0, "texture": SubResource("ATX_27")}, {"duration": 1.0, "texture": SubResource("ATX_28")}, {"duration": 1.0, "texture": SubResource("ATX_29")}, {"duration": 1.0, "texture": SubResource("ATX_30")}],
+"frames": [{"duration": 1.0, "texture": SubResource("ATX_p29")}, {"duration": 1.0, "texture": SubResource("ATX_p30")}, {"duration": 1.0, "texture": SubResource("ATX_p31")}, {"duration": 1.0, "texture": SubResource("ATX_p32")}, {"duration": 1.0, "texture": SubResource("ATX_p33")}, {"duration": 1.0, "texture": SubResource("ATX_p34")}, {"duration": 1.0, "texture": SubResource("ATX_p35")}, {"duration": 1.0, "texture": SubResource("ATX_p36")}],
 "loop": true,
 "name": &"walk_side",
-"speed": 8.0
+"speed": 10.0
 }]
 
 [node name="Protagonist" type="CharacterBody2D"]
@@ -138,8 +156,7 @@ script = ExtResource("1_proto")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 texture_filter = 1
-scale = Vector2(2, 2)
-offset = Vector2(0, -24)
+offset = Vector2(0, -32)
 sprite_frames = SubResource("SF_proto")
 animation = &"idle_down"
 autoplay = "idle_down"

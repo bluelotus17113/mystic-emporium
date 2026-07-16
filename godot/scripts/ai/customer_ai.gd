@@ -82,6 +82,17 @@ var counter_offset: Vector2 = Vector2.ZERO
 
 var _patience_remaining: float = 0.0
 var _has_expired: bool = false
+var _facing: StringName = &"down"
+var _facing_x: float = 1.0
+
+## NPCs con hoja direccional completa (idle/walk × down/up/side). El resto
+## usa un frame estático a 64px. Debe coincidir con TOP12 de npc_dir.py.
+const ANIMATED: Dictionary = {
+	&"npc_aldeano": true, &"npc_aventurero_novato": true, &"npc_comerciante": true,
+	&"npc_nino_curioso": true, &"npc_caballero": true, &"npc_mago_iniciado": true,
+	&"npc_cocinero": true, &"npc_doctor": true, &"npc_bardo": true,
+	&"npc_elfo_bosque": true, &"npc_princesa": true, &"npc_anciano_sabio": true,
+}
 
 var personality: Dictionary = PERSONALITIES[0]  ## se asigna en setup()
 
@@ -110,17 +121,78 @@ func _apply_random_skin() -> void:
 	var pool: Array[String] = VIP_POOL if tier >= 2 else NPC_POOL
 	if pool.is_empty():
 		return
-	var sprite_node: Sprite2D = $Sprite2D if has_node("Sprite2D") else null
-	if sprite_node == null:
+	var spr: AnimatedSprite2D = get_node_or_null("AnimatedSprite2D")
+	if spr == null:
 		return
 	var path: String = pool[randi() % pool.size()]
-	var tex: Texture2D = load(path)
-	if tex == null:
+	var base_name: String = path.get_file().get_basename()  # "npc_aldeano"
+	var frames: SpriteFrames = _build_sprite_frames(base_name)
+	if frames == null:
 		return
-	sprite_node.texture = tex
-	# Los sprites del catálogo son 32×48; ajustar pivot/offset al pie.
-	sprite_node.scale = Vector2(2, 2)
-	sprite_node.offset = Vector2(0, -24)
+	spr.sprite_frames = frames
+	spr.animation = &"idle_down"
+	spr.play(&"idle_down")
+
+
+## Construye SpriteFrames en runtime: 6 anims direccionales para los ANIMATED,
+## un frame estático (idle_down) a 64px para el resto.
+func _build_sprite_frames(base_name: String) -> SpriteFrames:
+	if ANIMATED.has(StringName(base_name)):
+		var tex: Texture2D = load("res://art/sprites/characters/%s_anim.png" % base_name)
+		if tex != null:
+			var sf := SpriteFrames.new()
+			# fila, nº frames, velocidad — celdas 64×64, cols 0..n-1
+			var rows: Array = [
+				[&"idle_down", 0, 4, 6.0], [&"walk_down", 1, 4, 9.0],
+				[&"idle_up", 2, 4, 6.0], [&"walk_up", 3, 4, 9.0],
+				[&"idle_side", 4, 4, 6.0], [&"walk_side", 5, 4, 9.0]]
+			for r in rows:
+				var anim: StringName = r[0]
+				sf.add_animation(anim)
+				sf.set_animation_loop(anim, true)
+				sf.set_animation_speed(anim, r[3])
+				for c in range(r[2]):
+					var at := AtlasTexture.new()
+					at.atlas = tex
+					at.region = Rect2(c * 64, r[1] * 64, 64, 64)
+					sf.add_frame(anim, at)
+			sf.remove_animation(&"default")
+			return sf
+	return _static_frames(base_name)
+
+
+func _static_frames(base_name: String) -> SpriteFrames:
+	var tex: Texture2D = load("res://art/sprites/characters/%s_64.png" % base_name)
+	if tex == null:
+		tex = load("res://art/sprites/characters/%s.png" % base_name)
+	var sf := SpriteFrames.new()
+	sf.add_animation(&"idle_down")
+	sf.set_animation_loop(&"idle_down", true)
+	if tex != null:
+		sf.add_frame(&"idle_down", tex)
+	sf.remove_animation(&"default")
+	return sf
+
+
+## Elige la animación por el eje dominante del movimiento (flip_h para izquierda).
+## Si la skin es estática, cae a idle_down.
+func _update_anim(moving: bool) -> void:
+	var spr: AnimatedSprite2D = get_node_or_null("AnimatedSprite2D")
+	if spr == null or spr.sprite_frames == null:
+		return
+	if moving:
+		if absf(velocity.x) > absf(velocity.y):
+			_facing = &"side"
+			_facing_x = signf(velocity.x)
+		else:
+			_facing = &"down" if velocity.y > 0.0 else &"up"
+	spr.flip_h = _facing == &"side" and _facing_x < 0.0
+	var prefix: String = "walk_" if moving else "idle_"
+	var want: StringName = StringName(prefix + String(_facing))
+	if not spr.sprite_frames.has_animation(want):
+		want = &"idle_down"
+	if spr.animation != want:
+		spr.play(want)
 
 
 func _assign_personality() -> void:
@@ -199,6 +271,7 @@ func _physics_process(_delta: float) -> void:
 			if global_position.distance_to(exit_point.global_position) <= arrival_distance:
 				left.emit(self)
 				queue_free()
+	_update_anim(velocity.length_squared() > 4.0)
 
 
 func _move_toward(target_pos: Vector2) -> void:
