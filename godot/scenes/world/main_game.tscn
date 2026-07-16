@@ -93,10 +93,10 @@ autoplay = true
 max_distance = 1400.0
 
 [node name="ZoneWorkshop" type="Node2D" parent="Zones" unique_id=444723087 groups=["taller_visual"]]
-position = Vector2(-1315, 0)
+position = Vector2(-1315, 34)
 script = ExtResource("16_zone")
 zone_type = 2
-size = Vector2(1060, 420)
+size = Vector2(1056, 324)
 fill_color = Color(0.55, 0.4, 0.2, 0.04)
 border_color = Color(0.9, 0.65, 0.35, 0.55)
 label_text = "Zona Taller"
