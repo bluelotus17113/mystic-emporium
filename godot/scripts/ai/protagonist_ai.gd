@@ -29,6 +29,7 @@ var _current_customer = null
 var _anim_sprite: AnimatedSprite2D = null
 var _sprite_base_scale: Vector2 = Vector2.ONE
 var _facing_x: float = 1.0
+var _facing: StringName = &"down"  ## down/up/side — dirección actual del sprite
 var _drag_offset: Vector2 = Vector2.ZERO
 var _wobble_tween: Tween = null
 var _idle_timer: float = 0.0
@@ -250,14 +251,20 @@ func _update_anim() -> void:
 	if _anim_sprite == null:
 		return
 	if state == State.DRAGGING or state == State.DELIVERING:
-		if _anim_sprite.animation != &"idle":
-			_anim_sprite.play(&"idle")
+		if _anim_sprite.animation != &"idle_down":
+			_anim_sprite.play(&"idle_down")
 		return
 	var moving: bool = velocity.length_squared() > 4.0
-	if moving and absf(velocity.x) > 1.0:
-		_facing_x = signf(velocity.x)
-	_anim_sprite.flip_h = _facing_x < 0.0
-	var want: StringName = &"walk_south" if moving else &"idle"
+	# Elegir dirección por el eje dominante del movimiento (4 direcciones).
+	if moving:
+		if absf(velocity.x) > absf(velocity.y):
+			_facing = &"side"
+			_facing_x = signf(velocity.x)
+		else:
+			_facing = &"down" if velocity.y > 0.0 else &"up"
+	_anim_sprite.flip_h = _facing == &"side" and _facing_x < 0.0
+	var prefix: StringName = &"walk_" if moving else &"idle_"
+	var want: StringName = prefix + _facing
 	if _anim_sprite.animation != want:
 		_anim_sprite.play(want)
 

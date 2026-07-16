@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://b5j8r7oam1a12"]
+[gd_scene load_steps=35 format=3 uid="uid://b5j8r7oam1a12"]
 
 [ext_resource type="Script" path="res://scripts/ai/protagonist_ai.gd" id="1_proto"]
 [ext_resource type="Texture2D" path="res://art/sprites/characters/protagonist_anim.png" id="2_tex"]
@@ -9,56 +9,127 @@ radius = 8.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_pick"]
 radius = 48.0
 
-[sub_resource type="AtlasTexture" id="ATX_p1"]
+[sub_resource type="AtlasTexture" id="ATX_1"]
 atlas = ExtResource("2_tex")
 region = Rect2(0, 0, 48, 48)
-
-[sub_resource type="AtlasTexture" id="ATX_p2"]
+[sub_resource type="AtlasTexture" id="ATX_2"]
 atlas = ExtResource("2_tex")
 region = Rect2(48, 0, 48, 48)
-
-[sub_resource type="AtlasTexture" id="ATX_p3"]
+[sub_resource type="AtlasTexture" id="ATX_3"]
 atlas = ExtResource("2_tex")
 region = Rect2(96, 0, 48, 48)
-
-[sub_resource type="AtlasTexture" id="ATX_p4"]
+[sub_resource type="AtlasTexture" id="ATX_4"]
 atlas = ExtResource("2_tex")
 region = Rect2(144, 0, 48, 48)
-
-[sub_resource type="AtlasTexture" id="ATX_p5"]
+[sub_resource type="AtlasTexture" id="ATX_5"]
 atlas = ExtResource("2_tex")
 region = Rect2(0, 48, 48, 48)
-
-[sub_resource type="AtlasTexture" id="ATX_p6"]
+[sub_resource type="AtlasTexture" id="ATX_6"]
 atlas = ExtResource("2_tex")
 region = Rect2(48, 48, 48, 48)
-
-[sub_resource type="AtlasTexture" id="ATX_p7"]
+[sub_resource type="AtlasTexture" id="ATX_7"]
 atlas = ExtResource("2_tex")
 region = Rect2(96, 48, 48, 48)
-
-[sub_resource type="AtlasTexture" id="ATX_p8"]
+[sub_resource type="AtlasTexture" id="ATX_8"]
 atlas = ExtResource("2_tex")
 region = Rect2(144, 48, 48, 48)
-
-[sub_resource type="AtlasTexture" id="ATX_p9"]
+[sub_resource type="AtlasTexture" id="ATX_9"]
 atlas = ExtResource("2_tex")
 region = Rect2(192, 48, 48, 48)
-
-[sub_resource type="AtlasTexture" id="ATX_p10"]
+[sub_resource type="AtlasTexture" id="ATX_10"]
 atlas = ExtResource("2_tex")
 region = Rect2(240, 48, 48, 48)
+[sub_resource type="AtlasTexture" id="ATX_11"]
+atlas = ExtResource("2_tex")
+region = Rect2(0, 96, 48, 48)
+[sub_resource type="AtlasTexture" id="ATX_12"]
+atlas = ExtResource("2_tex")
+region = Rect2(48, 96, 48, 48)
+[sub_resource type="AtlasTexture" id="ATX_13"]
+atlas = ExtResource("2_tex")
+region = Rect2(96, 96, 48, 48)
+[sub_resource type="AtlasTexture" id="ATX_14"]
+atlas = ExtResource("2_tex")
+region = Rect2(144, 96, 48, 48)
+[sub_resource type="AtlasTexture" id="ATX_15"]
+atlas = ExtResource("2_tex")
+region = Rect2(0, 144, 48, 48)
+[sub_resource type="AtlasTexture" id="ATX_16"]
+atlas = ExtResource("2_tex")
+region = Rect2(48, 144, 48, 48)
+[sub_resource type="AtlasTexture" id="ATX_17"]
+atlas = ExtResource("2_tex")
+region = Rect2(96, 144, 48, 48)
+[sub_resource type="AtlasTexture" id="ATX_18"]
+atlas = ExtResource("2_tex")
+region = Rect2(144, 144, 48, 48)
+[sub_resource type="AtlasTexture" id="ATX_19"]
+atlas = ExtResource("2_tex")
+region = Rect2(192, 144, 48, 48)
+[sub_resource type="AtlasTexture" id="ATX_20"]
+atlas = ExtResource("2_tex")
+region = Rect2(240, 144, 48, 48)
+[sub_resource type="AtlasTexture" id="ATX_21"]
+atlas = ExtResource("2_tex")
+region = Rect2(0, 192, 48, 48)
+[sub_resource type="AtlasTexture" id="ATX_22"]
+atlas = ExtResource("2_tex")
+region = Rect2(48, 192, 48, 48)
+[sub_resource type="AtlasTexture" id="ATX_23"]
+atlas = ExtResource("2_tex")
+region = Rect2(96, 192, 48, 48)
+[sub_resource type="AtlasTexture" id="ATX_24"]
+atlas = ExtResource("2_tex")
+region = Rect2(144, 192, 48, 48)
+[sub_resource type="AtlasTexture" id="ATX_25"]
+atlas = ExtResource("2_tex")
+region = Rect2(0, 240, 48, 48)
+[sub_resource type="AtlasTexture" id="ATX_26"]
+atlas = ExtResource("2_tex")
+region = Rect2(48, 240, 48, 48)
+[sub_resource type="AtlasTexture" id="ATX_27"]
+atlas = ExtResource("2_tex")
+region = Rect2(96, 240, 48, 48)
+[sub_resource type="AtlasTexture" id="ATX_28"]
+atlas = ExtResource("2_tex")
+region = Rect2(144, 240, 48, 48)
+[sub_resource type="AtlasTexture" id="ATX_29"]
+atlas = ExtResource("2_tex")
+region = Rect2(192, 240, 48, 48)
+[sub_resource type="AtlasTexture" id="ATX_30"]
+atlas = ExtResource("2_tex")
+region = Rect2(240, 240, 48, 48)
 
 [sub_resource type="SpriteFrames" id="SF_proto"]
 animations = [{
-"frames": [{"duration": 1.0, "texture": SubResource("ATX_p1")}, {"duration": 1.0, "texture": SubResource("ATX_p2")}, {"duration": 1.0, "texture": SubResource("ATX_p3")}, {"duration": 1.0, "texture": SubResource("ATX_p4")}],
+"frames": [{"duration": 1.0, "texture": SubResource("ATX_1")}, {"duration": 1.0, "texture": SubResource("ATX_2")}, {"duration": 1.0, "texture": SubResource("ATX_3")}, {"duration": 1.0, "texture": SubResource("ATX_4")}],
 "loop": true,
-"name": &"idle",
+"name": &"idle_down",
 "speed": 6.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("ATX_p5")}, {"duration": 1.0, "texture": SubResource("ATX_p6")}, {"duration": 1.0, "texture": SubResource("ATX_p7")}, {"duration": 1.0, "texture": SubResource("ATX_p8")}, {"duration": 1.0, "texture": SubResource("ATX_p9")}, {"duration": 1.0, "texture": SubResource("ATX_p10")}],
+"frames": [{"duration": 1.0, "texture": SubResource("ATX_5")}, {"duration": 1.0, "texture": SubResource("ATX_6")}, {"duration": 1.0, "texture": SubResource("ATX_7")}, {"duration": 1.0, "texture": SubResource("ATX_8")}, {"duration": 1.0, "texture": SubResource("ATX_9")}, {"duration": 1.0, "texture": SubResource("ATX_10")}],
 "loop": true,
-"name": &"walk_south",
+"name": &"walk_down",
+"speed": 8.0
+}, {
+"frames": [{"duration": 1.0, "texture": SubResource("ATX_11")}, {"duration": 1.0, "texture": SubResource("ATX_12")}, {"duration": 1.0, "texture": SubResource("ATX_13")}, {"duration": 1.0, "texture": SubResource("ATX_14")}],
+"loop": true,
+"name": &"idle_up",
+"speed": 6.0
+}, {
+"frames": [{"duration": 1.0, "texture": SubResource("ATX_15")}, {"duration": 1.0, "texture": SubResource("ATX_16")}, {"duration": 1.0, "texture": SubResource("ATX_17")}, {"duration": 1.0, "texture": SubResource("ATX_18")}, {"duration": 1.0, "texture": SubResource("ATX_19")}, {"duration": 1.0, "texture": SubResource("ATX_20")}],
+"loop": true,
+"name": &"walk_up",
+"speed": 8.0
+}, {
+"frames": [{"duration": 1.0, "texture": SubResource("ATX_21")}, {"duration": 1.0, "texture": SubResource("ATX_22")}, {"duration": 1.0, "texture": SubResource("ATX_23")}, {"duration": 1.0, "texture": SubResource("ATX_24")}],
+"loop": true,
+"name": &"idle_side",
+"speed": 6.0
+}, {
+"frames": [{"duration": 1.0, "texture": SubResource("ATX_25")}, {"duration": 1.0, "texture": SubResource("ATX_26")}, {"duration": 1.0, "texture": SubResource("ATX_27")}, {"duration": 1.0, "texture": SubResource("ATX_28")}, {"duration": 1.0, "texture": SubResource("ATX_29")}, {"duration": 1.0, "texture": SubResource("ATX_30")}],
+"loop": true,
+"name": &"walk_side",
 "speed": 8.0
 }]
 
@@ -70,8 +141,8 @@ texture_filter = 1
 scale = Vector2(2, 2)
 offset = Vector2(0, -24)
 sprite_frames = SubResource("SF_proto")
-animation = &"idle"
-autoplay = "idle"
+animation = &"idle_down"
+autoplay = "idle_down"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_1")
