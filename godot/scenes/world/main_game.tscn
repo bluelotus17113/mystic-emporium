@@ -96,7 +96,7 @@ max_distance = 1400.0
 position = Vector2(-1315, 0)
 script = ExtResource("16_zone")
 zone_type = 2
-size = Vector2(1820, 700)
+size = Vector2(1060, 420)
 fill_color = Color(0.55, 0.4, 0.2, 0.04)
 border_color = Color(0.9, 0.65, 0.35, 0.55)
 label_text = "Zona Taller"
@@ -146,13 +146,13 @@ visible = false
 position = Vector2(1600, 0)
 
 [node name="WorkstationCauldron" parent="World" unique_id=660767602 groups=["taller_visual"] instance=ExtResource("4_caul")]
-position = Vector2(-995, 150)
+position = Vector2(-1315, 20)
 
 [node name="WorkstationForge" parent="World" unique_id=646045672 groups=["taller_visual"] instance=ExtResource("12_forge")]
-position = Vector2(-820, 175)
+position = Vector2(-1615, -95)
 
 [node name="ResearchStationLibrary" parent="World" unique_id=88846618 groups=["taller_visual"] instance=ExtResource("14_lib")]
-position = Vector2(-560, -90)
+position = Vector2(-1015, -95)
 
 [node name="WorkerDuendeA" parent="World" unique_id=1937209968 groups=["natural_visual"] instance=ExtResource("3_duende")]
 visible = false
