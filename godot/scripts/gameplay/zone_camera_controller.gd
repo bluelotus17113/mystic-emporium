@@ -9,7 +9,7 @@ signal zone_changed(zone_name: StringName)
 var ZONES: Array = [
 	{"name": &"natural",   "label": "Patio Natural", "pos": Vector2(1400, 0),  "zoom": 1.5},
 	{"name": &"taller",    "label": "Taller",        "pos": Vector2(-1315, 0), "zoom": 1.15},
-	{"name": &"recepcion", "label": "Recepción",     "pos": Vector2(-300, 0),  "zoom": 1.2},
+	{"name": &"recepcion", "label": "Recepción",     "pos": Vector2(-300, 0),  "zoom": 1.3},
 ]
 
 const TWEEN_DURATION: float = 0.45

@@ -124,7 +124,8 @@ texture = ExtResource("38_wood")
 visible = false
 z_index = -10
 texture_filter = 1
-position = Vector2(-285, 0)
+scale = Vector2(2, 2)
+position = Vector2(-300, 0)
 texture = ExtResource("39_recep")
 
 [node name="NaturalBackground" type="Sprite2D" parent="World" unique_id=1765358327 groups=["natural_visual"]]
