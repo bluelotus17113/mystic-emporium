@@ -2,6 +2,45 @@ extends PanelContainer
 
 const PANEL_NAME: StringName = &"build"
 
+## Caché id → textura extraída de la escena (una sola instanciación por buildable).
+static var _icon_cache: Dictionary = {}
+
+
+## Devuelve la textura del sprite principal de la escena del buildable, de modo
+## que el icono del menú sea EXACTAMENTE lo que se coloca. Cachea el resultado.
+static func _icon_from_scene(b) -> Texture2D:
+	if b == null or b.scene == null:
+		return null
+	if _icon_cache.has(b.id):
+		return _icon_cache[b.id]
+	var tex: Texture2D = null
+	var inst: Node = b.scene.instantiate()
+	if inst != null:
+		tex = _find_sprite_tex(inst)
+		inst.free()
+	_icon_cache[b.id] = tex
+	return tex
+
+
+static func _find_sprite_tex(n: Node) -> Texture2D:
+	if n is Sprite2D and (n as Sprite2D).texture != null:
+		return (n as Sprite2D).texture
+	if n is AnimatedSprite2D:
+		var sf: SpriteFrames = (n as AnimatedSprite2D).sprite_frames
+		if sf != null:
+			var anim: StringName = (n as AnimatedSprite2D).animation
+			if not sf.has_animation(anim):
+				var names := sf.get_animation_names()
+				if names.size() > 0:
+					anim = names[0]
+			if sf.has_animation(anim) and sf.get_frame_count(anim) > 0:
+				return sf.get_frame_texture(anim, 0)
+	for c in n.get_children():
+		var t: Texture2D = _find_sprite_tex(c)
+		if t != null:
+			return t
+	return null
+
 # ponytail: mapeo id → sprite. Los .tres no traen icon set, así que infiero por id.
 const ICON_BY_ID: Dictionary = {
 	&"build_caldero": "res://art/sprites/environment/cauldron.png",
@@ -376,13 +415,11 @@ func _build_tile(b: BuildableData) -> Dictionary:
 	icon_rect.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	icon_rect.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	icon_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var tex: Texture2D = null
-	if b.icon != null:
+	# Fuente única de verdad: el icono sale del sprite de la ESCENA que se coloca,
+	# así menú y objeto colocado SIEMPRE coinciden (no hay dos refs que sincronizar).
+	var tex: Texture2D = _icon_from_scene(b)
+	if tex == null and b.icon != null:
 		tex = b.icon
-	else:
-		var p: String = ICON_BY_ID.get(b.id, "")
-		if p != "" and ResourceLoader.exists(p):
-			tex = load(p)
 	if tex != null:
 		icon_rect.texture = tex
 	vb.add_child(icon_rect)
