@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/data/buildable_data.gd" id="1_bd"]
 [ext_resource type="PackedScene" uid="uid://b5j8r7n9m1a02" path="res://scenes/environment/resource_generator_herbs.tscn" id="2_scene"]
-[ext_resource type="Texture2D" path="res://art/sprites/environment/gen_hierbas.png" id="3_icon"]
+[ext_resource type="Texture2D" path="res://art/sprites/environment/plot_herbs_anim.png" id="3_icon"]
 
 [resource]
 script = ExtResource("1_bd")

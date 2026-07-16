@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/data/buildable_data.gd" id="1_bd"]
 [ext_resource type="PackedScene" uid="uid://b5j8r7n9m1d05" path="res://scenes/environment/decorations/decoration_candle.tscn" id="2_scene"]
-[ext_resource type="Texture2D" path="res://art/sprites/environment/dec_candelabro.png" id="3_icon"]
+[ext_resource type="Texture2D" path="res://art/sprites/environment/decoration_candle.png" id="3_icon"]
 
 [resource]
 script = ExtResource("1_bd")
