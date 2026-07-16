@@ -268,9 +268,26 @@ func _try_place() -> void:
 	_grid_rotation_lookup[grid_pos] = _ghost_rotation_deg
 	_assign_zone_visual_group(instance, _current_buildable.allowed_zone)
 	VFXManager.play(VFXManager.FX.BUILD, instance.global_position)
+	_spawn_pop(instance)
 	AudioManager.play_beep(540.0, 0.1, -12.0)
 	placement_completed.emit(_current_buildable, instance.global_position)
 	exit_build_mode()
+
+
+func _spawn_pop(instance: Node2D) -> void:
+	# El objeto aparece con un "pop": tras un pequeño destello mágico crece con
+	# rebote y hace flash. Deja ver primero la explosión de VFXManager.play(BUILD).
+	if instance == null or not is_instance_valid(instance):
+		return
+	var base_scale: Vector2 = instance.scale
+	instance.scale = Vector2.ZERO
+	instance.modulate = Color(1.9, 1.9, 2.2, 0.0)  # brillante y transparente
+	var tw: Tween = instance.create_tween()
+	tw.tween_interval(0.08)
+	tw.set_parallel(true)
+	tw.tween_property(instance, "scale", base_scale, 0.30) \
+		.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tw.tween_property(instance, "modulate", Color(1, 1, 1, 1), 0.34)
 
 
 func _assign_zone_visual_group(node: Node, zone: int) -> void:

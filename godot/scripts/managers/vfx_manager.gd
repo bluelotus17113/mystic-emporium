@@ -118,13 +118,17 @@ func _build_particles(fx: int) -> GPUParticles2D:
 			p.amount = 20
 			p.lifetime = 0.7
 		FX.BUILD:
-			start = Color(0.85, 0.85, 0.95, 1)
-			end = Color(0.5, 0.5, 0.6, 0)
-			mat.gravity = Vector3(0, -10, 0)
-			mat.initial_velocity_min = 30.0
-			mat.initial_velocity_max = 70.0
-			p.amount = 18
-			p.lifetime = 0.6
+			# Explosión mágica arcana al construir (púrpura -> cian, radial)
+			start = Color(0.85, 0.6, 1.0, 1)
+			end = Color(0.45, 0.9, 1.0, 0)
+			mat.gravity = Vector3(0, -20, 0)
+			mat.initial_velocity_min = 95.0
+			mat.initial_velocity_max = 180.0
+			mat.scale_min = 1.0
+			mat.scale_max = 2.6
+			p.amount = 30
+			p.lifetime = 0.7
+			p.explosiveness = 1.0
 		FX.RESEARCH_DONE:
 			start = Color(0.6, 0.85, 1.0, 1)
 			end = Color(0.3, 0.55, 1.0, 0)
