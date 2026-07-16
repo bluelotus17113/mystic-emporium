@@ -157,9 +157,11 @@ func _build_auto_chips() -> void:
 func _apply_chip_style(btn: Button) -> void:
 	# Cartel colgante de madera: ON = iluminado dorado, OFF = madera apagada.
 	var tex: Texture2D = load("res://art/sprites/ui/theme/sign_wood.png")
-	btn.add_theme_color_override(&"font_color", Color(0.66, 0.56, 0.44, 1))
-	btn.add_theme_color_override(&"font_pressed_color", Color(0.24, 0.14, 0.06, 1))
-	btn.add_theme_color_override(&"font_hover_color", Color(0.95, 0.9, 0.78, 1))
+	btn.add_theme_color_override(&"font_color", Color(0.22, 0.15, 0.09, 1))
+	btn.add_theme_color_override(&"font_pressed_color", Color(0.20, 0.12, 0.05, 1))
+	btn.add_theme_color_override(&"font_hover_color", Color(0.20, 0.12, 0.05, 1))
+	btn.add_theme_color_override(&"font_outline_color", Color(0.98, 0.95, 0.86, 1))
+	btn.add_theme_constant_override(&"outline_size", 3)
 	btn.add_theme_font_size_override(&"font_size", 12)
 	btn.custom_minimum_size = Vector2(0, 34)
 	var mk := func(mod: Color) -> StyleBoxTexture:
@@ -172,7 +174,7 @@ func _apply_chip_style(btn: Button) -> void:
 		sb.content_margin_bottom = 4
 		sb.modulate_color = mod
 		return sb
-	btn.add_theme_stylebox_override(&"normal", mk.call(Color(0.62, 0.52, 0.44, 1)))
+	btn.add_theme_stylebox_override(&"normal", mk.call(Color(0.86, 0.74, 0.56, 1)))
 	btn.add_theme_stylebox_override(&"hover", mk.call(Color(0.82, 0.72, 0.58, 1)))
 	btn.add_theme_stylebox_override(&"pressed", mk.call(Color(1.0, 0.85, 0.45, 1)))
 	btn.add_theme_stylebox_override(&"hover_pressed", mk.call(Color(1.0, 0.9, 0.55, 1)))
