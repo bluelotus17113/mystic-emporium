@@ -125,7 +125,7 @@ animations = [{
 "frames": [{"duration": 1.0, "texture": SubResource("ATX_d5")}, {"duration": 1.0, "texture": SubResource("ATX_d6")}, {"duration": 1.0, "texture": SubResource("ATX_d7")}, {"duration": 1.0, "texture": SubResource("ATX_d8")}, {"duration": 1.0, "texture": SubResource("ATX_d9")}, {"duration": 1.0, "texture": SubResource("ATX_d10")}, {"duration": 1.0, "texture": SubResource("ATX_d11")}, {"duration": 1.0, "texture": SubResource("ATX_d12")}],
 "loop": true,
 "name": &"walk_down",
-"speed": 10.0
+"speed": 8.0
 }, {
 "frames": [{"duration": 1.0, "texture": SubResource("ATX_d13")}, {"duration": 1.0, "texture": SubResource("ATX_d14")}, {"duration": 1.0, "texture": SubResource("ATX_d15")}, {"duration": 1.0, "texture": SubResource("ATX_d16")}],
 "loop": true,
@@ -135,7 +135,7 @@ animations = [{
 "frames": [{"duration": 1.0, "texture": SubResource("ATX_d17")}, {"duration": 1.0, "texture": SubResource("ATX_d18")}, {"duration": 1.0, "texture": SubResource("ATX_d19")}, {"duration": 1.0, "texture": SubResource("ATX_d20")}, {"duration": 1.0, "texture": SubResource("ATX_d21")}, {"duration": 1.0, "texture": SubResource("ATX_d22")}, {"duration": 1.0, "texture": SubResource("ATX_d23")}, {"duration": 1.0, "texture": SubResource("ATX_d24")}],
 "loop": true,
 "name": &"walk_up",
-"speed": 10.0
+"speed": 8.0
 }, {
 "frames": [{"duration": 1.0, "texture": SubResource("ATX_d25")}, {"duration": 1.0, "texture": SubResource("ATX_d26")}, {"duration": 1.0, "texture": SubResource("ATX_d27")}, {"duration": 1.0, "texture": SubResource("ATX_d28")}],
 "loop": true,
@@ -145,7 +145,7 @@ animations = [{
 "frames": [{"duration": 1.0, "texture": SubResource("ATX_d29")}, {"duration": 1.0, "texture": SubResource("ATX_d30")}, {"duration": 1.0, "texture": SubResource("ATX_d31")}, {"duration": 1.0, "texture": SubResource("ATX_d32")}, {"duration": 1.0, "texture": SubResource("ATX_d33")}, {"duration": 1.0, "texture": SubResource("ATX_d34")}, {"duration": 1.0, "texture": SubResource("ATX_d35")}, {"duration": 1.0, "texture": SubResource("ATX_d36")}],
 "loop": true,
 "name": &"walk_side",
-"speed": 10.0
+"speed": 8.0
 }]
 
 [node name="WorkerDuende" type="CharacterBody2D"]

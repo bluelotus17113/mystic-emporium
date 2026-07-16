@@ -143,9 +143,9 @@ func _build_sprite_frames(base_name: String) -> SpriteFrames:
 			var sf := SpriteFrames.new()
 			# fila, nº frames, velocidad — celdas 64×64, cols 0..n-1
 			var rows: Array = [
-				[&"idle_down", 0, 4, 6.0], [&"walk_down", 1, 4, 9.0],
-				[&"idle_up", 2, 4, 6.0], [&"walk_up", 3, 4, 9.0],
-				[&"idle_side", 4, 4, 6.0], [&"walk_side", 5, 4, 9.0]]
+				[&"idle_down", 0, 4, 6.0], [&"walk_down", 1, 4, 8.0],
+				[&"idle_up", 2, 4, 6.0], [&"walk_up", 3, 4, 8.0],
+				[&"idle_side", 4, 4, 6.0], [&"walk_side", 5, 4, 8.0]]
 			for r in rows:
 				var anim: StringName = r[0]
 				sf.add_animation(anim)
