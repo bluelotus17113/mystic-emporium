@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://b5j8r7n9wkrlen1"]
+[gd_scene load_steps=35 format=3 uid="uid://b5j8r7n9wkrlen1"]
 
 [ext_resource type="Script" path="res://scripts/ai/worker_lenador.gd" id="1_wl"]
 [ext_resource type="Texture2D" path="res://art/sprites/characters/lenador_anim.png" id="2_tex"]
@@ -9,53 +9,124 @@ radius = 7.0
 [sub_resource type="AtlasTexture" id="ATX_l1"]
 atlas = ExtResource("2_tex")
 region = Rect2(0, 0, 64, 64)
-
 [sub_resource type="AtlasTexture" id="ATX_l2"]
 atlas = ExtResource("2_tex")
 region = Rect2(64, 0, 64, 64)
-
 [sub_resource type="AtlasTexture" id="ATX_l3"]
 atlas = ExtResource("2_tex")
 region = Rect2(128, 0, 64, 64)
-
 [sub_resource type="AtlasTexture" id="ATX_l4"]
 atlas = ExtResource("2_tex")
 region = Rect2(192, 0, 64, 64)
-
 [sub_resource type="AtlasTexture" id="ATX_l5"]
 atlas = ExtResource("2_tex")
-region = Rect2(256, 0, 64, 64)
-
+region = Rect2(0, 64, 64, 64)
 [sub_resource type="AtlasTexture" id="ATX_l6"]
 atlas = ExtResource("2_tex")
-region = Rect2(320, 0, 64, 64)
-
+region = Rect2(64, 64, 64, 64)
 [sub_resource type="AtlasTexture" id="ATX_l7"]
 atlas = ExtResource("2_tex")
-region = Rect2(384, 0, 64, 64)
-
+region = Rect2(128, 64, 64, 64)
 [sub_resource type="AtlasTexture" id="ATX_l8"]
 atlas = ExtResource("2_tex")
-region = Rect2(448, 0, 64, 64)
-
+region = Rect2(192, 64, 64, 64)
 [sub_resource type="AtlasTexture" id="ATX_l9"]
 atlas = ExtResource("2_tex")
-region = Rect2(512, 0, 64, 64)
-
+region = Rect2(256, 64, 64, 64)
 [sub_resource type="AtlasTexture" id="ATX_l10"]
 atlas = ExtResource("2_tex")
-region = Rect2(576, 0, 64, 64)
+region = Rect2(320, 64, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_l11"]
+atlas = ExtResource("2_tex")
+region = Rect2(0, 128, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_l12"]
+atlas = ExtResource("2_tex")
+region = Rect2(64, 128, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_l13"]
+atlas = ExtResource("2_tex")
+region = Rect2(128, 128, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_l14"]
+atlas = ExtResource("2_tex")
+region = Rect2(192, 128, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_l15"]
+atlas = ExtResource("2_tex")
+region = Rect2(0, 192, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_l16"]
+atlas = ExtResource("2_tex")
+region = Rect2(64, 192, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_l17"]
+atlas = ExtResource("2_tex")
+region = Rect2(128, 192, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_l18"]
+atlas = ExtResource("2_tex")
+region = Rect2(192, 192, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_l19"]
+atlas = ExtResource("2_tex")
+region = Rect2(256, 192, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_l20"]
+atlas = ExtResource("2_tex")
+region = Rect2(320, 192, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_l21"]
+atlas = ExtResource("2_tex")
+region = Rect2(0, 256, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_l22"]
+atlas = ExtResource("2_tex")
+region = Rect2(64, 256, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_l23"]
+atlas = ExtResource("2_tex")
+region = Rect2(128, 256, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_l24"]
+atlas = ExtResource("2_tex")
+region = Rect2(192, 256, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_l25"]
+atlas = ExtResource("2_tex")
+region = Rect2(0, 320, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_l26"]
+atlas = ExtResource("2_tex")
+region = Rect2(64, 320, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_l27"]
+atlas = ExtResource("2_tex")
+region = Rect2(128, 320, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_l28"]
+atlas = ExtResource("2_tex")
+region = Rect2(192, 320, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_l29"]
+atlas = ExtResource("2_tex")
+region = Rect2(256, 320, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_l30"]
+atlas = ExtResource("2_tex")
+region = Rect2(320, 320, 64, 64)
 
 [sub_resource type="SpriteFrames" id="SF_lenador"]
 animations = [{
 "frames": [{"duration": 1.0, "texture": SubResource("ATX_l1")}, {"duration": 1.0, "texture": SubResource("ATX_l2")}, {"duration": 1.0, "texture": SubResource("ATX_l3")}, {"duration": 1.0, "texture": SubResource("ATX_l4")}],
 "loop": true,
-"name": &"idle",
+"name": &"idle_down",
 "speed": 6.0
 }, {
 "frames": [{"duration": 1.0, "texture": SubResource("ATX_l5")}, {"duration": 1.0, "texture": SubResource("ATX_l6")}, {"duration": 1.0, "texture": SubResource("ATX_l7")}, {"duration": 1.0, "texture": SubResource("ATX_l8")}, {"duration": 1.0, "texture": SubResource("ATX_l9")}, {"duration": 1.0, "texture": SubResource("ATX_l10")}],
 "loop": true,
-"name": &"walk_south",
+"name": &"walk_down",
+"speed": 8.0
+}, {
+"frames": [{"duration": 1.0, "texture": SubResource("ATX_l11")}, {"duration": 1.0, "texture": SubResource("ATX_l12")}, {"duration": 1.0, "texture": SubResource("ATX_l13")}, {"duration": 1.0, "texture": SubResource("ATX_l14")}],
+"loop": true,
+"name": &"idle_up",
+"speed": 6.0
+}, {
+"frames": [{"duration": 1.0, "texture": SubResource("ATX_l15")}, {"duration": 1.0, "texture": SubResource("ATX_l16")}, {"duration": 1.0, "texture": SubResource("ATX_l17")}, {"duration": 1.0, "texture": SubResource("ATX_l18")}, {"duration": 1.0, "texture": SubResource("ATX_l19")}, {"duration": 1.0, "texture": SubResource("ATX_l20")}],
+"loop": true,
+"name": &"walk_up",
+"speed": 8.0
+}, {
+"frames": [{"duration": 1.0, "texture": SubResource("ATX_l21")}, {"duration": 1.0, "texture": SubResource("ATX_l22")}, {"duration": 1.0, "texture": SubResource("ATX_l23")}, {"duration": 1.0, "texture": SubResource("ATX_l24")}],
+"loop": true,
+"name": &"idle_side",
+"speed": 6.0
+}, {
+"frames": [{"duration": 1.0, "texture": SubResource("ATX_l25")}, {"duration": 1.0, "texture": SubResource("ATX_l26")}, {"duration": 1.0, "texture": SubResource("ATX_l27")}, {"duration": 1.0, "texture": SubResource("ATX_l28")}, {"duration": 1.0, "texture": SubResource("ATX_l29")}, {"duration": 1.0, "texture": SubResource("ATX_l30")}],
+"loop": true,
+"name": &"walk_side",
 "speed": 8.0
 }]
 
@@ -66,8 +137,8 @@ script = ExtResource("1_wl")
 texture_filter = 1
 offset = Vector2(0, -32)
 sprite_frames = SubResource("SF_lenador")
-animation = &"idle"
-autoplay = "idle"
+animation = &"idle_down"
+autoplay = "idle_down"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_1")

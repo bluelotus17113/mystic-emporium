@@ -15,6 +15,7 @@ var target: Node2D = null
 var _action_timer: float = 0.0
 var _anim_phase: float = 0.0
 var _facing_x: float = 1.0
+var _facing: StringName = &"down"
 var _anim_sprite: AnimatedSprite2D = null  ## opcional, solo workers que tienen AnimatedSprite2D
 ## Wander: cuando no hay recursos disponibles (o están reservados por otros),
 ## el worker pasea hacia un punto random cerca de su home para no congelarse.
@@ -69,6 +70,12 @@ func _physics_process(delta: float) -> void:
 
 func _update_anim(delta: float) -> void:
 	var is_moving: bool = velocity.length_squared() > 4.0
+	# Workers con hoja direccional (idle/walk × down/up/side): eligen animación
+	# por el eje dominante del movimiento, flip_h para izquierda.
+	if _anim_sprite != null and _anim_sprite.sprite_frames != null \
+			and _anim_sprite.sprite_frames.has_animation(&"walk_down"):
+		_update_anim_directional(is_moving)
+		return
 	if is_moving:
 		_anim_phase += delta * 14.0
 		if abs(velocity.x) > 1.0:
@@ -87,6 +94,23 @@ func _update_anim(delta: float) -> void:
 		var want: StringName = &"walk_south" if is_moving else &"idle"
 		if _anim_sprite.sprite_frames.has_animation(want) and _anim_sprite.animation != want:
 			_anim_sprite.play(want)
+
+
+func _update_anim_directional(is_moving: bool) -> void:
+	# El flip se hace en el sprite (flip_h), no en la escala del cuerpo.
+	scale = Vector2.ONE
+	rotation = 0.0
+	if is_moving:
+		if absf(velocity.x) > absf(velocity.y):
+			_facing = &"side"
+			_facing_x = signf(velocity.x)
+		else:
+			_facing = &"down" if velocity.y > 0.0 else &"up"
+	_anim_sprite.flip_h = _facing == &"side" and _facing_x < 0.0
+	var prefix: StringName = &"walk_" if is_moving else &"idle_"
+	var want: StringName = prefix + _facing
+	if _anim_sprite.animation != want:
+		_anim_sprite.play(want)
 
 
 func _on_idle(delta: float) -> void:
