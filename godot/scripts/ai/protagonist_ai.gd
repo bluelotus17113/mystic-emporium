@@ -31,6 +31,7 @@ var _sprite_base_scale: Vector2 = Vector2.ONE
 var _facing_x: float = 1.0
 var _facing: StringName = &"down"  ## down/up/side — dirección actual del sprite
 var _drag_offset: Vector2 = Vector2.ZERO
+var _drag_zone_rect: Rect2 = Rect2()  ## zona (suelo) donde empezó el drag; confina el arrastre para no soltar sobre la pared
 var _wobble_tween: Tween = null
 var _idle_timer: float = 0.0
 var _wander_idle_delay: float = 8.0
@@ -110,7 +111,7 @@ func _physics_process(_delta: float) -> void:
 				velocity = Vector2.ZERO
 		State.DRAGGING:
 			velocity = Vector2.ZERO
-			var target: Vector2 = _clamp_to_playable(get_global_mouse_position() + _drag_offset)
+			var target: Vector2 = _clamp_to_rect(get_global_mouse_position() + _drag_offset, _drag_zone_rect)
 			global_position = global_position.lerp(target, DRAG_FOLLOW_SMOOTH)
 		State.WANDERING:
 			if _linger_timer > 0.0:
@@ -148,6 +149,10 @@ func _unhandled_input(event: InputEvent) -> void:
 func _begin_drag() -> void:
 	_current_customer = null
 	_drag_offset = global_position - get_global_mouse_position()
+	# Confina el arrastre al suelo de la zona actual (excluye la pared).
+	_drag_zone_rect = GridManager.get_zone_rect_at(global_position)
+	if _drag_zone_rect.size == Vector2.ZERO:
+		_drag_zone_rect = GridManager.get_playable_rect()
 	state = State.DRAGGING
 	velocity = Vector2.ZERO
 	_idle_timer = 0.0
@@ -156,7 +161,7 @@ func _begin_drag() -> void:
 
 
 func _end_drag() -> void:
-	global_position = _clamp_to_playable(global_position)
+	global_position = _clamp_to_rect(global_position, _drag_zone_rect)
 	home_position = global_position
 	state = State.IDLE_HOME
 	_idle_timer = 0.0
@@ -325,6 +330,8 @@ func _clamp_to_playable(pos: Vector2) -> Vector2:
 
 
 func _clamp_to_rect(pos: Vector2, r: Rect2) -> Vector2:
+	if r.size == Vector2.ZERO:
+		return pos
 	var min_p: Vector2 = r.position + Vector2(PLAYABLE_MARGIN, PLAYABLE_MARGIN)
 	var max_p: Vector2 = r.position + r.size - Vector2(PLAYABLE_MARGIN, PLAYABLE_MARGIN)
 	return Vector2(clamp(pos.x, min_p.x, max_p.x), clamp(pos.y, min_p.y, max_p.y))
