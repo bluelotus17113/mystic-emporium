@@ -2,9 +2,9 @@ extends CanvasLayer
 ## Persistent on-screen HUD. Shows coins, inventory totals, current order, calendar
 ## and offers buttons to all main panels + companion mode.
 
-@onready var coins_label: Label = $Root/BottomLeftInfo/InfoMargin/InfoVBox/CoinsLabel
-@onready var inventory_label: Label = $Root/BottomLeftInfo/InfoMargin/InfoVBox/InventoryLabel
-@onready var rep_label: Label = $Root/BottomLeftInfo/InfoMargin/InfoVBox/RepLabel
+@onready var coins_label: Label = $Root/BottomLeftInfo/InfoMargin/InfoVBox/CoinsRow/CoinsLabel
+@onready var inventory_label: Label = $Root/BottomLeftInfo/InfoMargin/InfoVBox/InvRow/InventoryLabel
+@onready var rep_label: Label = $Root/BottomLeftInfo/InfoMargin/InfoVBox/RepRow/RepLabel
 @onready var auto_bar: HBoxContainer = $Root/TopBar/AutoBar
 @onready var order_label: Label = $Root/TopBar/OrderLabel
 @onready var deliver_button: Button = $Root/TopBar/DeliverButton
@@ -227,7 +227,7 @@ func _on_demolish_mode_changed(active: bool) -> void:
 
 
 func _on_reputation_changed(amount: int) -> void:
-	rep_label.text = "★ %s" % NumFormat.short(amount)
+	rep_label.text = "%s" % NumFormat.short(amount)
 
 
 func _on_shop_pressed() -> void:
@@ -236,7 +236,7 @@ func _on_shop_pressed() -> void:
 
 func _refresh_all() -> void:
 	_on_coins_changed(InventoryManager.arcane_coins)
-	inventory_label.text = "🎒 %s/%s" % [
+	inventory_label.text = "%s/%s" % [
 		NumFormat.short(InventoryManager.get_total_count()),
 		NumFormat.short(InventoryManager.max_capacity)
 	]
@@ -249,12 +249,12 @@ func _refresh_all() -> void:
 
 
 func _on_coins_changed(amount: int) -> void:
-	coins_label.text = "💰 %s" % NumFormat.short(amount)
+	coins_label.text = "%s" % NumFormat.short(amount)
 	_refresh_deliver_button()
 
 
 func _on_item_changed(_item: ItemData, _qty: int) -> void:
-	inventory_label.text = "🎒 %s/%s" % [
+	inventory_label.text = "%s/%s" % [
 		NumFormat.short(InventoryManager.get_total_count()),
 		NumFormat.short(InventoryManager.max_capacity)
 	]
