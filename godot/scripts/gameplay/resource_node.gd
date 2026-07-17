@@ -6,6 +6,7 @@ extends Node2D
 @export var yield_quantity: int = 1
 @export var respawn_after_collect: bool = false
 @export var respawn_time: float = 0.0
+@export var free_on_collect: bool = false  ## maleza: desaparece del árbol al cortarla
 
 var _is_collected: bool = false
 var _generator_owner: Node = null
@@ -58,6 +59,9 @@ func collect() -> bool:
 	# Notify owner generator (so it can start its cooldown)
 	if _generator_owner != null and _generator_owner.has_method("on_node_collected"):
 		_generator_owner.on_node_collected(self)
+	if free_on_collect:
+		queue_free()
+		return true
 	if respawn_after_collect and _generator_owner == null:
 		await get_tree().create_timer(respawn_time).timeout
 		_respawn()

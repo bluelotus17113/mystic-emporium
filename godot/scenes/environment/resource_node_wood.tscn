@@ -9,3 +9,4 @@ resource_type = 4
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("2_tex")
+offset = Vector2(0, -32)

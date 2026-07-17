@@ -45,6 +45,10 @@ func _ready() -> void:
 	ambience.name = "ZoneAmbience"
 	add_child(ambience)
 	call_deferred("_spawn_cat")
+	# Vida del patio natural: scatter de props + maleza que crece sola.
+	var nlife := NaturalLife.new()
+	nlife.name = "NaturalLife"
+	add_child(nlife)
 	print("[Bootstrap] Items: %d | Recipes: %d | Orders: %d | Research: %d | Buildables: %d" % [
 		_items_catalog.size(),
 		_recipes_catalog.size(),
