@@ -39,6 +39,24 @@ func set_catalog(catalog: Array[BuildableData]) -> void:
 	_catalog = catalog
 
 
+## Registra en el grid un objeto ya instanciado (p.ej. faroles por defecto del
+## bootstrap) para que las herramientas de mover/demoler/copiar lo traten como
+## cualquier objeto colocado. Devuelve false si la celda ya está ocupada.
+func register_prebuilt(instance: Node2D, world_pos: Vector2, buildable_id: StringName, cost: int = 0, rot: float = 0.0) -> bool:
+	if instance == null:
+		return false
+	var gp: Vector2i = GridManager.world_to_grid(world_pos)
+	if GridManager.is_cell_occupied(gp):
+		return false
+	instance.global_position = GridManager.grid_to_world(gp)
+	instance.rotation_degrees = rot
+	GridManager.place_object(gp, instance)
+	_grid_cost_lookup[gp] = cost
+	_grid_buildable_lookup[gp] = buildable_id
+	_grid_rotation_lookup[gp] = rot
+	return true
+
+
 ## Registra un buildable creado en runtime (Abracadabra) y lo desbloquea.
 func register_custom_buildable(bd: BuildableData) -> void:
 	if bd == null or bd in _catalog:

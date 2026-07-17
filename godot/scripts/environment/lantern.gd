@@ -14,6 +14,7 @@ var _flick_seed: float = 0.0
 
 
 func _ready() -> void:
+	add_to_group("lanterns")
 	_phase = randf() * TAU
 	_flick_seed = randf() * 100.0
 	var lamp := Sprite2D.new()

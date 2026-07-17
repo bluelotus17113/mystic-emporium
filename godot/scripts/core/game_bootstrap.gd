@@ -67,6 +67,10 @@ func _ready() -> void:
 
 ## Faroles por defecto: dos por zona (se encienden solos de noche).
 func _spawn_default_lanterns() -> void:
+	# Solo en partida nueva: si ya hay faroles (cargados del save o movidos/
+	# borrados por el jugador), no volver a spawnearlos ni revivir los borrados.
+	if not get_tree().get_nodes_in_group("lanterns").is_empty():
+		return
 	var world: Node = get_tree().get_first_node_in_group("world_container")
 	if world == null:
 		return
@@ -87,6 +91,9 @@ func _spawn_default_lanterns() -> void:
 			lan.global_position = zr.global_position + off
 			lan.add_to_group(info[1])
 			lan.visible = (cur == &"" or cur == info[0])
+			# Registrar en el grid → se puede mover/demoler/copiar como cualquier objeto.
+			# cost 0: al ser gratis, no da reembolso al demolerlos.
+			BuildManager.register_prebuilt(lan, lan.global_position, &"deco_lantern", 0)
 
 
 func _find_zone_regions(root: Node) -> Array:
