@@ -14,6 +14,8 @@ const TILES: Array = [
 	{"id": &"stats",        "icon": "📊", "label": "Stats",      "color": Color(0.42, 0.72, 0.45)},
 	{"id": &"todo",         "icon": "✓",  "label": "Tareas",     "color": Color(0.30, 0.78, 0.72)},
 	{"id": &"pomodoro",     "icon": "🍅", "label": "Pomodoro",   "color": Color(0.90, 0.35, 0.40)},
+	{"id": &"album",        "icon": "📔", "label": "Álbum",      "color": Color(0.72, 0.52, 0.35)},
+	{"id": &"wardrobe",     "icon": "👗", "label": "Armario",    "color": Color(0.85, 0.45, 0.65)},
 	{"id": &"zone",         "icon": "🌳", "label": "Zona",       "color": Color(0.65, 0.40, 0.85)},
 	{"id": &"exit",         "icon": "⇱",  "label": "Salir",      "color": Color(0.55, 0.55, 0.65)},
 ]
@@ -391,6 +393,37 @@ func _populate_section(section_id: StringName) -> void:
 			_populate_achievements()
 		&"stats":
 			_populate_stats()
+		&"album":
+			_populate_album()
+		&"wardrobe":
+			_populate_wardrobe()
+
+
+func _populate_album() -> void:
+	var skins: Array = []
+	for path in CustomerAI.NPC_POOL + CustomerAI.VIP_POOL:
+		skins.append(StringName(path.get_file().get_basename()))
+	_add_line("Descubiertos: %d/%d" % [AlbumManager.discovered_total(), skins.size()])
+	for skin in skins:
+		if AlbumManager.is_discovered(skin):
+			var pretty: String = String(skin).trim_prefix("npc_").replace("_", " ").capitalize()
+			_add_line("✓ %s ×%d" % [pretty, AlbumManager.get_count(skin)])
+
+
+func _populate_wardrobe() -> void:
+	# Botón por outfit: cambia el look de la protagonista desde el escritorio.
+	for oid in WardrobeManager.OUTFITS:
+		if not WardrobeManager.is_available(oid):
+			continue
+		var btn := Button.new()
+		var current: bool = WardrobeManager.current_outfit == oid
+		btn.text = ("✔ " if current else "") + WardrobeManager.OUTFITS[oid]
+		btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		btn.add_theme_font_size_override(&"font_size", 13)
+		btn.pressed.connect(func():
+			WardrobeManager.set_outfit(oid)
+			_populate_section(&"wardrobe"))
+		content_body.add_child(btn)
 
 
 func _populate_inventory() -> void:
