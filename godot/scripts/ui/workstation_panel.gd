@@ -169,6 +169,7 @@ func _build_recipe_row(recipe: RecipeData) -> Control:
 	card.custom_minimum_size = Vector2(0, 48)
 	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	card.clip_contents = true
+	card.tooltip_text = RecipeHints.tooltip_for(recipe)
 
 	var margin := MarginContainer.new()
 	margin.add_theme_constant_override(&"margin_left", 6)

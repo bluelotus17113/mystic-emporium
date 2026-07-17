@@ -39,6 +39,7 @@ func _ready() -> void:
 	_wire_managers()
 	_wire_scene_objects()
 	_wire_audio_hooks()
+	SaveManager.mark_world_ready(true)
 	print("[Bootstrap] Items: %d | Recipes: %d | Orders: %d | Research: %d | Buildables: %d" % [
 		_items_catalog.size(),
 		_recipes_catalog.size(),

@@ -61,6 +61,7 @@ func _ready() -> void:
 	ResearchManager.research_progress.connect(_on_research_progress)
 	ResearchManager.research_completed.connect(_on_research_completed)
 	research_scroll_button.pressed.connect(_toggle_research_scroll)
+	SaveManager.game_saved.connect(_on_game_saved)
 	# Cerrar el pergamino al hacer clic sobre él abierto.
 	research_box.gui_input.connect(func(ev: InputEvent):
 		if ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT:
@@ -317,6 +318,29 @@ func _on_build_pressed() -> void:
 
 
 var _research_open: bool = false
+
+
+var _save_indicator: Label = null
+
+
+func _on_game_saved(_slot: int) -> void:
+	# Indicador sutil "💾 Guardado" que aparece y se desvanece (sin toasts).
+	if _save_indicator == null:
+		_save_indicator = Label.new()
+		_save_indicator.text = "💾 Guardado"
+		_save_indicator.add_theme_font_size_override(&"font_size", 13)
+		_save_indicator.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+		_save_indicator.offset_left = -140.0
+		_save_indicator.offset_top = 44.0
+		_save_indicator.offset_right = -12.0
+		_save_indicator.offset_bottom = 64.0
+		_save_indicator.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		$Root.add_child(_save_indicator)
+	_save_indicator.modulate = Color(1, 1, 1, 0)
+	var tw := create_tween()
+	tw.tween_property(_save_indicator, "modulate:a", 1.0, 0.25)
+	tw.tween_interval(1.2)
+	tw.tween_property(_save_indicator, "modulate:a", 0.0, 0.5)
 
 
 func _toggle_research_scroll() -> void:

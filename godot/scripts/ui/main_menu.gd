@@ -9,6 +9,7 @@ const MAIN_GAME_SCENE: String = "res://scenes/world/main_game.tscn"
 
 
 func _ready() -> void:
+	SaveManager.mark_world_ready(false)
 	continue_button.disabled = not SaveManager.has_save()
 	continue_button.pressed.connect(_on_continue)
 	new_game_button.pressed.connect(_on_new_game)

@@ -17,9 +17,32 @@ var current_slot: int = 0
 var pending_load_slot: int = -1
 
 
+const AUTOSAVE_INTERVAL: float = 120.0  ## autosave cada 2 min + al cambiar de día
+var _autosave_accum: float = 0.0
+var _world_ready: bool = false  ## no autosavear en el menú principal
+
+
 func _ready() -> void:
 	get_tree().auto_accept_quit = false
 	_migrate_legacy()
+	# Autosave al terminar cada día del juego (solo con partida activa).
+	CalendarManager.day_changed.connect(func(_d, _s):
+		if _world_ready:
+			save_game())
+
+
+func mark_world_ready(ready: bool = true) -> void:
+	_world_ready = ready
+	_autosave_accum = 0.0
+
+
+func _process(delta: float) -> void:
+	if not _world_ready:
+		return
+	_autosave_accum += delta
+	if _autosave_accum >= AUTOSAVE_INTERVAL:
+		_autosave_accum = 0.0
+		save_game()
 
 
 func _notification(what: int) -> void:

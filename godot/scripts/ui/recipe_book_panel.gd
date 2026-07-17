@@ -212,6 +212,8 @@ func _build_entry(recipe: RecipeData) -> Control:
 	# Marco contenedor con StyleBox
 	var card := PanelContainer.new()
 	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	if is_unlocked:
+		card.tooltip_text = RecipeHints.tooltip_for(recipe)
 	var sb := StyleBoxFlat.new()
 	if is_unlocked:
 		sb.bg_color = Color(0.97, 0.91, 0.74, 0.55)
