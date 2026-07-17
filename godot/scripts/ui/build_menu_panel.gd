@@ -201,7 +201,7 @@ const ZONE_COLOR: Dictionary = {
 }
 
 const TILE_SIZE: Vector2 = Vector2(145, 122)
-const GRID_COLUMNS: int = 6
+const GRID_COLUMNS: int = 7
 
 @onready var func_grid: GridContainer = $"Margin/VBox/Tabs/🔨 Funcional/Grid"
 @onready var deco_grid: GridContainer = $"Margin/VBox/Tabs/✨ Decoración/DecoScroll/Grid"
