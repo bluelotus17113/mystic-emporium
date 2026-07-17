@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=3 uid="uid://b5j8r7n9m1c44"]
+[gd_scene load_steps=37 format=3 uid="uid://b5j8r7n9m1c44"]
 
 [ext_resource type="Script" path="res://scripts/ai/cat_pet.gd" id="1_cat"]
 [ext_resource type="Texture2D" path="res://art/sprites/characters/cat_anim.png" id="2_tex"]
@@ -85,6 +85,30 @@ region = Rect2(0, 384, 64, 64)
 atlas = ExtResource("2_tex")
 region = Rect2(64, 384, 64, 64)
 
+[sub_resource type="AtlasTexture" id="ATX_c27"]
+atlas = ExtResource("2_tex")
+region = Rect2(0, 448, 64, 64)
+
+[sub_resource type="AtlasTexture" id="ATX_c28"]
+atlas = ExtResource("2_tex")
+region = Rect2(64, 448, 64, 64)
+
+[sub_resource type="AtlasTexture" id="ATX_c29"]
+atlas = ExtResource("2_tex")
+region = Rect2(0, 512, 64, 64)
+
+[sub_resource type="AtlasTexture" id="ATX_c30"]
+atlas = ExtResource("2_tex")
+region = Rect2(64, 512, 64, 64)
+
+[sub_resource type="AtlasTexture" id="ATX_c31"]
+atlas = ExtResource("2_tex")
+region = Rect2(0, 576, 64, 64)
+
+[sub_resource type="AtlasTexture" id="ATX_c32"]
+atlas = ExtResource("2_tex")
+region = Rect2(64, 576, 64, 64)
+
 [sub_resource type="SpriteFrames" id="SF_cat"]
 animations = [{
 "frames": [{"duration": 1.0, "texture": SubResource("ATX_c1")}, {"duration": 1.0, "texture": SubResource("ATX_c2")}, {"duration": 1.0, "texture": SubResource("ATX_c3")}, {"duration": 1.0, "texture": SubResource("ATX_c4")}],
@@ -121,6 +145,21 @@ animations = [{
 "loop": true,
 "name": &"sleep",
 "speed": 1.6
+}, {
+"frames": [{"duration": 1.0, "texture": SubResource("ATX_c27")}, {"duration": 1.0, "texture": SubResource("ATX_c28")}],
+"loop": true,
+"name": &"sit",
+"speed": 2.0
+}, {
+"frames": [{"duration": 1.0, "texture": SubResource("ATX_c29")}, {"duration": 1.0, "texture": SubResource("ATX_c30")}],
+"loop": true,
+"name": &"groom",
+"speed": 3.5
+}, {
+"frames": [{"duration": 1.0, "texture": SubResource("ATX_c31")}, {"duration": 1.0, "texture": SubResource("ATX_c32")}],
+"loop": true,
+"name": &"crouch",
+"speed": 2.0
 }]
 
 [node name="CatPet" type="CharacterBody2D"]

@@ -212,17 +212,19 @@ func _update_anim() -> void:
 			_spr.play(&"sleep")
 		return
 	if state == State.GROOM:
-		# acicalado: idle abajo con un bob de cabeza (via scale)
 		_spr.flip_h = false
-		if _spr.animation != &"idle_down":
-			_spr.play(&"idle_down")
-		scale = Vector2(1.0, 1.0 + sin(_bob_t) * 0.06)
+		if _spr.animation != &"groom":
+			_spr.play(&"groom")
 		return
 	if state == State.SIT:
-		if _spr.animation != &"idle_down":
-			_spr.play(&"idle_down")
+		if _spr.animation != &"sit":
+			_spr.play(&"sit")
 		return
 	var moving: bool = velocity.length_squared() > 4.0
+	if state == State.PLAY and not moving:
+		if _spr.animation != &"crouch":
+			_spr.play(&"crouch")
+		return
 	if moving:
 		if absf(velocity.x) > absf(velocity.y):
 			_facing = &"side"
