@@ -49,6 +49,7 @@ func _ready() -> void:
 	var nlife := NaturalLife.new()
 	nlife.name = "NaturalLife"
 	add_child(nlife)
+	call_deferred("_spawn_default_lanterns")
 	print("[Bootstrap] Items: %d | Recipes: %d | Orders: %d | Research: %d | Buildables: %d" % [
 		_items_catalog.size(),
 		_recipes_catalog.size(),
@@ -62,6 +63,47 @@ func _ready() -> void:
 		var slot: int = SaveManager.pending_load_slot
 		SaveManager.pending_load_slot = -1
 		SaveManager.load_game(slot)
+
+
+## Faroles por defecto: dos por zona (se encienden solos de noche).
+func _spawn_default_lanterns() -> void:
+	var world: Node = get_tree().get_first_node_in_group("world_container")
+	if world == null:
+		return
+	var scene: PackedScene = load("res://scenes/environment/decorations/decoration_lantern.tscn")
+	if scene == null:
+		return
+	var cam: Node = get_tree().get_first_node_in_group("zone_camera")
+	var cur: StringName = &""
+	if cam != null and cam.has_method("get_current_zone"):
+		cur = cam.get_current_zone().name
+	for zr in _find_zone_regions(get_tree().current_scene):
+		var info: Array = _zone_name_group(zr.zone_type)
+		if info.is_empty():
+			continue
+		for off in [Vector2(-zr.size.x * 0.34, -zr.size.y * 0.18), Vector2(zr.size.x * 0.34, -zr.size.y * 0.18)]:
+			var lan: Node2D = scene.instantiate()
+			world.add_child(lan)
+			lan.global_position = zr.global_position + off
+			lan.add_to_group(info[1])
+			lan.visible = (cur == &"" or cur == info[0])
+
+
+func _find_zone_regions(root: Node) -> Array:
+	var out: Array = []
+	if root is ZoneRegion:
+		out.append(root)
+	for c in root.get_children():
+		out.append_array(_find_zone_regions(c))
+	return out
+
+
+func _zone_name_group(zt: int) -> Array:
+	match zt:
+		GameEnums.ZoneType.NATURE: return [&"natural", "natural_visual"]
+		GameEnums.ZoneType.WORKSHOP: return [&"taller", "taller_visual"]
+		GameEnums.ZoneType.RECEPTION: return [&"recepcion", "recepcion_visual"]
+		_: return []
 
 
 ## Mascota de la tienda: duerme junto a la primera workstation del taller.

@@ -8,12 +8,12 @@
 script = ExtResource("1_bd")
 icon = ExtResource("3_icon")
 id = &"deco_lantern"
-display_name = "Farolillo Rojo"
-description = "Farolillo de papel con luz dorada cálida."
+display_name = "Farol"
+description = "Farol que se enciende solo al caer la noche."
 scene = ExtResource("2_scene")
-cost = 40
-allowed_zone = 2
+cost = 30
+allowed_zone = 0
 size = Vector2i(1, 1)
 unlocked_by_default = true
 is_decorative = true
-decoration_category = &"nature"
+decoration_category = &"luz"

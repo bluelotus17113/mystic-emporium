@@ -192,6 +192,7 @@ const DECO_CATEGORIES: Array = [
 	{"id": &"floor",  "label": "🟪 Suelo"},
 	{"id": &"table",  "label": "🕯 Mesa"},
 	{"id": &"nature", "label": "🍄 Natural"},
+	{"id": &"luz",    "label": "🏮 Luz"},
 	{"id": &"custom", "label": "🪄 Mías"},
 ]
 
