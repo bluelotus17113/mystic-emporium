@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3 uid="uid://b5j8r7n9m1abr7"]
+
+[ext_resource type="Script" path="res://scripts/ui/abracadabra_editor.gd" id="1_abr"]
+
+[node name="AbracadabraEditor" type="PanelContainer"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -550.0
+offset_top = -360.0
+offset_right = 550.0
+offset_bottom = 360.0
+script = ExtResource("1_abr")

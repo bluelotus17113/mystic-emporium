@@ -38,6 +38,21 @@ func set_catalog(catalog: Array[BuildableData]) -> void:
 	_catalog = catalog
 
 
+## Registra un buildable creado en runtime (Abracadabra) y lo desbloquea.
+func register_custom_buildable(bd: BuildableData) -> void:
+	if bd == null or bd in _catalog:
+		return
+	_catalog.append(bd)
+	unlock_buildable(bd, false)
+
+
+## Si el buildable es custom, pasa su id a la instancia (antes de add_child,
+## para que su _ready cargue la textura correcta).
+func _apply_custom_id(instance: Node2D, b: BuildableData) -> void:
+	if b != null and b.custom_id != &"" and instance != null and "custom_id" in instance:
+		instance.custom_id = b.custom_id
+
+
 func unlock_buildable(buildable: BuildableData, silent: bool = false) -> void:
 	if buildable == null or buildable in _unlocked_buildables:
 		return
@@ -74,6 +89,7 @@ func enter_build_mode(buildable: BuildableData) -> void:
 	exit_build_mode()
 	_current_buildable = buildable
 	_ghost = buildable.scene.instantiate() as Node2D
+	_apply_custom_id(_ghost, buildable)
 	if _ghost == null:
 		_current_buildable = null
 		return
@@ -466,6 +482,7 @@ func _try_place() -> void:
 	if not InventoryManager.spend_coins(_current_buildable.cost):
 		return
 	var instance: Node2D = _current_buildable.scene.instantiate() as Node2D
+	_apply_custom_id(instance, _current_buildable)
 	get_tree().current_scene.add_child(instance)
 	instance.global_position = GridManager.grid_to_world(grid_pos)
 	instance.rotation_degrees = _ghost_rotation_deg
@@ -589,6 +606,7 @@ func load_save_state(data: Dictionary) -> void:
 		var instance: Node2D = b.scene.instantiate() as Node2D
 		if instance == null:
 			continue
+		_apply_custom_id(instance, b)
 		get_tree().current_scene.add_child(instance)
 		instance.global_position = GridManager.grid_to_world(grid_pos)
 		var rot: float = float(entry.get("rot", 0.0))

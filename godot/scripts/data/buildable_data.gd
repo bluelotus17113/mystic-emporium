@@ -19,3 +19,6 @@ extends Resource
 ## Si > 0, se desbloquea cuando el Patio Natural alcanza este nivel.
 ## Aplica encima de unlocked_by_default (false + min_natural_level=2 = unlock al lvl 2).
 @export var min_natural_level: int = 0
+## Si no está vacío, es un objeto creado por el jugador (Abracadabra). La escena
+## colocada lee su textura desde CustomObjectManager por este id.
+@export var custom_id: StringName = &""

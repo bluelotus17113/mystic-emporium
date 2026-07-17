@@ -80,6 +80,15 @@ layout_mode = 2
 text = "💥 Demoler"
 tooltip_text = "Demoler y recuperar la mitad del coste"
 
+[node name="AbraSep" type="HSeparator" parent="Margin/HBox/Sidebar/SideMargin/SideVBox"]
+layout_mode = 2
+
+[node name="AbracadabraBtn" type="Button" parent="Margin/HBox/Sidebar/SideMargin/SideVBox"]
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 2
+text = "🪄 Abracadabra"
+tooltip_text = "Crea tu propio objeto (50 ⚜)"
+
 [node name="SideSpacer" type="Control" parent="Margin/HBox/Sidebar/SideMargin/SideVBox"]
 layout_mode = 2
 size_flags_vertical = 3

@@ -215,6 +215,8 @@ func _wire_managers() -> void:
 	RecipeManager.set_catalog(_recipes_catalog)
 	BuildManager.set_catalog(_buildables_catalog)
 	BuildManager.unlock_default_buildables(_buildables_catalog)
+	# Objetos creados por el jugador (Abracadabra): registrarlos en el catálogo.
+	CustomObjectManager.register_all()
 	# Cuando el Patio Natural sube de nivel, desbloqueamos los buildables gated.
 	ZoneExpansionManager.natural_level_changed.connect(BuildManager.apply_natural_level_unlocks)
 

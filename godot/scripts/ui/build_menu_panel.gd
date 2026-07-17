@@ -192,6 +192,7 @@ const DECO_CATEGORIES: Array = [
 	{"id": &"floor",  "label": "🟪 Suelo"},
 	{"id": &"table",  "label": "🕯 Mesa"},
 	{"id": &"nature", "label": "🍄 Natural"},
+	{"id": &"custom", "label": "🪄 Mías"},
 ]
 
 const ZONE_COLOR: Dictionary = {
@@ -237,6 +238,9 @@ func _ready() -> void:
 	$Margin/HBox/Sidebar/SideMargin/SideVBox/DemolishBtn.pressed.connect(func():
 		UIManager.close_active()
 		BuildManager.enter_demolish_mode())
+	var abra_btn: Button = $Margin/HBox/Sidebar/SideMargin/SideVBox/AbracadabraBtn
+	abra_btn.pressed.connect(func():
+		UIManager.open(&"abracadabra"))
 	BuildManager.buildable_unlocked.connect(_on_buildable_unlocked)
 	BuildManager.build_mode_entered.connect(_on_build_mode_entered)
 	BuildManager.placement_completed.connect(_on_placement_completed)
