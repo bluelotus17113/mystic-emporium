@@ -23,6 +23,7 @@ const MAX_LEVEL: int = 5
 @export var min_natural_level: int = 0
 
 @onready var spawn_point: Marker2D = $SpawnPoint if has_node("SpawnPoint") else null
+@onready var _anim: AnimatedSprite2D = get_node_or_null("AnimatedSprite2D") as AnimatedSprite2D
 
 var _current_node: ResourceNode = null
 var _timer: float = 0.0
@@ -43,6 +44,11 @@ func _ready() -> void:
 	ZoneExpansionManager.natural_level_changed.connect(_on_natural_level_changed)
 	_apply_gating(ZoneExpansionManager.natural_level)
 	_build_hover_label()
+	# La parcela controla su frame manualmente (crecimiento sincronizado al
+	# cooldown), no en loop libre. Empezamos en tierra vacía (frame 0).
+	if _anim != null:
+		_anim.stop()
+		_anim.frame = 0
 	# Defer initial spawn so parent finishes mounting its children first.
 	call_deferred("_try_generate")
 
@@ -138,14 +144,36 @@ func try_upgrade() -> bool:
 func _process(delta: float) -> void:
 	if _hover_label != null and _hover_label.visible:
 		_refresh_hover_text()
+	_update_growth_visual()
 	if _current_node != null and _current_node.is_available():
-		# Node still there, nothing to do
+		# Maduro esperando recolección: el frame se queda estático (lo fija
+		# _update_growth_visual en el último frame).
 		return
 	if _waiting:
 		_timer += delta
 		if _timer >= get_effective_cooldown():
 			_timer = 0.0
 			_try_generate()
+
+
+## El material crece EN la parcela: el frame de la animación avanza con el
+## tiempo de crecimiento (0 = tierra vacía, último = maduro). Al madurar se
+## congela; al recolectar, on_node_collected reinicia _timer y vuelve a 0.
+func _update_growth_visual() -> void:
+	if _anim == null or _anim.sprite_frames == null:
+		return
+	var n: int = _anim.sprite_frames.get_frame_count(&"idle")
+	if n <= 0:
+		return
+	var fr: int
+	if _current_node != null and is_instance_valid(_current_node) and _current_node.is_available():
+		fr = n - 1  # maduro, listo para recolectar
+	else:
+		var cd: float = get_effective_cooldown()
+		var p: float = clampf(_timer / cd, 0.0, 1.0) if cd > 0.0 else 1.0
+		fr = mini(n - 1, int(p * float(n)))
+	if _anim.frame != fr:
+		_anim.frame = fr
 
 
 func _try_generate() -> void:
@@ -165,6 +193,10 @@ func _try_generate() -> void:
 		_waiting = true
 		return
 	parent_node.add_child(_current_node)
+	# El material ya se ve como la etapa madura de la parcela: el nodo cosechable
+	# sigue existiendo (los workers lo reservan/recogen) pero SIN sprite propio,
+	# así no hay ítem físico grande flotando encima.
+	_hide_node_visual(_current_node)
 	# ponytail: el resource node pertenece al patio — heredamos el grupo del generator
 	# para que el camera zone-toggle lo oculte cuando el jugador está en Taller/Recepción.
 	_current_node.add_to_group("natural_visual")
@@ -178,7 +210,20 @@ func _try_generate() -> void:
 	_waiting = false
 
 
+## Oculta los sprites del nodo cosechable para que el material se vea solo como
+## la etapa madura de la parcela (no como ítem físico grande encima).
+func _hide_node_visual(node: Node) -> void:
+	if node == null:
+		return
+	for c in node.get_children():
+		if c is Sprite2D or c is AnimatedSprite2D:
+			(c as CanvasItem).visible = false
+
+
 func on_node_collected(_node: ResourceNode) -> void:
 	_current_node = null
 	_waiting = true
 	_timer = 0.0
+	# Reinicia el ciclo: parcela de vuelta a tierra vacía.
+	if _anim != null:
+		_anim.frame = 0
