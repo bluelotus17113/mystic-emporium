@@ -1,7 +1,19 @@
-[gd_scene load_steps=16 format=3 uid="uid://b5j8r7n9m1a22"]
+[gd_scene load_steps=17 format=3 uid="uid://b5j8r7n9m1a22"]
 
 [ext_resource type="Script" path="res://scripts/window/compact_ui.gd" id="1_cui"]
 [ext_resource type="Texture2D" path="res://art/sprites/characters/protagonist_anim.png" id="2_avatar"]
+[ext_resource type="Texture2D" path="res://art/sprites/ui/parchment_panel.png" id="3_parch"]
+
+[sub_resource type="StyleBoxTexture" id="SBT_parchment"]
+texture = ExtResource("3_parch")
+texture_margin_left = 9.0
+texture_margin_top = 20.0
+texture_margin_right = 9.0
+texture_margin_bottom = 20.0
+content_margin_left = 14.0
+content_margin_top = 18.0
+content_margin_right = 14.0
+content_margin_bottom = 18.0
 
 [sub_resource type="AtlasTexture" id="ATX_avatar"]
 atlas = ExtResource("2_avatar")
@@ -16,7 +28,7 @@ shadow_size = 8
 shadow_offset = Vector2(2, 0)
 
 [sub_resource type="StyleBoxFlat" id="SBF_card"]
-bg_color = Color(0.16, 0.16, 0.26, 0.96)
+bg_color = Color(0.96, 0.9, 0.74, 0.96)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
@@ -168,7 +180,7 @@ anchor_top = 0.0
 anchor_bottom = 1.0
 offset_right = 400.0
 grow_vertical = 2
-theme_override_styles/panel = SubResource("SBF_menu_column")
+theme_override_styles/panel = SubResource("SBT_parchment")
 
 [node name="ResizeHandle" type="Panel" parent="."]
 anchor_top = 0.0
@@ -331,7 +343,7 @@ offset_left = 410.0
 offset_right = 720.0
 grow_vertical = 2
 visible = false
-theme_override_styles/panel = SubResource("SBF_content_panel")
+theme_override_styles/panel = SubResource("SBT_parchment")
 
 [node name="ContentMargin" type="MarginContainer" parent="ContentPanel"]
 layout_mode = 2
@@ -376,7 +388,7 @@ offset_right = -16.0
 offset_bottom = 56.0
 grow_horizontal = 0
 grow_vertical = 2
-theme_override_styles/panel = SubResource("SBF_deliver_panel")
+theme_override_styles/panel = SubResource("SBT_parchment")
 
 [node name="DeliverMargin" type="MarginContainer" parent="DeliverPanel"]
 layout_mode = 2
