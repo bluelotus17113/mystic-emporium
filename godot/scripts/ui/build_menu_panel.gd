@@ -201,14 +201,14 @@ const ZONE_COLOR: Dictionary = {
 }
 
 const TILE_SIZE: Vector2 = Vector2(138, 116)
-const GRID_COLUMNS: int = 10
+const GRID_COLUMNS: int = 9
 
-@onready var func_grid: GridContainer = $"Margin/VBox/Tabs/🔨 Funcional/Grid"
-@onready var deco_grid: GridContainer = $"Margin/VBox/Tabs/✨ Decoración/DecoScroll/Grid"
-@onready var deco_filters: HBoxContainer = $"Margin/VBox/Tabs/✨ Decoración/Filters"
-@onready var close_button: Button = $Margin/VBox/Header/CloseButton
-@onready var status_label: Label = $Margin/VBox/StatusLabel
-@onready var tabs: TabContainer = $"Margin/VBox/Tabs"
+@onready var func_grid: GridContainer = $"Margin/HBox/Main/Tabs/🔨 Funcional/Grid"
+@onready var deco_grid: GridContainer = $"Margin/HBox/Main/Tabs/✨ Decoración/DecoScroll/Grid"
+@onready var deco_filters: HBoxContainer = $"Margin/HBox/Main/Tabs/✨ Decoración/Filters"
+@onready var close_button: Button = $Margin/HBox/Main/Header/CloseButton
+@onready var status_label: Label = $Margin/HBox/Main/StatusLabel
+@onready var tabs: TabContainer = $"Margin/HBox/Main/Tabs"
 
 var _deco_filter: StringName = &""
 var _filter_buttons: Dictionary = {}  # category_id -> Button
@@ -227,6 +227,16 @@ const ZONE_BY_NAME: Dictionary = {
 func _ready() -> void:
 	UIManager.register_panel(PANEL_NAME, self)
 	close_button.pressed.connect(UIManager.close_active)
+	# Sidebar de herramientas: cierran el catálogo y activan la herramienta.
+	$Margin/HBox/Sidebar/SideMargin/SideVBox/MoveBtn.pressed.connect(func():
+		UIManager.close_active()
+		BuildManager.enter_move_mode())
+	$Margin/HBox/Sidebar/SideMargin/SideVBox/RotateBtn.pressed.connect(func():
+		UIManager.close_active()
+		BuildManager.enter_rotate_mode())
+	$Margin/HBox/Sidebar/SideMargin/SideVBox/DemolishBtn.pressed.connect(func():
+		UIManager.close_active()
+		BuildManager.enter_demolish_mode())
 	BuildManager.buildable_unlocked.connect(_on_buildable_unlocked)
 	BuildManager.build_mode_entered.connect(_on_build_mode_entered)
 	BuildManager.placement_completed.connect(_on_placement_completed)
@@ -252,7 +262,7 @@ func _build_hotkey_hint() -> void:
 	hint.modulate = Color(0.7, 0.72, 0.8, 1)
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	var vbox: VBoxContainer = $"Margin/VBox"
+	var vbox: VBoxContainer = $"Margin/HBox/Main"
 	vbox.add_child(hint)
 	vbox.move_child(hint, 1)  # debajo del Header
 
