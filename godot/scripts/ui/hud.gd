@@ -30,6 +30,8 @@ extends CanvasLayer
 
 @onready var research_label: Label = $Root/ResearchBox/ResearchMargin/ResearchVBox/ResearchLabel
 @onready var research_progress: ProgressBar = $Root/ResearchBox/ResearchMargin/ResearchVBox/ResearchProgress
+@onready var research_box: PanelContainer = $Root/ResearchBox
+@onready var research_scroll_button: TextureButton = $Root/ResearchScrollButton
 
 const SEASON_NAMES: Array[String] = ["Primavera", "Verano", "Otoño", "Invierno"]
 
@@ -58,6 +60,11 @@ func _ready() -> void:
 	ResearchManager.research_started.connect(_on_research_started)
 	ResearchManager.research_progress.connect(_on_research_progress)
 	ResearchManager.research_completed.connect(_on_research_completed)
+	research_scroll_button.pressed.connect(_toggle_research_scroll)
+	# Cerrar el pergamino al hacer clic sobre él abierto.
+	research_box.gui_input.connect(func(ev: InputEvent):
+		if ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT:
+			_toggle_research_scroll())
 	IdleAutomationManager.automation_toggled.connect(_on_auto_toggled)
 	_wire_zone_switcher()
 	_setup_action_button_hover()
@@ -307,6 +314,37 @@ func _on_inventory_pressed() -> void:
 
 func _on_build_pressed() -> void:
 	UIManager.toggle(&"build")
+
+
+var _research_open: bool = false
+
+
+func _toggle_research_scroll() -> void:
+	# Pergamino: cerrado = icono de rollo sellado; clic → se "desenrolla"
+	# verticalmente (scale.y) revelando los datos de investigación.
+	_research_open = not _research_open
+	if _research_open:
+		research_scroll_button.visible = false
+		research_box.visible = true
+		research_box.pivot_offset = Vector2(research_box.size.x * 0.5, research_box.size.y)
+		research_box.scale = Vector2(1.0, 0.08)
+		research_box.modulate = Color(1, 1, 1, 0.4)
+		var tw := create_tween().set_parallel(true)
+		tw.tween_property(research_box, "scale", Vector2.ONE, 0.32) \
+			.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+		tw.tween_property(research_box, "modulate", Color(1, 1, 1, 1), 0.25)
+	else:
+		research_box.pivot_offset = Vector2(research_box.size.x * 0.5, research_box.size.y)
+		var tw := create_tween()
+		tw.set_parallel(true)
+		tw.tween_property(research_box, "scale", Vector2(1.0, 0.08), 0.22) \
+			.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
+		tw.tween_property(research_box, "modulate", Color(1, 1, 1, 0.3), 0.22)
+		tw.chain().tween_callback(func():
+			research_box.visible = false
+			research_box.scale = Vector2.ONE
+			research_box.modulate = Color(1, 1, 1, 1)
+			research_scroll_button.visible = true)
 
 
 func _on_research_started(r: ResearchData) -> void:

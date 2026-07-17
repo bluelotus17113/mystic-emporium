@@ -200,8 +200,8 @@ const ZONE_COLOR: Dictionary = {
 	GameEnums.ZoneType.RECEPTION: Color(0.65, 0.40, 0.85),
 }
 
-const TILE_SIZE: Vector2 = Vector2(140, 156)
-const GRID_COLUMNS: int = 3
+const TILE_SIZE: Vector2 = Vector2(145, 122)
+const GRID_COLUMNS: int = 4
 
 @onready var func_grid: GridContainer = $"Margin/VBox/Tabs/🔨 Funcional/Grid"
 @onready var deco_grid: GridContainer = $"Margin/VBox/Tabs/✨ Decoración/DecoScroll/Grid"
@@ -372,33 +372,36 @@ func _build_tile(b: BuildableData) -> Dictionary:
 	btn.disabled = InventoryManager.arcane_coins < b.cost
 	btn.pressed.connect(_on_tile_pressed.bind(b))
 
+	# Tarjeta pergamino: crema con marco de madera y franja izquierda del color
+	# de zona (identifica dónde se puede colocar sin teñir toda la card).
 	var color: Color = ZONE_COLOR.get(b.allowed_zone, Color(0.5, 0.5, 0.5))
 	var sb_normal := StyleBoxFlat.new()
-	sb_normal.bg_color = color
-	sb_normal.border_color = color.darkened(0.30)
-	sb_normal.border_width_left = 2
+	sb_normal.bg_color = Color(0.96, 0.91, 0.76, 1)
+	sb_normal.border_color = Color(0.60, 0.42, 0.24, 1)
+	sb_normal.border_width_left = 5
 	sb_normal.border_width_top = 2
 	sb_normal.border_width_right = 2
-	sb_normal.border_width_bottom = 2
+	sb_normal.border_width_bottom = 3
+	sb_normal.set_corner_radius_all(6)
 	sb_normal.content_margin_left = 6
 	sb_normal.content_margin_top = 6
 	sb_normal.content_margin_right = 6
 	sb_normal.content_margin_bottom = 6
 	var sb_hover := sb_normal.duplicate()
-	sb_hover.bg_color = color.lightened(0.18)
-	sb_hover.border_color = Color(1, 0.95, 0.55, 1)
+	sb_hover.bg_color = Color(1.0, 0.97, 0.86, 1)
+	sb_hover.border_color = Color(0.95, 0.78, 0.35, 1)
 	var sb_pressed := sb_normal.duplicate()
-	sb_pressed.bg_color = color.darkened(0.25)
+	sb_pressed.bg_color = Color(0.88, 0.80, 0.62, 1)
 	var sb_disabled := sb_normal.duplicate()
-	sb_disabled.bg_color = color.darkened(0.45)
-	sb_disabled.border_color = color.darkened(0.55)
+	sb_disabled.bg_color = Color(0.80, 0.76, 0.66, 1)
+	sb_disabled.border_color = Color(0.62, 0.56, 0.46, 1)
 	btn.add_theme_stylebox_override(&"normal", sb_normal)
 	btn.add_theme_stylebox_override(&"hover", sb_hover)
 	btn.add_theme_stylebox_override(&"pressed", sb_pressed)
 	btn.add_theme_stylebox_override(&"disabled", sb_disabled)
-	btn.add_theme_color_override(&"font_color", Color(1, 1, 1, 1))
-	btn.add_theme_color_override(&"font_hover_color", Color(1, 1, 1, 1))
-	btn.add_theme_color_override(&"font_disabled_color", Color(0.85, 0.85, 0.85, 1))
+	btn.add_theme_color_override(&"font_color", Color(0.24, 0.16, 0.11, 1))
+	btn.add_theme_color_override(&"font_hover_color", Color(0.20, 0.12, 0.05, 1))
+	btn.add_theme_color_override(&"font_disabled_color", Color(0.45, 0.40, 0.33, 1))
 
 	var vb := VBoxContainer.new()
 	vb.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -409,7 +412,7 @@ func _build_tile(b: BuildableData) -> Dictionary:
 
 	# Icono pixel art
 	var icon_rect := TextureRect.new()
-	icon_rect.custom_minimum_size = Vector2(64, 64)
+	icon_rect.custom_minimum_size = Vector2(48, 48)
 	icon_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	icon_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	icon_rect.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
@@ -437,9 +440,9 @@ func _build_tile(b: BuildableData) -> Dictionary:
 	cost_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	cost_lbl.add_theme_font_size_override(&"font_size", 13)
 	if InventoryManager.arcane_coins < b.cost:
-		cost_lbl.modulate = Color(1, 0.55, 0.55, 1)
+		cost_lbl.modulate = Color(0.78, 0.22, 0.16, 1)
 	else:
-		cost_lbl.modulate = Color(1, 0.95, 0.55, 1)
+		cost_lbl.modulate = Color(0.55, 0.40, 0.08, 1)
 	cost_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	vb.add_child(cost_lbl)
 
@@ -447,7 +450,7 @@ func _build_tile(b: BuildableData) -> Dictionary:
 	zone_lbl.text = _zone_name(b.allowed_zone)
 	zone_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	zone_lbl.add_theme_font_size_override(&"font_size", 10)
-	zone_lbl.modulate = Color(1, 1, 1, 0.75)
+	zone_lbl.modulate = color.darkened(0.25)
 	zone_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	vb.add_child(zone_lbl)
 	btn.mouse_entered.connect(_tile_hover.bind(btn, true))
