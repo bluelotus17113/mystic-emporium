@@ -25,6 +25,7 @@ var _moving_id: StringName = &""
 var _moving_cost: int = 0
 var _moving_rot: float = 0.0
 var _rotate_tool_active: bool = false
+var _copy_tool_active: bool = false
 var _demolish_highlight_node: Node2D = null
 var _demolish_orig_modulate: Color = Color.WHITE
 var _grid_cost_lookup: Dictionary = {}  # Vector2i -> int (original cost for refund)
@@ -87,6 +88,7 @@ func enter_build_mode(buildable: BuildableData) -> void:
 	if buildable == null or buildable.scene == null:
 		return
 	exit_build_mode()
+	exit_copy_mode()
 	_current_buildable = buildable
 	_ghost = buildable.scene.instantiate() as Node2D
 	_apply_custom_id(_ghost, buildable)
@@ -141,6 +143,8 @@ func _process(_delta: float) -> void:
 			_update_move_highlight()
 	elif _rotate_tool_active:
 		_update_demolish_highlight(Color(0.55, 0.8, 1.0, 1.0))
+	elif _copy_tool_active:
+		_update_move_highlight()
 
 
 func _update_demolish_highlight(hl: Color = DEMOLISH_HIGHLIGHT) -> void:
@@ -206,6 +210,13 @@ func _input(event: InputEvent) -> void:
 		if event.is_action_pressed("build_confirm"):
 			_try_rotate_existing()
 		return
+	if _copy_tool_active:
+		if event.is_action_pressed("build_cancel"):
+			exit_copy_mode()
+			return
+		if event.is_action_pressed("build_confirm"):
+			_try_copy()
+		return
 	if _demolish_active:
 		if event.is_action_pressed("build_cancel"):
 			exit_demolish_mode()
@@ -240,6 +251,7 @@ func enter_demolish_mode() -> void:
 	exit_build_mode()
 	exit_move_mode()
 	exit_rotate_mode()
+	exit_copy_mode()
 	_demolish_active = true
 	demolish_mode_changed.emit(true)
 	tool_mode_changed.emit(&"demolish")
@@ -262,6 +274,7 @@ func enter_move_mode() -> void:
 	exit_build_mode()
 	exit_demolish_mode()
 	exit_rotate_mode()
+	exit_copy_mode()
 	_move_active = true
 	tool_mode_changed.emit(&"move")
 
@@ -284,6 +297,7 @@ func enter_rotate_mode() -> void:
 	exit_build_mode()
 	exit_demolish_mode()
 	exit_move_mode()
+	exit_copy_mode()
 	_rotate_tool_active = true
 	tool_mode_changed.emit(&"rotate")
 
@@ -298,6 +312,50 @@ func exit_rotate_mode() -> void:
 
 func is_rotate_active() -> bool:
 	return _rotate_tool_active
+
+
+func enter_copy_mode() -> void:
+	exit_build_mode()
+	exit_demolish_mode()
+	exit_move_mode()
+	exit_rotate_mode()
+	_copy_tool_active = true
+	tool_mode_changed.emit(&"copy")
+
+
+func exit_copy_mode() -> void:
+	if not _copy_tool_active:
+		return
+	_clear_demolish_highlight()
+	_copy_tool_active = false
+	tool_mode_changed.emit(&"")
+
+
+func is_copy_active() -> bool:
+	return _copy_tool_active
+
+
+## Copiar: clic sobre un objeto colocado → entra en modo colocación de ESE
+## buildable con su misma rotación, para estampar copias (paga su coste).
+func _try_copy() -> void:
+	var mouse_world: Vector2 = get_tree().current_scene.get_global_mouse_position()
+	var grid_pos: Vector2i = GridManager.world_to_grid(mouse_world)
+	var id: StringName = _grid_buildable_lookup.get(grid_pos, &"")
+	var rot: float = _grid_rotation_lookup.get(grid_pos, 0.0)
+	if id == &"":
+		# Fallback: estación/generador de escena bajo el ratón (no clonables aquí).
+		AudioManager.play_named(&"build_error")
+		return
+	var b: BuildableData = _find_buildable_by_id(id)
+	if b == null:
+		return
+	exit_copy_mode()
+	enter_build_mode(b)
+	if b.size == Vector2i(1, 1):
+		_ghost_rotation_deg = rot
+		if _ghost != null:
+			_ghost.rotation_degrees = rot
+	AudioManager.play_named(&"menu_select")
 
 
 func _return_moving_to_origin() -> void:

@@ -52,6 +52,8 @@
 [ext_resource type="PackedScene" uid="uid://b5j8r7n9m1t99" path="res://scenes/ui/build_toolbar.tscn" id="50_toolbar"]
 [ext_resource type="PackedScene" uid="uid://b5j8r7n9m1abr7" path="res://scenes/ui/abracadabra_editor.tscn" id="51_abr"]
 [ext_resource type="PackedScene" uid="uid://b5j8r7n9m1em5" path="res://scenes/ui/entity_menu.tscn" id="52_em"]
+[ext_resource type="Script" path="res://scripts/ui/save_indicator.gd" id="53_saveind"]
+[ext_resource type="Script" path="res://scripts/ui/daily_summary_panel.gd" id="54_summary"]
 
 [node name="MainGame" type="Node2D" unique_id=881335330]
 script = ExtResource("1_boot")
@@ -244,6 +246,12 @@ visible = false
 visible = false
 
 [node name="EntityMenu" parent="UICanvas" instance=ExtResource("52_em")]
+
+[node name="SaveIndicator" type="Control" parent="UICanvas"]
+script = ExtResource("53_saveind")
+
+[node name="DailySummaryPanel" type="Control" parent="UICanvas"]
+script = ExtResource("54_summary")
 
 [node name="BuildToolbar" parent="UICanvas" instance=ExtResource("50_toolbar")]
 

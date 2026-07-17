@@ -66,7 +66,7 @@ func _setup_click_area() -> void:
 	area.input_event.connect(func(_vp, ev, _idx):
 		if ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT:
 			if BuildManager.is_active() or BuildManager.is_move_active() \
-					or BuildManager.is_demolish_active():
+					or BuildManager.is_demolish_active() or BuildManager.is_copy_active():
 				return
 			var menu: Node = get_tree().get_first_node_in_group("entity_menu")
 			if menu != null and menu.has_method("open_for"):

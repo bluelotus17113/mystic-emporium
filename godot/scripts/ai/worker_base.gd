@@ -26,9 +26,27 @@ const SPEED_PER_LEVEL: float = 0.06  ## +6% velocidad por nivel
 const MOOD_MIN: float = 7.0
 const MOOD_MAX: float = 15.0
 
+## Personalidad: cada ayudante nace con un rasgo que matiza su comportamiento.
+enum Trait { DILIGENTE, DORMILON, ENERGICO, CURIOSO }
+const TRAIT_NAMES: Dictionary = {
+	Trait.DILIGENTE: "📚 Diligente",
+	Trait.DORMILON: "😴 Dormilón",
+	Trait.ENERGICO: "⚡ Enérgico",
+	Trait.CURIOSO: "🔍 Curioso",
+}
+## Energía 0..1: baja al trabajar, sube al descansar. A 0 obliga un descanso.
+const ENERGY_DRAIN: float = 0.05
+const ENERGY_REGEN: float = 0.09
+const REST_RECOVER_TO: float = 0.55
+
 var worker_name: String = ""
 var level: int = 1
 var xp: int = 0
+var wtrait: int = Trait.DILIGENTE
+var energy: float = 1.0
+var _resting: bool = false
+var _wander_mult: float = 1.0
+var _drain_mult: float = 1.0
 var _base_move_speed: float = 0.0
 var _mood: Label = null
 var _mood_accum: float = 0.0
@@ -66,6 +84,7 @@ func _ready() -> void:
 	_base_move_speed = move_speed
 	if worker_name == "":
 		worker_name = _random_name()
+	_apply_trait()
 	_mood = _make_mood_bubble()
 	_mood_accum = randf_range(MOOD_MIN, MOOD_MAX)
 	_anim_sprite = get_node_or_null("AnimatedSprite2D") as AnimatedSprite2D
@@ -78,6 +97,25 @@ func _random_name() -> String:
 	if pool.is_empty():
 		pool = NAMES_FALLBACK
 	return pool[randi() % pool.size()]
+
+
+## Sortea rasgo y ajusta parámetros base según personalidad.
+func _apply_trait() -> void:
+	wtrait = randi() % TRAIT_NAMES.size()
+	var speed_mult: float = 1.0
+	match wtrait:
+		Trait.ENERGICO:
+			speed_mult = 1.12
+			_drain_mult = 0.65   # se cansa menos
+		Trait.DORMILON:
+			speed_mult = 0.95
+			_drain_mult = 1.35   # se cansa antes
+		Trait.CURIOSO:
+			_wander_mult = 1.6   # explora más al deambular
+		_:
+			pass
+	_base_move_speed *= speed_mult
+	move_speed = _base_move_speed
 
 
 func set_worker_name(new_name: String) -> void:
@@ -100,6 +138,8 @@ func _make_mood_bubble() -> Label:
 func gain_xp(amount: int = 1) -> void:
 	if level >= MAX_LEVEL:
 		return
+	if wtrait == Trait.DILIGENTE:
+		amount *= 2  # los diligentes aprenden el doble de rápido
 	xp += amount
 	while xp >= XP_PER_LEVEL and level < MAX_LEVEL:
 		xp -= XP_PER_LEVEL
@@ -160,7 +200,8 @@ func _on_body_clicked(_vp: Node, event: InputEvent, _idx: int) -> void:
 		return
 	# En modo obra el clic lo gestiona BuildManager; no abrir menú.
 	if BuildManager.is_active() or BuildManager.is_move_active() \
-			or BuildManager.is_rotate_active() or BuildManager.is_demolish_active():
+			or BuildManager.is_rotate_active() or BuildManager.is_demolish_active() \
+			or BuildManager.is_copy_active():
 		return
 	var menu: Node = get_tree().get_first_node_in_group("entity_menu")
 	if menu != null and menu.has_method("open_for"):
@@ -186,7 +227,7 @@ func _worker_title() -> String:
 		GameEnums.WorkerType.LENADOR: role = "🪓 Leñador"
 		GameEnums.WorkerType.ESPIRITU: role = "👻 Espíritu"
 		_: role = "Ayudante"
-	return "%s %s · Nv %d" % [role, worker_name, level]
+	return "%s %s · Nv %d · %s" % [role, worker_name, level, TRAIT_NAMES.get(wtrait, "")]
 
 
 func _capture_home() -> void:
@@ -232,6 +273,7 @@ func _physics_process(delta: float) -> void:
 			pass
 	_update_anim(delta)
 	_maybe_mood(delta)
+	_update_energy(delta)
 	# pasos suaves + polvo (solo si el worker está en la zona visible)
 	if visible and velocity.length_squared() > 4.0:
 		_step_accum -= delta
@@ -288,7 +330,31 @@ func _update_anim_directional(is_moving: bool) -> void:
 		_anim_sprite.play(want)
 
 
+## Energía: baja al moverse/trabajar, sube al estar quieto. A 0 fuerza descanso
+## (se planta hasta recuperar REST_RECOVER_TO). Los rasgos ajustan el ritmo.
+func _update_energy(delta: float) -> void:
+	var active: bool = velocity.length_squared() > 4.0
+	if _resting:
+		velocity = Vector2.ZERO
+		energy = minf(1.0, energy + ENERGY_REGEN * 1.8 * delta)
+		if energy >= REST_RECOVER_TO:
+			_resting = false
+	elif active:
+		energy = maxf(0.0, energy - ENERGY_DRAIN * _drain_mult * delta)
+		if energy <= 0.0:
+			_resting = true
+			_release_target()
+			_change_state(GameEnums.WorkerState.IDLE)
+			_puff_mood("💤")
+	else:
+		energy = minf(1.0, energy + ENERGY_REGEN * delta)
+
+
 func _on_idle(delta: float) -> void:
+	# Descansando: se queda quieto recuperando energía.
+	if _resting:
+		velocity = Vector2.ZERO
+		return
 	# Si el inventario está lleno, no recolectar más (evita spam y trabajo en vacío).
 	if InventoryManager.get_total_count() >= InventoryManager.max_capacity:
 		_wander(delta)
@@ -339,7 +405,7 @@ func _wander(delta: float) -> void:
 
 func _pick_wander_target() -> void:
 	var angle: float = randf() * TAU
-	var radius: float = randf_range(WANDER_RADIUS * 0.3, WANDER_RADIUS)
+	var radius: float = randf_range(WANDER_RADIUS * 0.3, WANDER_RADIUS) * _wander_mult
 	_wander_target = _home_position + Vector2(cos(angle), sin(angle)) * radius
 	_wander_timer = randf_range(WANDER_REPICK_MIN, WANDER_REPICK_MAX)
 
