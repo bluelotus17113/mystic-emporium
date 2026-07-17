@@ -181,9 +181,11 @@ func _physics_process(_delta: float) -> void:
 				state = State.IDLE_HOME
 				velocity = Vector2.ZERO
 		State.DRAGGING:
-			velocity = Vector2.ZERO
+			# Seguir al ratón CON física: así también al arrastrarla choca con
+			# los objetos sólidos en vez de atravesarlos.
 			var target: Vector2 = _clamp_to_rect(get_global_mouse_position() + _drag_offset, _drag_zone_rect)
-			global_position = global_position.lerp(target, DRAG_FOLLOW_SMOOTH)
+			velocity = (target - global_position) * 14.0
+			move_and_slide()
 		State.WANDERING:
 			if _linger_timer > 0.0:
 				velocity = Vector2.ZERO

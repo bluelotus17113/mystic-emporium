@@ -267,11 +267,23 @@ func _try_place() -> void:
 	_grid_buildable_lookup[grid_pos] = _current_buildable.id
 	_grid_rotation_lookup[grid_pos] = _ghost_rotation_deg
 	_assign_zone_visual_group(instance, _current_buildable.allowed_zone)
+	_attach_deco_solid(instance, _current_buildable)
 	VFXManager.play(VFXManager.FX.BUILD, instance.global_position)
 	_spawn_pop(instance)
 	AudioManager.play_beep(540.0, 0.1, -12.0)
 	placement_completed.emit(_current_buildable, instance.global_position)
 	exit_build_mode()
+
+
+## Colisión de pies para decoraciones físicas (mesas, muebles, naturaleza).
+## Alfombras/suelos y cosas de pared no bloquean el paso.
+func _attach_deco_solid(instance: Node2D, b: BuildableData) -> void:
+	if instance == null or b == null or not b.is_decorative:
+		return
+	if b.decoration_category != &"table" and b.decoration_category != &"nature":
+		return
+	var w: float = max(24.0, b.size.x * 32.0 * 0.6)
+	SolidBase.attach(instance, Vector2(w, 14.0), Vector2(0, 4))
 
 
 func _spawn_pop(instance: Node2D) -> void:
@@ -379,3 +391,4 @@ func load_save_state(data: Dictionary) -> void:
 		_grid_buildable_lookup[grid_pos] = b.id
 		_grid_rotation_lookup[grid_pos] = rot
 		_assign_zone_visual_group(instance, b.allowed_zone)
+		_attach_deco_solid(instance, b)

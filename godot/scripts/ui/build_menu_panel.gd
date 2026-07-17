@@ -238,6 +238,7 @@ func _ready() -> void:
 		g.add_theme_constant_override(&"v_separation", 10)
 	_build_deco_filters()
 	_build_hotkey_hint()
+
 	# Reaccionar al cambio de zona para que el panel se refresque mientras está abierto.
 	var cam := get_tree().get_first_node_in_group("zone_camera")
 	if cam != null and cam.has_signal("zone_changed"):
