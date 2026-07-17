@@ -85,6 +85,7 @@ var _has_expired: bool = false
 ## Curioseo: puntos que el cliente visita mirando la tienda antes del mostrador.
 var _browse_points: Array = []
 var _browse_pause: float = 0.0
+var _browse_watchdog: float = 0.0
 var skin_name: StringName = &""  ## base_name de la skin, para el álbum de clientes
 var _facing: StringName = &"down"
 var _facing_x: float = 1.0
@@ -239,7 +240,7 @@ func _create_patience_bar() -> void:
 	_patience_bar.show_percentage = false
 	_patience_bar.max_value = 100.0
 	_patience_bar.value = 100.0
-	_patience_bar.position = Vector2(-25, -52)
+	_patience_bar.position = Vector2(-25, -74)
 	_patience_bar.visible = false
 	add_child(_patience_bar)
 
@@ -270,7 +271,10 @@ func _physics_process(_delta: float) -> void:
 			if not _browse_points.is_empty():
 				var bp: Vector2 = _browse_points[0]
 				_move_toward(bp)
-				if global_position.distance_to(bp) <= arrival_distance + 4.0:
+				_browse_watchdog += _delta
+				if global_position.distance_to(bp) <= arrival_distance + 4.0 \
+						or _browse_watchdog > 6.0:
+					_browse_watchdog = 0.0
 					_browse_points.pop_front()
 					_browse_pause = randf_range(1.0, 2.4)
 				_update_anim(velocity.length_squared() > 4.0)

@@ -7,7 +7,7 @@ signal natural_level_changed(new_level: int)
 # ponytail: layout horizontal puro. Anchor a la izquierda x=1000, crece hacia la derecha.
 # Altura fija 400 (cabe en companion mode strip y en ventana normal). Filosofía idle:
 # el patio es una franja horizontal que el jugador puede pasear con la rueda/raton.
-const NATURAL_LEFT_X: float = 1000.0
+const NATURAL_LEFT_X: float = -6400.0
 const NATURAL_HEIGHT: float = 400.0
 const NATURAL_LEVELS: Array = [
 	{"width": 800.0,  "cost": 0,     "label": "Pequeño"},

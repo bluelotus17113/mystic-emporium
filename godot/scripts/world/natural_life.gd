@@ -68,6 +68,9 @@ func _scatter_props() -> void:
 		s.offset = Vector2(0, -tex.get_height() * 0.5 + 4)
 		s.add_to_group("natural_visual")
 		add_child(s)
+		# props grandes bloquean el paso; setas/flores no
+		if not ("mushroom" in tex.resource_path or "flower" in tex.resource_path):
+			SolidBase.attach(s, Vector2(tex.get_width() * k * 0.55, 12.0), Vector2(0, -2))
 
 
 func _random_point(rng: RandomNumberGenerator) -> Vector2:

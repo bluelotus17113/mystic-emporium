@@ -37,6 +37,7 @@ var _idle_timer: float = 0.0
 var _wander_idle_delay: float = 8.0
 var _wander_target: Vector2 = Vector2.ZERO
 var _linger_timer: float = 0.0
+var _wander_watchdog: float = 0.0
 var _favorite_rotate_timer: float = 0.0
 var _delivering_timer: float = 0.0
 var _bubble_label: Label = null
@@ -192,7 +193,10 @@ func _physics_process(_delta: float) -> void:
 					state = State.RETURNING
 			else:
 				_move_toward(_wander_target)
-				if global_position.distance_to(_wander_target) <= arrival_distance + 6.0:
+				_wander_watchdog += _delta
+				if global_position.distance_to(_wander_target) <= arrival_distance + 6.0 \
+						or _wander_watchdog > 7.0:
+					_wander_watchdog = 0.0
 					_linger_timer = randf_range(WANDER_LINGER_MIN, WANDER_LINGER_MAX)
 	_update_anim()
 	_tick_footsteps(_delta)

@@ -40,6 +40,10 @@ var _hover_label: Label = null
 func _ready() -> void:
 	add_to_group("workstations")
 	WorkstationManager.register(self)
+	# Colisión de pies: los personajes no atraviesan la estación. El mostrador
+	# queda libre para que los clientes lleguen sin chocar.
+	if station_type != GameEnums.StationType.COUNTER:
+		SolidBase.attach(self, Vector2(44, 16), Vector2(0, 6))
 	var area: Area2D = get_node_or_null("Area2D") as Area2D
 	if area != null:
 		area.input_event.connect(_on_area_input_event)

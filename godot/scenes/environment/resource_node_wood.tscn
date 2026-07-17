@@ -6,6 +6,7 @@
 [node name="ResourceNodeWood" type="Node2D"]
 script = ExtResource("1_rn")
 resource_type = 4
+solid_size = Vector2(26, 12)
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture_filter = 1

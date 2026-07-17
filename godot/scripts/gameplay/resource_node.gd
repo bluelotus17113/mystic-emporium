@@ -7,6 +7,7 @@ extends Node2D
 @export var respawn_after_collect: bool = false
 @export var respawn_time: float = 0.0
 @export var free_on_collect: bool = false  ## maleza: desaparece del árbol al cortarla
+@export var solid_size: Vector2 = Vector2.ZERO  ## si no es ZERO, colisión de pies (árboles)
 
 var _is_collected: bool = false
 var growing: bool = false  ## maleza en crecimiento: aún no cosechable
@@ -19,6 +20,8 @@ signal collected(node: ResourceNode)
 
 func _ready() -> void:
 	add_to_group("resource_nodes")
+	if solid_size != Vector2.ZERO:
+		SolidBase.attach(self, solid_size, Vector2(0, 4))
 	# Diferir el registro: el generator hace add_child y SOLO DESPUÉS setea
 	# global_position. Si registramos en _ready, los workers ven el nodo en
 	# la pos del parent (0,0 raíz) y caminan fuera del mapa un frame antes
@@ -50,6 +53,7 @@ func collect() -> bool:
 	_is_collected = true
 	hide()
 	set_process(false)
+	SolidBase.set_enabled(self, false)
 	# Add to central inventory
 	if item_data != null:
 		InventoryManager.add_item(item_data, yield_quantity)
@@ -72,6 +76,7 @@ func collect() -> bool:
 func _respawn() -> void:
 	_is_collected = false
 	_reserved_by = null
+	SolidBase.set_enabled(self, true)
 	show()
 	set_process(true)
 

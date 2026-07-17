@@ -29,6 +29,8 @@ const WANDER_SPEED_FACTOR: float = 0.55  ## wander es más lento que ir a recole
 const TARGET_SEARCH_INTERVAL: float = 0.3  ## no escanear recursos cada frame; cada 0.3s basta
 var _target_search_cd: float = 0.0
 var _step_accum: float = 0.0
+var _stuck_time: float = 0.0
+var _last_pos: Vector2 = Vector2.ZERO
 
 signal state_changed(new_state: GameEnums.WorkerState)
 
@@ -52,6 +54,19 @@ func _physics_process(delta: float) -> void:
 			_on_idle(delta)
 		GameEnums.WorkerState.FETCHING:
 			_move_to(target, delta)
+			# Anti-atasco: encajado contra una colisión cerca del objetivo → llegó.
+			if global_position.distance_to(_last_pos) < 1.2 * delta * 60.0 * 0.02 + 0.8:
+				_stuck_time += delta
+			else:
+				_stuck_time = 0.0
+			_last_pos = global_position
+			if _stuck_time > 1.0 and target != null and is_instance_valid(target):
+				_stuck_time = 0.0
+				if global_position.distance_to(target.global_position) < 60.0:
+					_on_arrived_at_target()
+				else:
+					_release_target()
+					_change_state(GameEnums.WorkerState.IDLE)
 			if target == null or not is_instance_valid(target):
 				_release_target()
 				_change_state(GameEnums.WorkerState.IDLE)
