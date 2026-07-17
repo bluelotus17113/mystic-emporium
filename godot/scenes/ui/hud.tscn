@@ -305,6 +305,8 @@ layout_mode = 2
 theme_override_constants/separation = 4
 
 [node name="OrderLabel" type="Label" parent="Root/TopBar"]
+theme_override_colors/font_color = Color(0.97, 0.93, 0.82, 1)
+theme_override_colors/font_outline_color = Color(0.12, 0.08, 0.05, 1)
 layout_mode = 2
 text = "Order: —"
 theme_override_font_sizes/font_size = 18
@@ -474,6 +476,17 @@ theme_override_colors/font_hover_color = Color(1, 1, 0.9, 1)
 theme_override_styles/normal = SubResource("SBF_zone_btn")
 theme_override_styles/hover = SubResource("SBF_zone_btn_hover")
 theme_override_styles/pressed = SubResource("SBF_zone_btn")
+
+[node name="FollowButton" type="Button" parent="Root/ClockBox/ZoneSwitcher"]
+custom_minimum_size = Vector2(28, 28)
+layout_mode = 2
+toggle_mode = true
+text = "🔎"
+tooltip_text = "Seguir a la protagonista (zoom)"
+theme_override_font_sizes/font_size = 13
+theme_override_styles/normal = SubResource("SBF_zone_btn")
+theme_override_styles/hover = SubResource("SBF_zone_btn_hover")
+theme_override_styles/pressed = SubResource("SBF_zone_btn_hover")
 
 [node name="ExpandNaturalButton" type="Button" parent="Root/ClockBox"]
 custom_minimum_size = Vector2(0, 28)

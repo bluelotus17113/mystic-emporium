@@ -16,6 +16,7 @@ extends CanvasLayer
 @onready var next_zone_button: Button = $Root/ClockBox/ZoneSwitcher/NextZoneButton
 @onready var zone_label: Label = $Root/ClockBox/ZoneSwitcher/ZoneLabel
 @onready var expand_natural_button: Button = $Root/ClockBox/ExpandNaturalButton
+@onready var follow_button: Button = $Root/ClockBox/ZoneSwitcher/FollowButton
 
 @onready var inventory_button: Button = $Root/ActionBar/InventoryButton
 @onready var build_button: Button = $Root/ActionBar/BuildButton
@@ -111,6 +112,11 @@ func _wire_zone_switcher() -> void:
 		return
 	prev_zone_button.pressed.connect(cam.prev_zone)
 	next_zone_button.pressed.connect(cam.next_zone)
+	follow_button.pressed.connect(func():
+		if cam.has_method("toggle_follow"):
+			cam.toggle_follow()
+			follow_button.set_pressed_no_signal(cam.follow_protagonist))
+	cam.zone_changed.connect(func(_z): follow_button.set_pressed_no_signal(false))
 	cam.zone_changed.connect(_on_zone_changed)
 	expand_natural_button.pressed.connect(func(): ZoneExpansionManager.expand_natural())
 	ZoneExpansionManager.natural_level_changed.connect(func(_l): _refresh_expand_button())

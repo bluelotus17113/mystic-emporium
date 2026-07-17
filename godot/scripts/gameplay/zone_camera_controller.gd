@@ -23,6 +23,7 @@ const MAX_ZOOM: float = 2.5
 var _current_index: int = 1  ## arranca en Taller (centro)
 var _tween: Tween = null
 var _is_panning: bool = false
+var follow_protagonist: bool = false
 var _zone_center: Vector2 = Vector2.ZERO
 var _zone_half_size: Vector2 = Vector2.ZERO
 
@@ -56,7 +57,34 @@ func _refresh_natural_config(level: int) -> void:
 	ZONES[0].zoom = z
 
 
+func toggle_follow() -> void:
+	follow_protagonist = not follow_protagonist
+	if follow_protagonist:
+		var proto: Node2D = get_tree().get_first_node_in_group("protagonist")
+		if proto == null:
+			follow_protagonist = false
+			return
+		if _tween != null and _tween.is_valid():
+			_tween.kill()
+		_tween = create_tween().set_parallel(true)
+		_tween.tween_property(self, "zoom", Vector2(2.1, 2.1), 0.4) \
+			.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	else:
+		# volver a la vista de la zona actual
+		var z: Dictionary = get_current_zone()
+		if _tween != null and _tween.is_valid():
+			_tween.kill()
+		_tween = create_tween().set_parallel(true)
+		_tween.tween_property(self, "position", _zone_center if _zone_center != Vector2.ZERO else z.pos, 0.4)
+		_tween.tween_property(self, "zoom", Vector2(z.zoom, z.zoom), 0.4)
+
+
 func _process(delta: float) -> void:
+	if follow_protagonist:
+		var proto: Node2D = get_tree().get_first_node_in_group("protagonist")
+		if proto != null:
+			position = position.lerp(proto.global_position + Vector2(0, -16), 0.12)
+		return
 	if get_current_zone().name != &"natural":
 		return
 	# ponytail: filosofía idle horizontal — solo paneo lateral, nada vertical.
@@ -83,10 +111,12 @@ func goto_zone(zone_name: StringName) -> void:
 
 
 func next_zone() -> void:
+	follow_protagonist = false
 	_goto_index((_current_index + 1) % ZONES.size())
 
 
 func prev_zone() -> void:
+	follow_protagonist = false
 	_goto_index((_current_index - 1 + ZONES.size()) % ZONES.size())
 
 
