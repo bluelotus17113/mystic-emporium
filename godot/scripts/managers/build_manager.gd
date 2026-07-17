@@ -122,7 +122,7 @@ func _process(_delta: float) -> void:
 			var ok: bool = _cell_ok_for(_find_buildable_by_id(_moving_id), gp)
 			_moving_node.modulate = Color(0.5, 1.0, 0.5, 0.7) if ok else Color(1.0, 0.4, 0.4, 0.7)
 		else:
-			_update_demolish_highlight(Color(1.0, 0.9, 0.45, 1.0))
+			_update_move_highlight()
 	elif _rotate_tool_active:
 		_update_demolish_highlight(Color(0.55, 0.8, 1.0, 1.0))
 
@@ -143,6 +143,27 @@ func _update_demolish_highlight(hl: Color = DEMOLISH_HIGHLIGHT) -> void:
 		_demolish_highlight_node = node
 		_demolish_orig_modulate = node.modulate
 		node.modulate = DEMOLISH_HIGHLIGHT
+
+
+## Highlight de Mover: objetos del grid o estaciones/generadores de escena.
+func _update_move_highlight() -> void:
+	var scene: Node = get_tree().current_scene
+	if scene == null:
+		return
+	var mouse_world: Vector2 = scene.get_global_mouse_position()
+	var grid_pos: Vector2i = GridManager.world_to_grid(mouse_world)
+	var node: Node2D = null
+	if GridManager.is_cell_occupied(grid_pos):
+		node = GridManager._occupied.get(grid_pos)
+	if node == null or not is_instance_valid(node):
+		node = _find_movable_under_mouse(mouse_world)
+	if node == _demolish_highlight_node:
+		return
+	_clear_demolish_highlight()
+	if node != null and is_instance_valid(node):
+		_demolish_highlight_node = node
+		_demolish_orig_modulate = node.modulate
+		node.modulate = Color(1.0, 0.9, 0.45, 1.0)
 
 
 func _clear_demolish_highlight() -> void:
@@ -264,6 +285,7 @@ func is_rotate_active() -> bool:
 
 
 func _return_moving_to_origin() -> void:
+	SolidBase.set_enabled(_moving_node, true)
 	_moving_node.global_position = GridManager.grid_to_world(_moving_from)
 	_moving_node.modulate = Color.WHITE
 	GridManager.place_object(_moving_from, _moving_node)
@@ -273,14 +295,35 @@ func _return_moving_to_origin() -> void:
 	_moving_node = null
 
 
+## Objeto "movible" bajo el ratón aunque no esté en el grid (estaciones y
+## generadores colocados a mano en la escena).
+func _find_movable_under_mouse(mouse_world: Vector2) -> Node2D:
+	var best: Node2D = null
+	var best_d: float = 44.0
+	for grp in ["workstations", "generators"]:
+		for n in get_tree().get_nodes_in_group(grp):
+			var n2: Node2D = n as Node2D
+			if n2 == null or not is_instance_valid(n2) or not n2.visible:
+				continue
+			var d: float = n2.global_position.distance_to(mouse_world)
+			if d < best_d:
+				best_d = d
+				best = n2
+	return best
+
+
 func _try_pick_for_move() -> void:
 	var mouse_world: Vector2 = get_tree().current_scene.get_global_mouse_position()
 	var grid_pos: Vector2i = GridManager.world_to_grid(mouse_world)
-	if not GridManager.is_cell_occupied(grid_pos):
-		return
-	var node: Node2D = GridManager._occupied.get(grid_pos)
+	var node: Node2D = null
+	if GridManager.is_cell_occupied(grid_pos):
+		node = GridManager._occupied.get(grid_pos)
 	if node == null or not is_instance_valid(node):
-		return
+		# Fallback: estaciones/generadores de la escena (no registrados en grid).
+		node = _find_movable_under_mouse(mouse_world)
+		if node == null:
+			return
+		grid_pos = GridManager.world_to_grid(node.global_position)
 	_moving_node = node
 	_moving_from = grid_pos
 	_moving_id = _grid_buildable_lookup.get(grid_pos, &"")
@@ -290,6 +333,7 @@ func _try_pick_for_move() -> void:
 	_grid_cost_lookup.erase(grid_pos)
 	_grid_buildable_lookup.erase(grid_pos)
 	_grid_rotation_lookup.erase(grid_pos)
+	SolidBase.set_enabled(_moving_node, false)
 	_clear_demolish_highlight()
 	AudioManager.play_named(&"menu_select")
 
@@ -307,6 +351,7 @@ func _try_drop_moving() -> void:
 	_grid_cost_lookup[grid_pos] = _moving_cost
 	_grid_buildable_lookup[grid_pos] = _moving_id
 	_grid_rotation_lookup[grid_pos] = _moving_rot
+	SolidBase.set_enabled(_moving_node, true)
 	VFXManager.play(VFXManager.FX.BUILD, _moving_node.global_position)
 	AudioManager.play_named(&"build_place")
 	_moving_node = null

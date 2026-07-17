@@ -141,6 +141,10 @@ func _station_display_name() -> String:
 
 
 func _on_area_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
+	# En modo obra (colocar/mover/rotar/demoler) la estación es un objeto más:
+	# no abrir su panel; el clic lo gestiona BuildManager.
+	if BuildManager.is_active() or BuildManager.is_move_active() 			or BuildManager.is_rotate_active() or BuildManager.is_demolish_active():
+		return
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		WorkstationManager.workstation_clicked.emit(self)
 
