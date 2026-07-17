@@ -62,6 +62,9 @@ func _scatter_props() -> void:
 		s.texture = tex
 		s.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 		s.position = _random_point(rng)
+		# escala acorde al mundo: setas/flores menores, resto x1.8
+		var k: float = 1.4 if "mushroom" in tex.resource_path else 1.8
+		s.scale = Vector2(k, k)
 		s.offset = Vector2(0, -tex.get_height() * 0.5 + 4)
 		s.add_to_group("natural_visual")
 		add_child(s)

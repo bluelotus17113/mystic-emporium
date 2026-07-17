@@ -12,4 +12,7 @@ yield_quantity = 1
 free_on_collect = true
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+scale = Vector2(2, 2)
+offset = Vector2(0, -8)
 texture = ExtResource("2_tex")
