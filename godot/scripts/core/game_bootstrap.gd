@@ -216,6 +216,13 @@ func _wire_managers() -> void:
 		var hud: Node = get_node_or_null(hud_canvas_path)
 		if hud != null:
 			WindowController.register_main_ui(hud)
+	# Las demás capas de UI (paneles de clientes, atajos, viñeta) viven en
+	# CanvasLayers aparte; también deben ocultarse en compact mode para que no
+	# se vean por detrás del companion.
+	for canvas_name in ["UICanvas", "HotkeyLegend", "VignetteLayer"]:
+		var canvas: Node = get_node_or_null(canvas_name)
+		if canvas != null:
+			WindowController.register_main_ui(canvas)
 	if desktop_companion_path != NodePath(""):
 		var companion: Node2D = get_node_or_null(desktop_companion_path) as Node2D
 		if companion != null:
