@@ -85,14 +85,10 @@ var _has_expired: bool = false
 var _facing: StringName = &"down"
 var _facing_x: float = 1.0
 
-## NPCs con hoja direccional completa (idle/walk × down/up/side). El resto
-## usa un frame estático a 64px. Debe coincidir con TOP12 de npc_dir.py.
-const ANIMATED: Dictionary = {
-	&"npc_aldeano": true, &"npc_aventurero_novato": true, &"npc_comerciante": true,
-	&"npc_nino_curioso": true, &"npc_caballero": true, &"npc_mago_iniciado": true,
-	&"npc_cocinero": true, &"npc_doctor": true, &"npc_bardo": true,
-	&"npc_elfo_bosque": true, &"npc_princesa": true, &"npc_anciano_sabio": true,
-}
+## Un NPC es direccional si existe su hoja npc_X_anim.png (detección automática:
+## no hay lista que mantener; al añadir la hoja el NPC se anima solo).
+static func _is_animated(base_name: String) -> bool:
+	return ResourceLoader.exists("res://art/sprites/characters/%s_anim.png" % base_name)
 
 var personality: Dictionary = PERSONALITIES[0]  ## se asigna en setup()
 
@@ -137,7 +133,7 @@ func _apply_random_skin() -> void:
 ## Construye SpriteFrames en runtime: 6 anims direccionales para los ANIMATED,
 ## un frame estático (idle_down) a 64px para el resto.
 func _build_sprite_frames(base_name: String) -> SpriteFrames:
-	if ANIMATED.has(StringName(base_name)):
+	if _is_animated(base_name):
 		var tex: Texture2D = load("res://art/sprites/characters/%s_anim.png" % base_name)
 		if tex != null:
 			var sf := SpriteFrames.new()

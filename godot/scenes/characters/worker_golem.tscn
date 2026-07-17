@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=3 uid="uid://b5j8r7n9m1a04"]
+[gd_scene load_steps=41 format=3 uid="uid://b5j8r7n9m1a04"]
 
 [ext_resource type="Script" path="res://scripts/ai/worker_golem.gd" id="1_wg"]
 [ext_resource type="Texture2D" path="res://art/sprites/characters/golem_anim.png" id="2_tex"]
@@ -38,64 +38,82 @@ atlas = ExtResource("2_tex")
 region = Rect2(320, 64, 64, 64)
 [sub_resource type="AtlasTexture" id="ATX_g11"]
 atlas = ExtResource("2_tex")
-region = Rect2(0, 128, 64, 64)
+region = Rect2(384, 64, 64, 64)
 [sub_resource type="AtlasTexture" id="ATX_g12"]
 atlas = ExtResource("2_tex")
-region = Rect2(64, 128, 64, 64)
+region = Rect2(448, 64, 64, 64)
 [sub_resource type="AtlasTexture" id="ATX_g13"]
 atlas = ExtResource("2_tex")
-region = Rect2(128, 128, 64, 64)
+region = Rect2(0, 128, 64, 64)
 [sub_resource type="AtlasTexture" id="ATX_g14"]
 atlas = ExtResource("2_tex")
-region = Rect2(192, 128, 64, 64)
+region = Rect2(64, 128, 64, 64)
 [sub_resource type="AtlasTexture" id="ATX_g15"]
 atlas = ExtResource("2_tex")
-region = Rect2(0, 192, 64, 64)
+region = Rect2(128, 128, 64, 64)
 [sub_resource type="AtlasTexture" id="ATX_g16"]
 atlas = ExtResource("2_tex")
-region = Rect2(64, 192, 64, 64)
+region = Rect2(192, 128, 64, 64)
 [sub_resource type="AtlasTexture" id="ATX_g17"]
 atlas = ExtResource("2_tex")
-region = Rect2(128, 192, 64, 64)
+region = Rect2(0, 192, 64, 64)
 [sub_resource type="AtlasTexture" id="ATX_g18"]
 atlas = ExtResource("2_tex")
-region = Rect2(192, 192, 64, 64)
+region = Rect2(64, 192, 64, 64)
 [sub_resource type="AtlasTexture" id="ATX_g19"]
 atlas = ExtResource("2_tex")
-region = Rect2(256, 192, 64, 64)
+region = Rect2(128, 192, 64, 64)
 [sub_resource type="AtlasTexture" id="ATX_g20"]
 atlas = ExtResource("2_tex")
-region = Rect2(320, 192, 64, 64)
+region = Rect2(192, 192, 64, 64)
 [sub_resource type="AtlasTexture" id="ATX_g21"]
 atlas = ExtResource("2_tex")
-region = Rect2(0, 256, 64, 64)
+region = Rect2(256, 192, 64, 64)
 [sub_resource type="AtlasTexture" id="ATX_g22"]
 atlas = ExtResource("2_tex")
-region = Rect2(64, 256, 64, 64)
+region = Rect2(320, 192, 64, 64)
 [sub_resource type="AtlasTexture" id="ATX_g23"]
 atlas = ExtResource("2_tex")
-region = Rect2(128, 256, 64, 64)
+region = Rect2(384, 192, 64, 64)
 [sub_resource type="AtlasTexture" id="ATX_g24"]
 atlas = ExtResource("2_tex")
-region = Rect2(192, 256, 64, 64)
+region = Rect2(448, 192, 64, 64)
 [sub_resource type="AtlasTexture" id="ATX_g25"]
 atlas = ExtResource("2_tex")
-region = Rect2(0, 320, 64, 64)
+region = Rect2(0, 256, 64, 64)
 [sub_resource type="AtlasTexture" id="ATX_g26"]
 atlas = ExtResource("2_tex")
-region = Rect2(64, 320, 64, 64)
+region = Rect2(64, 256, 64, 64)
 [sub_resource type="AtlasTexture" id="ATX_g27"]
 atlas = ExtResource("2_tex")
-region = Rect2(128, 320, 64, 64)
+region = Rect2(128, 256, 64, 64)
 [sub_resource type="AtlasTexture" id="ATX_g28"]
 atlas = ExtResource("2_tex")
-region = Rect2(192, 320, 64, 64)
+region = Rect2(192, 256, 64, 64)
 [sub_resource type="AtlasTexture" id="ATX_g29"]
 atlas = ExtResource("2_tex")
-region = Rect2(256, 320, 64, 64)
+region = Rect2(0, 320, 64, 64)
 [sub_resource type="AtlasTexture" id="ATX_g30"]
 atlas = ExtResource("2_tex")
+region = Rect2(64, 320, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_g31"]
+atlas = ExtResource("2_tex")
+region = Rect2(128, 320, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_g32"]
+atlas = ExtResource("2_tex")
+region = Rect2(192, 320, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_g33"]
+atlas = ExtResource("2_tex")
+region = Rect2(256, 320, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_g34"]
+atlas = ExtResource("2_tex")
 region = Rect2(320, 320, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_g35"]
+atlas = ExtResource("2_tex")
+region = Rect2(384, 320, 64, 64)
+[sub_resource type="AtlasTexture" id="ATX_g36"]
+atlas = ExtResource("2_tex")
+region = Rect2(448, 320, 64, 64)
 
 [sub_resource type="SpriteFrames" id="SF_golem"]
 animations = [{
@@ -104,27 +122,27 @@ animations = [{
 "name": &"idle_down",
 "speed": 6.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("ATX_g5")}, {"duration": 1.0, "texture": SubResource("ATX_g6")}, {"duration": 1.0, "texture": SubResource("ATX_g7")}, {"duration": 1.0, "texture": SubResource("ATX_g8")}, {"duration": 1.0, "texture": SubResource("ATX_g9")}, {"duration": 1.0, "texture": SubResource("ATX_g10")}],
+"frames": [{"duration": 1.0, "texture": SubResource("ATX_g5")}, {"duration": 1.0, "texture": SubResource("ATX_g6")}, {"duration": 1.0, "texture": SubResource("ATX_g7")}, {"duration": 1.0, "texture": SubResource("ATX_g8")}, {"duration": 1.0, "texture": SubResource("ATX_g9")}, {"duration": 1.0, "texture": SubResource("ATX_g10")}, {"duration": 1.0, "texture": SubResource("ATX_g11")}, {"duration": 1.0, "texture": SubResource("ATX_g12")}],
 "loop": true,
 "name": &"walk_down",
 "speed": 8.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("ATX_g11")}, {"duration": 1.0, "texture": SubResource("ATX_g12")}, {"duration": 1.0, "texture": SubResource("ATX_g13")}, {"duration": 1.0, "texture": SubResource("ATX_g14")}],
+"frames": [{"duration": 1.0, "texture": SubResource("ATX_g13")}, {"duration": 1.0, "texture": SubResource("ATX_g14")}, {"duration": 1.0, "texture": SubResource("ATX_g15")}, {"duration": 1.0, "texture": SubResource("ATX_g16")}],
 "loop": true,
 "name": &"idle_up",
 "speed": 6.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("ATX_g15")}, {"duration": 1.0, "texture": SubResource("ATX_g16")}, {"duration": 1.0, "texture": SubResource("ATX_g17")}, {"duration": 1.0, "texture": SubResource("ATX_g18")}, {"duration": 1.0, "texture": SubResource("ATX_g19")}, {"duration": 1.0, "texture": SubResource("ATX_g20")}],
+"frames": [{"duration": 1.0, "texture": SubResource("ATX_g17")}, {"duration": 1.0, "texture": SubResource("ATX_g18")}, {"duration": 1.0, "texture": SubResource("ATX_g19")}, {"duration": 1.0, "texture": SubResource("ATX_g20")}, {"duration": 1.0, "texture": SubResource("ATX_g21")}, {"duration": 1.0, "texture": SubResource("ATX_g22")}, {"duration": 1.0, "texture": SubResource("ATX_g23")}, {"duration": 1.0, "texture": SubResource("ATX_g24")}],
 "loop": true,
 "name": &"walk_up",
 "speed": 8.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("ATX_g21")}, {"duration": 1.0, "texture": SubResource("ATX_g22")}, {"duration": 1.0, "texture": SubResource("ATX_g23")}, {"duration": 1.0, "texture": SubResource("ATX_g24")}],
+"frames": [{"duration": 1.0, "texture": SubResource("ATX_g25")}, {"duration": 1.0, "texture": SubResource("ATX_g26")}, {"duration": 1.0, "texture": SubResource("ATX_g27")}, {"duration": 1.0, "texture": SubResource("ATX_g28")}],
 "loop": true,
 "name": &"idle_side",
 "speed": 6.0
 }, {
-"frames": [{"duration": 1.0, "texture": SubResource("ATX_g25")}, {"duration": 1.0, "texture": SubResource("ATX_g26")}, {"duration": 1.0, "texture": SubResource("ATX_g27")}, {"duration": 1.0, "texture": SubResource("ATX_g28")}, {"duration": 1.0, "texture": SubResource("ATX_g29")}, {"duration": 1.0, "texture": SubResource("ATX_g30")}],
+"frames": [{"duration": 1.0, "texture": SubResource("ATX_g29")}, {"duration": 1.0, "texture": SubResource("ATX_g30")}, {"duration": 1.0, "texture": SubResource("ATX_g31")}, {"duration": 1.0, "texture": SubResource("ATX_g32")}, {"duration": 1.0, "texture": SubResource("ATX_g33")}, {"duration": 1.0, "texture": SubResource("ATX_g34")}, {"duration": 1.0, "texture": SubResource("ATX_g35")}, {"duration": 1.0, "texture": SubResource("ATX_g36")}],
 "loop": true,
 "name": &"walk_side",
 "speed": 8.0
