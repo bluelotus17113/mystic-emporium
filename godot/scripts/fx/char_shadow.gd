@@ -8,6 +8,8 @@ static var _tex_cache: GradientTexture2D = null
 static func attach(body: Node2D, width: float = 22.0) -> void:
 	if body == null or body.get_node_or_null("BlobShadow") != null:
 		return
+	# Los personajes renderizan por encima de props/scatter (z 0).
+	body.z_index = max(body.z_index, 2)
 	var s := Sprite2D.new()
 	s.name = "BlobShadow"
 	s.texture = _tex()

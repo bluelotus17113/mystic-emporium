@@ -9,7 +9,8 @@ const SCATTER: Array = [
 	"res://art/sprites/minish_objects/bush.png",
 	"res://art/sprites/minish_objects/flower_bush.png",
 	"res://art/sprites/minish_objects/mushroom_red.png",
-	"res://art/sprites/minish_objects/cattails.png",
+	"res://art/sprites/environment/decoration_stone_cairn.png",
+	"res://art/sprites/environment/decoration_fallen_log.png",
 	"res://art/sprites/minish_objects/hay_bale.png",
 	"res://art/sprites/minish_objects/tree_dead.png",
 ]
@@ -86,9 +87,16 @@ func _process(delta: float) -> void:
 	rng.randomize()
 	weed.global_position = _random_point(rng)
 	weed.add_to_group("natural_visual")
-	# pop de aparición
-	weed.scale = Vector2.ZERO
+	# Crece lentamente (45-70s) desde brote; no se puede cortar hasta madurar.
+	weed.growing = true
+	weed.scale = Vector2(0.15, 0.15)
+	weed.modulate = Color(0.8, 1.0, 0.75, 0.9)
+	var grow_time: float = randf_range(45.0, 70.0)
 	var tw := weed.create_tween()
-	tw.tween_property(weed, "scale", Vector2.ONE, 0.4) \
-		.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tw.tween_property(weed, "scale", Vector2.ONE, grow_time) \
+		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	tw.parallel().tween_property(weed, "modulate", Color(1, 1, 1, 1), grow_time)
+	tw.tween_callback(func():
+		if is_instance_valid(weed):
+			weed.growing = false)
 	_weeds.append(weed)

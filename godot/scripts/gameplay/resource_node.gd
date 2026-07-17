@@ -9,6 +9,7 @@ extends Node2D
 @export var free_on_collect: bool = false  ## maleza: desaparece del árbol al cortarla
 
 var _is_collected: bool = false
+var growing: bool = false  ## maleza en crecimiento: aún no cosechable
 var _generator_owner: Node = null
 ## Worker que reservó este nodo. Otros workers lo ignoran y wander en su lugar.
 var _reserved_by: Node = null
@@ -40,7 +41,7 @@ func is_available() -> bool:
 	# visible, los workers en una zona no recogerían recursos en otra cuando el
 	# jugador se mueve. El gating real por desbloqueo lo hace resource_generator
 	# vía set_process(false) cuando la zona no alcanzó el nivel necesario.
-	return not _is_collected
+	return not _is_collected and not growing
 
 
 func collect() -> bool:
