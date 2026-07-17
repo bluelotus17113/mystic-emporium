@@ -23,12 +23,22 @@ var _tool: StringName = &"pencil"
 var _color: Color = Color("df5235")
 var _type: String = "solid"
 var _painting: bool = false
+var _brush: int = 1          ## 1 = 1x1, 2 = 2x2
+var _mirror_x: bool = false  ## espejo horizontal
+var _mirror_y: bool = false  ## espejo vertical
+var _undo_stack: Array = []  ## snapshots (Image) para Ctrl+Z
+const UNDO_MAX: int = 40
+var _stroke_dirty: bool = false  ## se hizo push del snapshot en este trazo
 
 var _name_edit: LineEdit
 var _create_btn: Button
 var _solid_btn: Button
 var _floor_btn: Button
 var _tool_btns: Dictionary = {}
+var _brush_btns: Dictionary = {}
+var _mirror_x_btn: Button
+var _mirror_y_btn: Button
+var _undo_btn: Button
 var _swatch_sel: ColorRect
 
 
@@ -43,12 +53,26 @@ func _ready() -> void:
 			_refresh_create())
 
 
-func _new_image() -> void:
+func _new_image(reset_undo: bool = true) -> void:
 	_img = Image.create(PX, PX, false, Image.FORMAT_RGBA8)
 	_img.fill(Color(0, 0, 0, 0))
 	_tex = ImageTexture.create_from_image(_img)
+	if reset_undo:
+		_undo_stack.clear()
+		if _undo_btn:
+			_undo_btn.disabled = true
 	if _canvas:
 		_canvas.queue_redraw()
+
+
+func _clear_canvas() -> void:
+	# Deshacible: guarda snapshot y vacía sin resetear el historial.
+	_undo_stack.append(_img.duplicate())
+	if _undo_stack.size() > UNDO_MAX:
+		_undo_stack.pop_front()
+	if _undo_btn:
+		_undo_btn.disabled = false
+	_new_image(false)
 
 
 # ---------------------------------------------------------------- UI ---
@@ -111,6 +135,30 @@ func _build_ui() -> void:
 		_tool_btns[StringName(spec[0])] = b
 	side.add_child(tools)
 
+	# Pincel + simetría + deshacer
+	var opts := HBoxContainer.new()
+	opts.add_theme_constant_override(&"separation", 6)
+	var b1 := Button.new(); b1.text = "•"; b1.toggle_mode = true; b1.button_pressed = true
+	b1.tooltip_text = "Pincel 1x1"; b1.custom_minimum_size = Vector2(34, 0)
+	b1.pressed.connect(_set_brush.bind(1))
+	var b2 := Button.new(); b2.text = "▪"; b2.toggle_mode = true
+	b2.tooltip_text = "Pincel 2x2"; b2.custom_minimum_size = Vector2(34, 0)
+	b2.pressed.connect(_set_brush.bind(2))
+	_brush_btns[1] = b1; _brush_btns[2] = b2
+	opts.add_child(b1); opts.add_child(b2)
+	_mirror_x_btn = Button.new(); _mirror_x_btn.text = "⇋"; _mirror_x_btn.toggle_mode = true
+	_mirror_x_btn.tooltip_text = "Espejo horizontal"; _mirror_x_btn.custom_minimum_size = Vector2(34, 0)
+	_mirror_x_btn.toggled.connect(func(on): _mirror_x = on)
+	_mirror_y_btn = Button.new(); _mirror_y_btn.text = "⇅"; _mirror_y_btn.toggle_mode = true
+	_mirror_y_btn.tooltip_text = "Espejo vertical"; _mirror_y_btn.custom_minimum_size = Vector2(34, 0)
+	_mirror_y_btn.toggled.connect(func(on): _mirror_y = on)
+	opts.add_child(_mirror_x_btn); opts.add_child(_mirror_y_btn)
+	_undo_btn = Button.new(); _undo_btn.text = "↶"; _undo_btn.tooltip_text = "Deshacer (Ctrl+Z)"
+	_undo_btn.custom_minimum_size = Vector2(34, 0)
+	_undo_btn.pressed.connect(_undo)
+	opts.add_child(_undo_btn)
+	side.add_child(opts)
+
 	# Paleta
 	var pal_lbl := Label.new(); pal_lbl.text = "Colores"; side.add_child(pal_lbl)
 	var pal := GridContainer.new()
@@ -158,13 +206,14 @@ func _build_ui() -> void:
 	# Acciones
 	var clear_btn := Button.new()
 	clear_btn.text = "🗑 Limpiar lienzo"
-	clear_btn.pressed.connect(func(): _new_image())
+	clear_btn.pressed.connect(func(): _clear_canvas())
 	side.add_child(clear_btn)
 	_create_btn = Button.new()
 	_create_btn.add_theme_font_size_override(&"font_size", 18)
 	_create_btn.custom_minimum_size = Vector2(0, 52)
 	_create_btn.pressed.connect(_on_create)
 	side.add_child(_create_btn)
+	_undo_btn.disabled = true
 	_refresh_create()
 
 
@@ -189,9 +238,45 @@ func _on_canvas_input(event: InputEvent) -> void:
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			_painting = event.pressed
 			if event.pressed:
+				_stroke_dirty = false
 				_paint_at(event.position)
+			else:
+				_stroke_dirty = false
 	elif event is InputEventMouseMotion and _painting:
 		_paint_at(event.position)
+
+
+## Guarda un snapshot antes del primer píxel de cada trazo (para deshacer).
+func _begin_stroke() -> void:
+	if _stroke_dirty:
+		return
+	_stroke_dirty = true
+	_undo_stack.append(_img.duplicate())
+	if _undo_stack.size() > UNDO_MAX:
+		_undo_stack.pop_front()
+	if _undo_btn:
+		_undo_btn.disabled = false
+
+
+func _set_px(px: int, py: int, c: Color) -> void:
+	if px < 0 or px >= PX or py < 0 or py >= PX:
+		return
+	_img.set_pixel(px, py, c)
+
+
+## Pinta con el pincel actual (1x1 o 2x2) aplicando los espejos activos.
+func _stamp(px: int, py: int, c: Color) -> void:
+	var coords: Array = [Vector2i(px, py)]
+	if _brush == 2:
+		coords = [Vector2i(px, py), Vector2i(px + 1, py), Vector2i(px, py + 1), Vector2i(px + 1, py + 1)]
+	for p in coords:
+		_set_px(p.x, p.y, c)
+		if _mirror_x:
+			_set_px(PX - 1 - p.x, p.y, c)
+		if _mirror_y:
+			_set_px(p.x, PX - 1 - p.y, c)
+		if _mirror_x and _mirror_y:
+			_set_px(PX - 1 - p.x, PX - 1 - p.y, c)
 
 
 func _paint_at(pos: Vector2) -> void:
@@ -201,18 +286,45 @@ func _paint_at(pos: Vector2) -> void:
 		return
 	match _tool:
 		&"pencil":
-			_img.set_pixel(px, py, _color)
+			_begin_stroke()
+			_stamp(px, py, _color)
 		&"eraser":
-			_img.set_pixel(px, py, Color(0, 0, 0, 0))
+			_begin_stroke()
+			_stamp(px, py, Color(0, 0, 0, 0))
 		&"pick":
 			var c: Color = _img.get_pixel(px, py)
 			if c.a > 0.0:
 				_set_color(c)
 			return
 		&"fill":
+			_begin_stroke()
 			_flood_fill(px, py, _color)
 	_tex.update(_img)
 	_canvas.queue_redraw()
+
+
+func _set_brush(size: int) -> void:
+	_brush = size
+	for k in _brush_btns:
+		(_brush_btns[k] as Button).set_pressed_no_signal(k == size)
+
+
+func _undo() -> void:
+	if _undo_stack.is_empty():
+		return
+	_img = _undo_stack.pop_back()
+	_tex.update(_img)
+	_canvas.queue_redraw()
+	if _undo_btn:
+		_undo_btn.disabled = _undo_stack.is_empty()
+
+
+func _shortcut_input(event: InputEvent) -> void:
+	if not visible:
+		return
+	if event is InputEventKey and event.pressed and event.ctrl_pressed and event.keycode == KEY_Z:
+		_undo()
+		get_viewport().set_input_as_handled()
 
 
 func _flood_fill(sx: int, sy: int, to: Color) -> void:
@@ -281,5 +393,8 @@ func _on_create() -> void:
 	UIManager.close_active()
 	_new_image()
 	_name_edit.text = ""
+	_set_brush(1); _mirror_x = false; _mirror_y = false
+	if _mirror_x_btn: _mirror_x_btn.set_pressed_no_signal(false)
+	if _mirror_y_btn: _mirror_y_btn.set_pressed_no_signal(false)
 	# Abrir el catálogo en la pestaña de creaciones.
 	UIManager.open(&"build")
