@@ -14,7 +14,7 @@ static func attach(body: Node2D, width: float = 22.0) -> void:
 	# textura 32x32 radial → escalar a elipse (ancho x ~40% de alto)
 	s.scale = Vector2(width / 32.0, width * 0.42 / 32.0)
 	s.modulate = Color(0.05, 0.03, 0.08, 0.35)
-	s.position = Vector2(0, -1)  # los pies están en el origen del body
+	s.position = Vector2(0, 4)  # bajo los pies (el arte deja ~4px de aire bajo el sprite)
 	s.show_behind_parent = true
 	s.z_index = -1
 	body.add_child(s)
