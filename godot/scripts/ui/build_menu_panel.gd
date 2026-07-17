@@ -200,8 +200,8 @@ const ZONE_COLOR: Dictionary = {
 	GameEnums.ZoneType.RECEPTION: Color(0.65, 0.40, 0.85),
 }
 
-const TILE_SIZE: Vector2 = Vector2(145, 122)
-const GRID_COLUMNS: int = 7
+const TILE_SIZE: Vector2 = Vector2(138, 116)
+const GRID_COLUMNS: int = 10
 
 @onready var func_grid: GridContainer = $"Margin/VBox/Tabs/🔨 Funcional/Grid"
 @onready var deco_grid: GridContainer = $"Margin/VBox/Tabs/✨ Decoración/DecoScroll/Grid"
@@ -294,6 +294,15 @@ func _on_filter_pressed(cat_id: StringName) -> void:
 
 
 func _on_visibility_changed() -> void:
+	if visible:
+		# Normalizar SIEMPRE al abrir: tamaño/posición fijos, sin residuos de
+		# animaciones (scale/position) ni de sesiones con otro layout.
+		scale = Vector2.ONE
+		offset_left = -780.0
+		offset_top = -450.0
+		offset_right = 780.0
+		offset_bottom = 450.0
+		move_to_front()
 	if visible:
 		_rebuild()
 
@@ -414,7 +423,7 @@ func _build_tile(b: BuildableData) -> Dictionary:
 
 	# Icono pixel art
 	var icon_rect := TextureRect.new()
-	icon_rect.custom_minimum_size = Vector2(48, 48)
+	icon_rect.custom_minimum_size = Vector2(44, 44)
 	icon_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	icon_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	icon_rect.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
