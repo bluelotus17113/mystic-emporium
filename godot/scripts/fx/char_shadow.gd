@@ -5,7 +5,7 @@ class_name CharShadow
 static var _tex_cache: GradientTexture2D = null
 
 
-static func attach(body: Node2D, width: float = 22.0) -> void:
+static func attach(body: Node2D, width: float = 17.0) -> void:
 	if body == null or body.get_node_or_null("BlobShadow") != null:
 		return
 	# Los personajes renderizan por encima de props/scatter (z 0).

@@ -45,7 +45,7 @@ var _bubble_tween: Tween = null
 
 func _ready() -> void:
 	add_to_group("protagonist")
-	CharShadow.attach(self, 24.0)
+	CharShadow.attach(self, 19.0)
 	home_position = global_position + home_position_offset
 	_anim_sprite = get_node_or_null("AnimatedSprite2D") as AnimatedSprite2D
 	if _anim_sprite != null:
