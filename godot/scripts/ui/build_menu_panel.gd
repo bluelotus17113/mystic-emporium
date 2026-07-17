@@ -498,4 +498,4 @@ func _zone_name(z: GameEnums.ZoneType) -> String:
 		GameEnums.ZoneType.NATURE: return "🌳 Natural"
 		GameEnums.ZoneType.WORKSHOP: return "🔨 Taller"
 		GameEnums.ZoneType.RECEPTION: return "🏛 Recepción"
-		_: return "—"
+		_: return "✦ Cualquier zona"
