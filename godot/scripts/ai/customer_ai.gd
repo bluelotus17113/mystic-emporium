@@ -85,6 +85,7 @@ var _has_expired: bool = false
 ## Curioseo: puntos que el cliente visita mirando la tienda antes del mostrador.
 var _browse_points: Array = []
 var _browse_pause: float = 0.0
+var skin_name: StringName = &""  ## base_name de la skin, para el álbum de clientes
 var _facing: StringName = &"down"
 var _facing_x: float = 1.0
 
@@ -134,6 +135,7 @@ func _apply_random_skin() -> void:
 		return
 	var path: String = pool[randi() % pool.size()]
 	var base_name: String = path.get_file().get_basename()  # "npc_aldeano"
+	skin_name = StringName(base_name)
 	var frames: SpriteFrames = _build_sprite_frames(base_name)
 	if frames == null:
 		return

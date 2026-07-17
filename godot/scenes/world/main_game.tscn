@@ -47,6 +47,7 @@
 [ext_resource type="AudioStream" uid="uid://cqnqsl02llgi4" path="res://audio/sfx/ambient_wind.wav" id="45_amb_wind"]
 [ext_resource type="PackedScene" uid="uid://b5j8r7oam1f3a" path="res://scenes/ui/recipe_book_panel.tscn" id="46_rbook"]
 [ext_resource type="PackedScene" uid="uid://b5j8r7oamq01" path="res://scenes/ui/customer_queue_panel.tscn" id="47_cq"]
+[ext_resource type="PackedScene" uid="uid://b5j8r7n9m1f77" path="res://scenes/ui/album_panel.tscn" id="48_album"]
 
 [node name="MainGame" type="Node2D" unique_id=881335330]
 script = ExtResource("1_boot")
@@ -227,6 +228,9 @@ layer = 5
 [node name="RecipeBookPanel" parent="UICanvas" unique_id=843988213 instance=ExtResource("46_rbook")]
 
 [node name="CustomerQueuePanel" parent="UICanvas" unique_id=234628675 instance=ExtResource("47_cq")]
+
+[node name="AlbumPanel" parent="UICanvas" instance=ExtResource("48_album")]
+visible = false
 
 [node name="SettingsPanel" parent="UICanvas" unique_id=786044220 instance=ExtResource("22_set")]
 

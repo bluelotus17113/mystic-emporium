@@ -1,4 +1,4 @@
-[gd_scene load_steps=41 format=3 uid="uid://b5j8r7n9m1a07"]
+[gd_scene load_steps=42 format=3 uid="uid://b5j8r7n9m1a07"]
 
 [ext_resource type="Script" path="res://scripts/ui/hud.gd" id="1_hud"]
 [ext_resource type="Texture2D" path="res://art/sprites/ui/res_coin.png" id="ico_coin"]
@@ -14,6 +14,7 @@
 [ext_resource type="Texture2D" path="res://art/sprites/ui/icon_close.png" id="7_ico_close"]
 [ext_resource type="Texture2D" path="res://art/sprites/ui/icon_research.png" id="8_ico_res"]
 [ext_resource type="Texture2D" path="res://art/sprites/ui/badge_vip.png" id="9_ico_ach"]
+[ext_resource type="Texture2D" path="res://art/sprites/ui/icon_notes.png" id="12_ico_album"]
 [ext_resource type="Texture2D" path="res://art/sprites/ui/icon_companion.png" id="10_ico_comp"]
 [ext_resource type="Texture2D" path="res://art/sprites/ui/icon_craft.png" id="11_ico_book"]
 
@@ -684,6 +685,18 @@ theme_override_styles/pressed = SubResource("SBF_action_btn_pressed")
 theme_override_styles/focus = SubResource("SBF_action_btn_hover")
 tooltip_text = "Logros"
 icon = ExtResource("9_ico_ach")
+expand_icon = true
+theme_override_font_sizes/font_size = 28
+
+[node name="AlbumButton" type="Button" parent="Root/ActionBar"]
+custom_minimum_size = Vector2(72, 64)
+layout_mode = 2
+theme_override_styles/normal = SubResource("SBF_action_btn")
+theme_override_styles/hover = SubResource("SBF_action_btn_hover")
+theme_override_styles/pressed = SubResource("SBF_action_btn_pressed")
+theme_override_styles/focus = SubResource("SBF_action_btn_hover")
+tooltip_text = "Álbum de clientes"
+icon = ExtResource("12_ico_album")
 expand_icon = true
 theme_override_font_sizes/font_size = 28
 

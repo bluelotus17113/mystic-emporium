@@ -44,6 +44,7 @@ func _ready() -> void:
 	var ambience := ZoneAmbience.new()
 	ambience.name = "ZoneAmbience"
 	add_child(ambience)
+	call_deferred("_spawn_cat")
 	print("[Bootstrap] Items: %d | Recipes: %d | Orders: %d | Research: %d | Buildables: %d" % [
 		_items_catalog.size(),
 		_recipes_catalog.size(),
@@ -57,6 +58,22 @@ func _ready() -> void:
 		var slot: int = SaveManager.pending_load_slot
 		SaveManager.pending_load_slot = -1
 		SaveManager.load_game(slot)
+
+
+## Mascota de la tienda: duerme junto a la primera workstation del taller.
+func _spawn_cat() -> void:
+	var cat: Node2D = load("res://scenes/characters/cat.tscn").instantiate()
+	var world: Node = get_tree().get_first_node_in_group("world_container")
+	if world == null:
+		world = self
+	world.add_child(cat)
+	var anchor: Node2D = null
+	for ws in get_tree().get_nodes_in_group("workstations"):
+		anchor = ws as Node2D
+		break
+	cat.global_position = (anchor.global_position + Vector2(52, 26)) if anchor != null else Vector2(-1000, 120)
+	cat.home_position = cat.global_position
+	cat.add_to_group("taller_visual")
 
 
 ## Conecta SFX a eventos de gameplay (progresion, construcción, UI).

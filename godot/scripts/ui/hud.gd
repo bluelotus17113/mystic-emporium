@@ -26,6 +26,7 @@ extends CanvasLayer
 @onready var demolish_button: Button = $Root/ActionBar/DemolishButton
 @onready var stats_button: Button = $Root/ActionBar/StatsButton
 @onready var achievements_button: Button = $Root/ActionBar/AchievementsButton
+@onready var album_button: Button = $Root/ActionBar/AlbumButton
 @onready var companion_button: Button = $Root/ActionBar/CompanionButton
 
 @onready var research_label: Label = $Root/ResearchBox/ResearchMargin/ResearchVBox/ResearchLabel
@@ -53,6 +54,7 @@ func _ready() -> void:
 	settings_button.pressed.connect(func(): UIManager.toggle(&"settings"))
 	stats_button.pressed.connect(func(): UIManager.toggle(&"stats"))
 	achievements_button.pressed.connect(func(): UIManager.toggle(&"achievements"))
+	album_button.pressed.connect(func(): UIManager.toggle(&"album"))
 	demolish_button.pressed.connect(_on_demolish_pressed)
 	companion_button.pressed.connect(WindowController.toggle_compact_mode)
 

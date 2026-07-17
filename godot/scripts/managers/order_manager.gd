@@ -267,6 +267,8 @@ func try_complete_at(index: int) -> bool:
 	InventoryManager.add_reputation(int((order.reputation_reward + rep_bonus) * pers_rep))
 	if entry.customer != null and is_instance_valid(entry.customer):
 		_spawn_reaction_emoji(entry.customer.global_position, "♥", Color(1.0, 0.45, 0.55))
+		if "skin_name" in entry.customer:
+			AlbumManager.record(entry.customer.skin_name)
 		entry.customer.leave()
 	if counter_point != null:
 		VFXManager.play(VFXManager.FX.COINS, counter_point.global_position)
