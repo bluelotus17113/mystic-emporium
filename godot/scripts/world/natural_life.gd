@@ -22,6 +22,9 @@ const CLUTTER: Array = [
 	"res://art/sprites/minish_objects/hay_bale.png",
 ]
 const CLUTTER_COUNT: int = 14
+# Briznas de pasto que se mecen al pisarlas.
+const GRASS_TUFT: String = "res://art/sprites/environment/decoration_grass_tuft.png"
+const GRASS_COUNT: int = 16
 const WEED_SCENE: String = "res://scenes/environment/resource_node_weed.tscn"
 const WEED_MAX: int = 8
 const WEED_INTERVAL_MIN: float = 22.0
@@ -63,6 +66,7 @@ func _scatter_props() -> void:
 	rng.seed = 20260716
 	_scatter_trees(rng)
 	_scatter_clutter(rng)
+	_scatter_grass(rng)
 
 
 ## Contenedor con y_sort_enabled: los árboles se ordenan por Y con la
@@ -121,6 +125,22 @@ func _scatter_clutter(rng: RandomNumberGenerator) -> void:
 		# props grandes bloquean el paso; setas no
 		if "mushroom" not in tex.resource_path:
 			SolidBase.attach(s, Vector2(tex.get_width() * k * 0.5, 12.0), Vector2(0, -2))
+
+
+## Briznas de pasto repartidas por todo el patio; se mecen al pisarlas.
+func _scatter_grass(rng: RandomNumberGenerator) -> void:
+	var parent: Node = _visual_parent()
+	var tex: Texture2D = load(GRASS_TUFT)
+	if tex == null:
+		return
+	for i in GRASS_COUNT:
+		var g := GrassTuft.new()
+		g.texture = tex
+		g.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		g.scale = Vector2(1.6, 1.6)
+		g.add_to_group("natural_visual")
+		parent.add_child(g)
+		g.global_position = _random_point(rng)
 
 
 func _random_point(rng: RandomNumberGenerator) -> Vector2:

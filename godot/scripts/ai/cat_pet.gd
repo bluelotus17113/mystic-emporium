@@ -3,7 +3,7 @@ extends CharacterBody2D
 ## sentarse, acicalarse, jugar (abalanzarse) y seguir a la protagonista.
 ## Clic izquierdo → menú contextual (seguir con la cámara). Emotes sueltos.
 
-enum State { SLEEP, WANDER, SIT, GROOM, PLAY, FOLLOW }
+enum State { SLEEP, WANDER, SIT, GROOM, PLAY, FOLLOW, CHASE }
 
 const WANDER_SPEED: float = 42.0
 const FOLLOW_SPEED: float = 78.0
@@ -26,6 +26,7 @@ var _zzz_accum: float = 0.0
 var _emote_accum: float = 0.0
 var _pounces: int = 0
 var _bob_t: float = 0.0
+var _chase_target: Node2D = null
 
 @onready var _spr: AnimatedSprite2D = $AnimatedSprite2D
 
@@ -69,8 +70,23 @@ func _setup_click_area() -> void:
 				return
 			var menu: Node = get_tree().get_first_node_in_group("entity_menu")
 			if menu != null and menu.has_method("open_for"):
-				menu.open_for(self, "🐱 Gato")
+				menu.open_for(self, "🐱 Gato", [{
+					"text": "♥ Acariciar",
+					"cb": Callable(self, "pet"),
+				}])
 				get_viewport().set_input_as_handled())
+
+
+## Mimo: corazones, ronroneo y se sienta feliz un rato.
+func pet() -> void:
+	state = State.SIT
+	_timer = randf_range(3.0, 5.0)
+	velocity = Vector2.ZERO
+	_squash()
+	for i in 3:
+		var t := get_tree().create_timer(0.18 * float(i))
+		t.timeout.connect(func(): _puff(_emote, "♥"))
+	AudioManager.play_beep(880.0, 0.12, -14.0)
 
 
 func _physics_process(delta: float) -> void:
@@ -127,6 +143,18 @@ func _physics_process(delta: float) -> void:
 					move_and_slide()
 			if _timer <= 0.0:
 				_go_sleep()
+		State.CHASE:
+			if _chase_target == null or not is_instance_valid(_chase_target):
+				_next_activity()
+			else:
+				var cd: Vector2 = _chase_target.global_position - global_position
+				if cd.length() > 22.0:
+					velocity = cd.normalized() * POUNCE_SPEED * 0.8
+					move_and_slide()
+				else:
+					velocity = Vector2.ZERO
+				if _timer <= 0.0:
+					_next_activity()
 	_update_anim()
 
 
@@ -143,7 +171,10 @@ func _next_activity(just_woke: bool = false) -> void:
 		_go_sleep()
 	elif roll < 0.42 and has_proto:
 		state = State.FOLLOW
-	elif roll < 0.58:
+	elif roll < 0.54 and _pick_chase_worker():
+		state = State.CHASE
+		_puff(_emote, "🐾")
+	elif roll < 0.62:
 		state = State.SIT
 	elif roll < 0.74:
 		state = State.GROOM
@@ -157,6 +188,20 @@ func _next_activity(just_woke: bool = false) -> void:
 	else:
 		state = State.WANDER
 		_pick_wander()
+
+
+## Elige un worker cercano de la misma zona para perseguir un rato.
+func _pick_chase_worker() -> bool:
+	var workers: Array = get_tree().get_nodes_in_group("workers")
+	var candidates: Array = []
+	for w in workers:
+		if w is Node2D and is_instance_valid(w) and w.visible \
+				and global_position.distance_to(w.global_position) < 260.0:
+			candidates.append(w)
+	if candidates.is_empty():
+		return false
+	_chase_target = candidates[randi() % candidates.size()]
+	return true
 
 
 func _go_sleep() -> void:
