@@ -34,6 +34,7 @@ signal state_changed(new_state: GameEnums.WorkerState)
 
 func _ready() -> void:
 	add_to_group("workers")
+	CharShadow.attach(self)
 	_anim_sprite = get_node_or_null("AnimatedSprite2D") as AnimatedSprite2D
 	# call_deferred porque al spawnear, global_position aún no está finalizado.
 	call_deferred("_capture_home")

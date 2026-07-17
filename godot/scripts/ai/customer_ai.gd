@@ -82,6 +82,9 @@ var counter_offset: Vector2 = Vector2.ZERO
 
 var _patience_remaining: float = 0.0
 var _has_expired: bool = false
+## Curioseo: puntos que el cliente visita mirando la tienda antes del mostrador.
+var _browse_points: Array = []
+var _browse_pause: float = 0.0
 var _facing: StringName = &"down"
 var _facing_x: float = 1.0
 
@@ -107,6 +110,15 @@ func setup(p_order: OrderData, p_counter: Node2D, p_exit: Node2D) -> void:
 	modulate = personality.color
 	_apply_random_skin()
 	_update_label()
+	# 60% de los clientes curiosean 1-2 puntos de la recepción antes de pedir.
+	_browse_points.clear()
+	if randf() < 0.6 and p_counter != null:
+		var rect: Rect2 = GridManager.get_zone_rect_at(p_counter.global_position)
+		if rect.size != Vector2.ZERO:
+			for i in randi_range(1, 2):
+				_browse_points.append(Vector2(
+					randf_range(rect.position.x + 48.0, rect.end.x - 48.0),
+					randf_range(rect.position.y + 70.0, rect.end.y - 30.0)))
 
 
 func _apply_random_skin() -> void:
@@ -214,6 +226,7 @@ func get_rep_mult() -> float:
 
 func _ready() -> void:
 	add_to_group("customers")
+	CharShadow.attach(self)
 	_update_label()
 	_create_patience_bar()
 
@@ -245,6 +258,20 @@ func _physics_process(_delta: float) -> void:
 	match state:
 		GameEnums.WorkerState.ARRIVING:
 			if counter_point == null:
+				return
+			# Curioseo: visitar puntos de la tienda con pausas antes del mostrador.
+			if _browse_pause > 0.0:
+				velocity = Vector2.ZERO
+				_browse_pause -= _delta
+				_update_anim(false)
+				return
+			if not _browse_points.is_empty():
+				var bp: Vector2 = _browse_points[0]
+				_move_toward(bp)
+				if global_position.distance_to(bp) <= arrival_distance + 4.0:
+					_browse_points.pop_front()
+					_browse_pause = randf_range(1.0, 2.4)
+				_update_anim(velocity.length_squared() > 4.0)
 				return
 			var target_pos: Vector2 = counter_point.global_position + counter_offset
 			_move_toward(target_pos)
