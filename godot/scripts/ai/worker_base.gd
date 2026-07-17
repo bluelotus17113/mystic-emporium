@@ -28,6 +28,7 @@ const WANDER_REPICK_MAX: float = 3.5
 const WANDER_SPEED_FACTOR: float = 0.55  ## wander es más lento que ir a recolectar
 const TARGET_SEARCH_INTERVAL: float = 0.3  ## no escanear recursos cada frame; cada 0.3s basta
 var _target_search_cd: float = 0.0
+var _step_accum: float = 0.0
 
 signal state_changed(new_state: GameEnums.WorkerState)
 
@@ -69,6 +70,14 @@ func _physics_process(delta: float) -> void:
 		_:
 			pass
 	_update_anim(delta)
+	# pasos suaves (solo si el worker está en la zona visible)
+	if visible and velocity.length_squared() > 4.0:
+		_step_accum -= delta
+		if _step_accum <= 0.0:
+			_step_accum = 0.42
+			AudioManager.play_named(&"footstep", 0.3)
+	else:
+		_step_accum = 0.2
 
 
 func _update_anim(delta: float) -> void:

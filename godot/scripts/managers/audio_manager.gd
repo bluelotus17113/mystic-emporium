@@ -32,6 +32,8 @@ var _current_music_key: StringName = &""
 var _music_streams_cache: Dictionary = {}
 var _music_crossfade_tween: Tween = null
 const SFX_PATHS: Dictionary = {
+	&"footstep": "res://audio/sfx/footstep.wav",
+	&"doorbell": "res://audio/sfx/doorbell.wav",
 	&"coin": "res://audio/sfx/coin_pickup.wav",
 	&"bubble": "res://audio/sfx/craft_bubble.wav",
 	&"forge": "res://audio/sfx/forge_clang.wav",

@@ -109,6 +109,7 @@ func _next_free_slot() -> int:
 
 
 func _spawn_customer_for(entry: ActiveOrder) -> void:
+	AudioManager.play_named(&"doorbell", 0.04)
 	if customer_scene == null or spawn_point == null or counter_point == null or exit_point == null:
 		return
 	var c = customer_scene.instantiate()

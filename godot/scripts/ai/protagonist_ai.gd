@@ -41,6 +41,7 @@ var _favorite_rotate_timer: float = 0.0
 var _delivering_timer: float = 0.0
 var _bubble_label: Label = null
 var _bubble_tween: Tween = null
+var _step_accum: float = 0.0
 
 
 func _ready() -> void:
@@ -158,6 +159,18 @@ func _physics_process(_delta: float) -> void:
 				if global_position.distance_to(_wander_target) <= arrival_distance + 6.0:
 					_linger_timer = randf_range(WANDER_LINGER_MIN, WANDER_LINGER_MAX)
 	_update_anim()
+	_tick_footsteps(_delta)
+
+
+## Pasos suaves mientras camina (rate por ciclo de paso, pitch variado).
+func _tick_footsteps(delta: float) -> void:
+	if velocity.length_squared() <= 4.0:
+		_step_accum = 0.12  # primer paso suena pronto al arrancar
+		return
+	_step_accum -= delta
+	if _step_accum <= 0.0:
+		_step_accum = 0.34
+		AudioManager.play_named(&"footstep", 0.22)
 
 
 func _unhandled_input(event: InputEvent) -> void:

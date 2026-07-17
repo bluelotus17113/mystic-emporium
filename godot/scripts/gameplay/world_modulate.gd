@@ -4,14 +4,15 @@ extends CanvasModulate
 
 # (hora_normalizada, color) — interpolación lineal entre los segmentos.
 const KEYFRAMES: Array = [
-	[0.00, Color(0.30, 0.40, 0.65)],   # 00:00 noche profunda azul
-	[0.22, Color(0.70, 0.55, 0.60)],   # 05:30 amanecer rosado
+	# Noche legible estilo Minish/Stardew: azulada y translúcida, nunca negra.
+	[0.00, Color(0.55, 0.62, 0.86)],   # 00:00 noche profunda azul legible
+	[0.22, Color(0.80, 0.66, 0.70)],   # 05:30 amanecer rosado
 	[0.30, Color(1.00, 0.95, 0.88)],   # 07:00 mañana cálida
 	[0.50, Color(1.00, 1.00, 1.00)],   # 12:00 día neutro
-	[0.72, Color(1.00, 0.78, 0.60)],   # 17:30 atardecer naranja
-	[0.85, Color(0.55, 0.50, 0.75)],   # 20:30 anochecer púrpura
-	[0.95, Color(0.35, 0.42, 0.68)],   # 22:50 noche
-	[1.00, Color(0.30, 0.40, 0.65)],   # 24:00 wrap a noche profunda
+	[0.72, Color(1.00, 0.80, 0.62)],   # 17:30 atardecer naranja
+	[0.85, Color(0.72, 0.65, 0.88)],   # 20:30 anochecer púrpura suave
+	[0.95, Color(0.58, 0.64, 0.87)],   # 22:50 noche
+	[1.00, Color(0.55, 0.62, 0.86)],   # 24:00 wrap a noche profunda
 ]
 
 # Recalculamos a 5 fps (suficiente para algo que cambia en escala de minutos).
