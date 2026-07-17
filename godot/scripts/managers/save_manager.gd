@@ -98,6 +98,7 @@ func save_game(slot: int = -1) -> void:
 		"prestige": PrestigeManager.get_save_state(),
 		"daily_quest": DailyQuestManager.get_save_state(),
 		"album": AlbumManager.get_save_state(),
+		"wardrobe": WardrobeManager.get_save_state(),
 		"zones": ZoneExpansionManager.get_save_state(),
 		"tutorial": TutorialManager.get_save_state(),
 		"audio": AudioManager.get_save_state(),
@@ -183,6 +184,8 @@ func load_game(slot: int = -1) -> bool:
 		DailyQuestManager.load_save_state(parsed.daily_quest)
 	if parsed.has("album"):
 		AlbumManager.load_save_state(parsed.album)
+	if parsed.has("wardrobe"):
+		WardrobeManager.load_save_state(parsed.wardrobe)
 	if parsed.has("zones"):
 		ZoneExpansionManager.load_save_state(parsed.zones)
 	if parsed.has("idle"):

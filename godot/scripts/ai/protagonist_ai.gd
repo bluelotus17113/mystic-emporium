@@ -54,6 +54,42 @@ func _ready() -> void:
 	_create_bubble()
 	_wander_idle_delay = randf_range(WANDER_IDLE_DELAY_MIN, WANDER_IDLE_DELAY_MAX)
 	call_deferred("_wire_zone_switch")
+	WardrobeManager.outfit_changed.connect(_on_outfit_changed)
+	if WardrobeManager.current_outfit != &"default":
+		_on_outfit_changed(WardrobeManager.current_outfit)
+
+
+## Cambia la hoja de sprites al outfit elegido (mismo layout 512x384:
+## idle 4 / walk 8 × down/up/side). Con destello mágico.
+func _on_outfit_changed(outfit_id: StringName) -> void:
+	if _anim_sprite == null:
+		return
+	var tex: Texture2D = load(WardrobeManager.sheet_path(outfit_id))
+	if tex == null:
+		return
+	var rows: Array = [
+		[&"idle_down", 0, 4, 6.0], [&"walk_down", 1, 8, 8.0],
+		[&"idle_up", 2, 4, 6.0], [&"walk_up", 3, 8, 8.0],
+		[&"idle_side", 4, 4, 6.0], [&"walk_side", 5, 8, 8.0]]
+	var sf := SpriteFrames.new()
+	for r in rows:
+		var anim: StringName = r[0]
+		sf.add_animation(anim)
+		sf.set_animation_loop(anim, true)
+		sf.set_animation_speed(anim, r[3])
+		for c in range(r[2]):
+			var at := AtlasTexture.new()
+			at.atlas = tex
+			at.region = Rect2(c * 64, r[1] * 64, 64, 64)
+			sf.add_frame(anim, at)
+	sf.remove_animation(&"default")
+	var playing: StringName = _anim_sprite.animation
+	_anim_sprite.sprite_frames = sf
+	if sf.has_animation(playing):
+		_anim_sprite.play(playing)
+	else:
+		_anim_sprite.play(&"idle_down")
+	VFXManager.play(VFXManager.FX.BUILD, global_position)
 
 
 func _wire_zone_switch() -> void:
