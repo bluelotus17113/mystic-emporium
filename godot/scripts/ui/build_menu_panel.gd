@@ -201,7 +201,7 @@ const ZONE_COLOR: Dictionary = {
 }
 
 const TILE_SIZE: Vector2 = Vector2(145, 122)
-const GRID_COLUMNS: int = 4
+const GRID_COLUMNS: int = 6
 
 @onready var func_grid: GridContainer = $"Margin/VBox/Tabs/🔨 Funcional/Grid"
 @onready var deco_grid: GridContainer = $"Margin/VBox/Tabs/✨ Decoración/DecoScroll/Grid"
@@ -363,6 +363,7 @@ func _rebuild() -> void:
 		l.text = "(sin decoraciones en esta categoría)" if _deco_filter != &"" else "(sin decoraciones para esta zona)"
 		l.modulate = Color(0.7, 0.7, 0.7, 1)
 		deco_grid.add_child(l)
+
 
 
 func _build_tile(b: BuildableData) -> Dictionary:
