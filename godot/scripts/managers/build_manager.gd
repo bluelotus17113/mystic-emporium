@@ -462,6 +462,13 @@ func _placement_error(grid_pos: Vector2i) -> String:
 	return ""
 
 
+## Contenedor donde viven todos los objetos colocados: el mismo World que
+## tiene y_sort_enabled, para que ordenen por Y junto a personajes y workers.
+func _object_parent() -> Node:
+	var w: Node = get_tree().get_first_node_in_group("world_container")
+	return w if w != null else get_tree().current_scene
+
+
 func _zone_name(z: GameEnums.ZoneType) -> String:
 	match z:
 		GameEnums.ZoneType.NATURE: return "Natural"
@@ -483,7 +490,7 @@ func _try_place() -> void:
 		return
 	var instance: Node2D = _current_buildable.scene.instantiate() as Node2D
 	_apply_custom_id(instance, _current_buildable)
-	get_tree().current_scene.add_child(instance)
+	_object_parent().add_child(instance)
 	instance.global_position = GridManager.grid_to_world(grid_pos)
 	instance.rotation_degrees = _ghost_rotation_deg
 	GridManager.place_object(grid_pos, instance)
@@ -607,7 +614,7 @@ func load_save_state(data: Dictionary) -> void:
 		if instance == null:
 			continue
 		_apply_custom_id(instance, b)
-		get_tree().current_scene.add_child(instance)
+		_object_parent().add_child(instance)
 		instance.global_position = GridManager.grid_to_world(grid_pos)
 		var rot: float = float(entry.get("rot", 0.0))
 		instance.rotation_degrees = rot

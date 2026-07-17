@@ -3,6 +3,7 @@
 [ext_resource type="Texture2D" path="res://art/sprites/environment/decoration_suelo_madera_oscura.png" id="1_tex"]
 
 [node name="DecoSueloMaderaOscura" type="Node2D"]
+z_index = -5
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture_filter = 1

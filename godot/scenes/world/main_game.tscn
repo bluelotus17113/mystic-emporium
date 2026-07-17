@@ -117,6 +117,7 @@ border_color = Color(0.8, 0.55, 0.95, 0.55)
 label_text = "Recepción"
 
 [node name="World" type="Node2D" parent="." unique_id=1569569277 groups=["world_container"]]
+y_sort_enabled = true
 
 [node name="BuildingBackground" type="Sprite2D" parent="World" unique_id=731287798 groups=["taller_visual"]]
 z_index = -10

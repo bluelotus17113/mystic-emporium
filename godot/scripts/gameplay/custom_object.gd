@@ -21,3 +21,6 @@ func _ready() -> void:
 	# Tipo sólido → colisión de pies; alfombra (floor) → se puede atravesar.
 	if String(data.get("type", "solid")) == "solid":
 		SolidBase.attach(self, Vector2(24.0, 12.0), Vector2(0, 6))
+	else:
+		# Alfombras/suelos siempre por debajo de personajes y objetos (no y-sort).
+		z_index = -5
