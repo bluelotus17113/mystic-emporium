@@ -51,6 +51,7 @@
 [ext_resource type="PackedScene" uid="uid://b5j8r7n9m1w88" path="res://scenes/ui/wardrobe_panel.tscn" id="49_wardrobe"]
 [ext_resource type="PackedScene" uid="uid://b5j8r7n9m1t99" path="res://scenes/ui/build_toolbar.tscn" id="50_toolbar"]
 [ext_resource type="PackedScene" uid="uid://b5j8r7n9m1abr7" path="res://scenes/ui/abracadabra_editor.tscn" id="51_abr"]
+[ext_resource type="PackedScene" uid="uid://b5j8r7n9m1em5" path="res://scenes/ui/entity_menu.tscn" id="52_em"]
 
 [node name="MainGame" type="Node2D" unique_id=881335330]
 script = ExtResource("1_boot")
@@ -240,6 +241,8 @@ visible = false
 
 [node name="AbracadabraEditor" parent="UICanvas" instance=ExtResource("51_abr")]
 visible = false
+
+[node name="EntityMenu" parent="UICanvas" instance=ExtResource("52_em")]
 
 [node name="BuildToolbar" parent="UICanvas" instance=ExtResource("50_toolbar")]
 

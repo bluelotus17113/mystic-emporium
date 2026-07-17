@@ -38,9 +38,48 @@ signal state_changed(new_state: GameEnums.WorkerState)
 func _ready() -> void:
 	add_to_group("workers")
 	CharShadow.attach(self)
+	_setup_click_area()
 	_anim_sprite = get_node_or_null("AnimatedSprite2D") as AnimatedSprite2D
 	# call_deferred porque al spawnear, global_position aún no está finalizado.
 	call_deferred("_capture_home")
+
+
+## Clic izquierdo sobre el worker → menú contextual (Seguir con la cámara).
+func _setup_click_area() -> void:
+	var area := Area2D.new()
+	area.name = "ClickArea"
+	area.input_pickable = true
+	var cs := CollisionShape2D.new()
+	var circ := CircleShape2D.new()
+	circ.radius = 18.0
+	cs.shape = circ
+	cs.position = Vector2(0, -18)
+	area.add_child(cs)
+	add_child(area)
+	area.input_event.connect(_on_body_clicked)
+
+
+func _on_body_clicked(_vp: Node, event: InputEvent, _idx: int) -> void:
+	if not (event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT):
+		return
+	# En modo obra el clic lo gestiona BuildManager; no abrir menú.
+	if BuildManager.is_active() or BuildManager.is_move_active() \
+			or BuildManager.is_rotate_active() or BuildManager.is_demolish_active():
+		return
+	var menu: Node = get_tree().get_first_node_in_group("entity_menu")
+	if menu != null and menu.has_method("open_for"):
+		menu.open_for(self, _worker_title())
+		get_viewport().set_input_as_handled()
+
+
+func _worker_title() -> String:
+	match worker_type:
+		GameEnums.WorkerType.DUENDE: return "🧝 Duende"
+		GameEnums.WorkerType.GOLEM: return "🗿 Gólem"
+		GameEnums.WorkerType.APPRENTICE: return "🧙 Aprendiz"
+		GameEnums.WorkerType.LENADOR: return "🪓 Leñador"
+		GameEnums.WorkerType.ESPIRITU: return "👻 Espíritu"
+		_: return "Ayudante"
 
 
 func _capture_home() -> void:

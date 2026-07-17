@@ -128,6 +128,7 @@ script = ExtResource("1_cat")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 texture_filter = 1
+scale = Vector2(0.55, 0.55)
 offset = Vector2(0, -30)
 sprite_frames = SubResource("SF_cat")
 animation = &"sleep"
