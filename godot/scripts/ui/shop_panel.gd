@@ -10,21 +10,21 @@ const WORKER_INFO: Array = [
 		"type": GameEnums.WorkerType.DUENDE,
 		"name": "Duende",
 		"desc": "Especialista en hierbas. Rápido y barato.",
-		"icon": "res://art/sprites/characters/duende.png",
+		"icon": "res://art/sprites/characters/duende_anim.png",
 		"color": Color(0.42, 0.72, 0.45),
 	},
 	{
 		"type": GameEnums.WorkerType.GOLEM,
 		"name": "Gólem",
 		"desc": "Recolecta cristales y minerales. Lento pero resistente.",
-		"icon": "res://art/sprites/characters/golem.png",
+		"icon": "res://art/sprites/characters/golem_anim.png",
 		"color": Color(0.55, 0.55, 0.65),
 	},
 	{
 		"type": GameEnums.WorkerType.APPRENTICE,
 		"name": "Aprendiz",
 		"desc": "Trabaja en investigaciones en la Biblioteca.",
-		"icon": "res://art/sprites/characters/apprentice.png",
+		"icon": "res://art/sprites/characters/apprentice_anim.png",
 		"color": Color(0.65, 0.40, 0.85),
 	},
 	{
@@ -169,7 +169,16 @@ func _build_tile(w: Dictionary) -> Dictionary:
 	icon_rect.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	icon_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	if ResourceLoader.exists(w.icon):
-		icon_rect.texture = load(w.icon)
+		var tex: Texture2D = load(w.icon)
+		# Las hojas de animación son grids 64px: usar el primer frame (idle_down)
+		# como icono para que la tarjeta muestre EXACTAMENTE el sprite del juego.
+		if tex != null and tex.get_width() > 64:
+			var at := AtlasTexture.new()
+			at.atlas = tex
+			at.region = Rect2(0, 0, 64, 64)
+			icon_rect.texture = at
+		else:
+			icon_rect.texture = tex
 	vb.add_child(icon_rect)
 
 	var name_lbl := Label.new()
