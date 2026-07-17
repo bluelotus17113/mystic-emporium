@@ -50,6 +50,11 @@ func is_in_playable_area(pos: Vector2) -> bool:
 	return false
 
 
+func get_zone_rect(zone: GameEnums.ZoneType) -> Rect2:
+	var arr: Array = _zone_rects.get(zone, [])
+	return arr[0] if not arr.is_empty() else Rect2()
+
+
 func get_zone_rect_at(pos: Vector2) -> Rect2:
 	for arr in _zone_rects.values():
 		for r in arr:

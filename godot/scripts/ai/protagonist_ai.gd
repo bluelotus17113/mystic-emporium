@@ -52,6 +52,38 @@ func _ready() -> void:
 		_sprite_base_scale = _anim_sprite.scale
 	_create_bubble()
 	_wander_idle_delay = randf_range(WANDER_IDLE_DELAY_MIN, WANDER_IDLE_DELAY_MAX)
+	call_deferred("_wire_zone_switch")
+
+
+func _wire_zone_switch() -> void:
+	var cam: Node = get_tree().get_first_node_in_group("zone_camera")
+	if cam != null and cam.has_signal("zone_changed"):
+		cam.zone_changed.connect(_on_zone_switched)
+
+
+const _ZONE_BY_NAME: Dictionary = {
+	&"natural": GameEnums.ZoneType.NATURE,
+	&"taller": GameEnums.ZoneType.WORKSHOP,
+	&"recepcion": GameEnums.ZoneType.RECEPTION,
+}
+
+
+## Si cambias de zona (Q/E) mientras la arrastras, la protagonista y el ratón
+## saltan al centro de la nueva zona y el drag continúa allí — así no queda
+## trabada en la pared ni cae en la oscuridad entre zonas.
+func _on_zone_switched(zone_name: StringName) -> void:
+	if state != State.DRAGGING:
+		return
+	var rect: Rect2 = GridManager.get_zone_rect(_ZONE_BY_NAME.get(zone_name, -1))
+	if rect.size == Vector2.ZERO:
+		return
+	_drag_zone_rect = rect
+	global_position = rect.get_center()
+	_drag_offset = Vector2.ZERO
+	# Warp del ratón a donde quedó ella en pantalla (esperar a que la cámara asiente).
+	await get_tree().process_frame
+	if state == State.DRAGGING:
+		get_viewport().warp_mouse(get_global_transform_with_canvas().origin)
 
 
 func _create_bubble() -> void:
