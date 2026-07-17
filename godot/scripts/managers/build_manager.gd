@@ -5,6 +5,7 @@ signal build_mode_exited
 signal buildable_unlocked(buildable: BuildableData)
 signal placement_completed(buildable: BuildableData, position: Vector2)
 signal demolish_mode_changed(active: bool)
+signal tool_mode_changed(mode: StringName)  ## "", place, move, rotate, demolish
 signal building_demolished(grid_pos: Vector2i, refund: int)
 
 const DEMOLISH_REFUND_RATIO: float = 0.5
@@ -16,6 +17,14 @@ var _ghost: Node2D = null
 var _ghost_rotation_deg: float = 0.0
 var _is_active: bool = false
 var _demolish_active: bool = false
+## Herramientas del modo obra: mover y rotar lo ya construido.
+var _move_active: bool = false
+var _moving_node: Node2D = null
+var _moving_from: Vector2i = Vector2i.ZERO
+var _moving_id: StringName = &""
+var _moving_cost: int = 0
+var _moving_rot: float = 0.0
+var _rotate_tool_active: bool = false
 var _demolish_highlight_node: Node2D = null
 var _demolish_orig_modulate: Color = Color.WHITE
 var _grid_cost_lookup: Dictionary = {}  # Vector2i -> int (original cost for refund)
@@ -78,6 +87,7 @@ func enter_build_mode(buildable: BuildableData) -> void:
 	get_tree().current_scene.add_child(_ghost)
 	_is_active = true
 	build_mode_entered.emit(buildable)
+	tool_mode_changed.emit(&"place")
 
 
 func exit_build_mode() -> void:
@@ -88,6 +98,7 @@ func exit_build_mode() -> void:
 	if _is_active:
 		_is_active = false
 		build_mode_exited.emit()
+		tool_mode_changed.emit(&"")
 
 
 func is_active() -> bool:
@@ -103,9 +114,20 @@ func _process(_delta: float) -> void:
 		_ghost.modulate = Color(0.5, 1.0, 0.5, 0.6) if valid else Color(1.0, 0.4, 0.4, 0.6)
 	elif _demolish_active:
 		_update_demolish_highlight()
+	elif _move_active:
+		if _moving_node != null and is_instance_valid(_moving_node):
+			var mw: Vector2 = get_tree().current_scene.get_global_mouse_position()
+			var gp: Vector2i = GridManager.world_to_grid(mw)
+			_moving_node.global_position = GridManager.grid_to_world(gp)
+			var ok: bool = _cell_ok_for(_find_buildable_by_id(_moving_id), gp)
+			_moving_node.modulate = Color(0.5, 1.0, 0.5, 0.7) if ok else Color(1.0, 0.4, 0.4, 0.7)
+		else:
+			_update_demolish_highlight(Color(1.0, 0.9, 0.45, 1.0))
+	elif _rotate_tool_active:
+		_update_demolish_highlight(Color(0.55, 0.8, 1.0, 1.0))
 
 
-func _update_demolish_highlight() -> void:
+func _update_demolish_highlight(hl: Color = DEMOLISH_HIGHLIGHT) -> void:
 	var scene: Node = get_tree().current_scene
 	if scene == null:
 		return
@@ -130,6 +152,23 @@ func _clear_demolish_highlight() -> void:
 
 
 func _input(event: InputEvent) -> void:
+	if _move_active:
+		if event.is_action_pressed("build_cancel"):
+			exit_move_mode()
+			return
+		if event.is_action_pressed("build_confirm"):
+			if _moving_node == null or not is_instance_valid(_moving_node):
+				_try_pick_for_move()
+			else:
+				_try_drop_moving()
+		return
+	if _rotate_tool_active:
+		if event.is_action_pressed("build_cancel"):
+			exit_rotate_mode()
+			return
+		if event.is_action_pressed("build_confirm"):
+			_try_rotate_existing()
+		return
 	if _demolish_active:
 		if event.is_action_pressed("build_cancel"):
 			exit_demolish_mode()
@@ -162,8 +201,11 @@ func _rotate_ghost() -> void:
 
 func enter_demolish_mode() -> void:
 	exit_build_mode()
+	exit_move_mode()
+	exit_rotate_mode()
 	_demolish_active = true
 	demolish_mode_changed.emit(true)
+	tool_mode_changed.emit(&"demolish")
 
 
 func exit_demolish_mode() -> void:
@@ -172,10 +214,130 @@ func exit_demolish_mode() -> void:
 	_clear_demolish_highlight()
 	_demolish_active = false
 	demolish_mode_changed.emit(false)
+	tool_mode_changed.emit(&"")
 
 
 func is_demolish_active() -> bool:
 	return _demolish_active
+
+
+func enter_move_mode() -> void:
+	exit_build_mode()
+	exit_demolish_mode()
+	exit_rotate_mode()
+	_move_active = true
+	tool_mode_changed.emit(&"move")
+
+
+func exit_move_mode() -> void:
+	if not _move_active:
+		return
+	if _moving_node != null and is_instance_valid(_moving_node):
+		_return_moving_to_origin()
+	_clear_demolish_highlight()
+	_move_active = false
+	tool_mode_changed.emit(&"")
+
+
+func is_move_active() -> bool:
+	return _move_active
+
+
+func enter_rotate_mode() -> void:
+	exit_build_mode()
+	exit_demolish_mode()
+	exit_move_mode()
+	_rotate_tool_active = true
+	tool_mode_changed.emit(&"rotate")
+
+
+func exit_rotate_mode() -> void:
+	if not _rotate_tool_active:
+		return
+	_clear_demolish_highlight()
+	_rotate_tool_active = false
+	tool_mode_changed.emit(&"")
+
+
+func is_rotate_active() -> bool:
+	return _rotate_tool_active
+
+
+func _return_moving_to_origin() -> void:
+	_moving_node.global_position = GridManager.grid_to_world(_moving_from)
+	_moving_node.modulate = Color.WHITE
+	GridManager.place_object(_moving_from, _moving_node)
+	_grid_cost_lookup[_moving_from] = _moving_cost
+	_grid_buildable_lookup[_moving_from] = _moving_id
+	_grid_rotation_lookup[_moving_from] = _moving_rot
+	_moving_node = null
+
+
+func _try_pick_for_move() -> void:
+	var mouse_world: Vector2 = get_tree().current_scene.get_global_mouse_position()
+	var grid_pos: Vector2i = GridManager.world_to_grid(mouse_world)
+	if not GridManager.is_cell_occupied(grid_pos):
+		return
+	var node: Node2D = GridManager._occupied.get(grid_pos)
+	if node == null or not is_instance_valid(node):
+		return
+	_moving_node = node
+	_moving_from = grid_pos
+	_moving_id = _grid_buildable_lookup.get(grid_pos, &"")
+	_moving_cost = _grid_cost_lookup.get(grid_pos, 0)
+	_moving_rot = _grid_rotation_lookup.get(grid_pos, 0.0)
+	GridManager.remove_object(grid_pos)
+	_grid_cost_lookup.erase(grid_pos)
+	_grid_buildable_lookup.erase(grid_pos)
+	_grid_rotation_lookup.erase(grid_pos)
+	_clear_demolish_highlight()
+	AudioManager.play_named(&"menu_select")
+
+
+func _try_drop_moving() -> void:
+	var mouse_world: Vector2 = get_tree().current_scene.get_global_mouse_position()
+	var grid_pos: Vector2i = GridManager.world_to_grid(mouse_world)
+	var b: BuildableData = _find_buildable_by_id(_moving_id)
+	if not _cell_ok_for(b, grid_pos):
+		AudioManager.play_named(&"build_error")
+		return
+	_moving_node.global_position = GridManager.grid_to_world(grid_pos)
+	_moving_node.modulate = Color.WHITE
+	GridManager.place_object(grid_pos, _moving_node)
+	_grid_cost_lookup[grid_pos] = _moving_cost
+	_grid_buildable_lookup[grid_pos] = _moving_id
+	_grid_rotation_lookup[grid_pos] = _moving_rot
+	VFXManager.play(VFXManager.FX.BUILD, _moving_node.global_position)
+	AudioManager.play_named(&"build_place")
+	_moving_node = null
+
+
+## ¿La celda vale para este buildable? (libre + dentro de zona permitida)
+func _cell_ok_for(b: BuildableData, grid_pos: Vector2i) -> bool:
+	if GridManager.is_cell_occupied(grid_pos):
+		return false
+	var zone: GameEnums.ZoneType = GridManager.get_zone_type(grid_pos)
+	if zone == GameEnums.ZoneType.NONE:
+		return false
+	if b != null and b.allowed_zone != GameEnums.ZoneType.NONE and zone != b.allowed_zone:
+		return false
+	return true
+
+
+func _try_rotate_existing() -> void:
+	var mouse_world: Vector2 = get_tree().current_scene.get_global_mouse_position()
+	var grid_pos: Vector2i = GridManager.world_to_grid(mouse_world)
+	if not GridManager.is_cell_occupied(grid_pos):
+		return
+	var node: Node2D = GridManager._occupied.get(grid_pos)
+	var b: BuildableData = _find_buildable_by_id(_grid_buildable_lookup.get(grid_pos, &""))
+	if b == null or b.size != Vector2i(1, 1):
+		AudioManager.play_named(&"build_error")
+		return
+	var rot: float = fposmod(_grid_rotation_lookup.get(grid_pos, 0.0) + 90.0, 360.0)
+	node.rotation_degrees = rot
+	_grid_rotation_lookup[grid_pos] = rot
+	AudioManager.play_named(&"menu_select")
 
 
 func _try_demolish() -> void:

@@ -49,6 +49,7 @@
 [ext_resource type="PackedScene" uid="uid://b5j8r7oamq01" path="res://scenes/ui/customer_queue_panel.tscn" id="47_cq"]
 [ext_resource type="PackedScene" uid="uid://b5j8r7n9m1f77" path="res://scenes/ui/album_panel.tscn" id="48_album"]
 [ext_resource type="PackedScene" uid="uid://b5j8r7n9m1w88" path="res://scenes/ui/wardrobe_panel.tscn" id="49_wardrobe"]
+[ext_resource type="PackedScene" uid="uid://b5j8r7n9m1t99" path="res://scenes/ui/build_toolbar.tscn" id="50_toolbar"]
 
 [node name="MainGame" type="Node2D" unique_id=881335330]
 script = ExtResource("1_boot")
@@ -235,6 +236,8 @@ visible = false
 
 [node name="WardrobePanel" parent="UICanvas" instance=ExtResource("49_wardrobe")]
 visible = false
+
+[node name="BuildToolbar" parent="UICanvas" instance=ExtResource("50_toolbar")]
 
 [node name="SettingsPanel" parent="UICanvas" unique_id=786044220 instance=ExtResource("22_set")]
 
