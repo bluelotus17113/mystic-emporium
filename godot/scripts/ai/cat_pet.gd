@@ -27,6 +27,7 @@ var _emote_accum: float = 0.0
 var _pounces: int = 0
 var _bob_t: float = 0.0
 var _chase_target: Node2D = null
+var _beg_cd: float = 0.0  ## pedir mimos cuando la protagonista pasa cerca
 
 @onready var _spr: AnimatedSprite2D = $AnimatedSprite2D
 
@@ -92,6 +93,7 @@ func pet() -> void:
 func _physics_process(delta: float) -> void:
 	_timer -= delta
 	_maybe_emote(delta)
+	_maybe_beg(delta)
 	match state:
 		State.SLEEP:
 			velocity = Vector2.ZERO
@@ -171,7 +173,7 @@ func _next_activity(just_woke: bool = false) -> void:
 		_go_sleep()
 	elif roll < 0.42 and has_proto:
 		state = State.FOLLOW
-	elif roll < 0.54 and _pick_chase_worker():
+	elif roll < 0.54 and _pick_chase_prey():
 		state = State.CHASE
 		_puff(_emote, "🐾")
 	elif roll < 0.62:
@@ -188,6 +190,21 @@ func _next_activity(just_woke: bool = false) -> void:
 	else:
 		state = State.WANDER
 		_pick_wander()
+
+
+## Presa a perseguir: de día caza mariposas (¡las adora!); si no hay, algún
+## worker cercano al que corretear.
+func _pick_chase_prey() -> bool:
+	if CalendarManager.get_darkness() < 0.4:
+		var flies: Array = []
+		for f in get_tree().get_nodes_in_group("butterfly"):
+			if f is Node2D and is_instance_valid(f) and (f as Node2D).visible \
+					and global_position.distance_to((f as Node2D).global_position) < 220.0:
+				flies.append(f)
+		if not flies.is_empty():
+			_chase_target = flies[randi() % flies.size()]
+			return true
+	return _pick_chase_worker()
 
 
 ## Elige un worker cercano de la misma zona para perseguir un rato.
@@ -233,6 +250,28 @@ func _maybe_emote(delta: float) -> void:
 	if _emote_accum <= 0.0:
 		_emote_accum = randf_range(6.0, 14.0)
 		_puff(_emote, EMOTES[randi() % EMOTES.size()])
+
+
+## Si la protagonista pasa cerca y el gato no duerme, pide mimos: ♥ y se orienta
+## hacia ella (a veces se sienta a esperar caricias).
+func _maybe_beg(delta: float) -> void:
+	_beg_cd -= delta
+	if _beg_cd > 0.0 or state == State.SLEEP or state == State.PLAY or state == State.CHASE:
+		return
+	var proto: Node2D = get_tree().get_first_node_in_group("protagonist")
+	if proto == null or not is_instance_valid(proto):
+		return
+	var d: Vector2 = proto.global_position - global_position
+	if d.length() > 46.0:
+		return
+	_beg_cd = randf_range(5.0, 9.0)
+	_puff(_emote, "♥")
+	_facing = &"side" if absf(d.x) > absf(d.y) else (&"down" if d.y > 0.0 else &"up")
+	_facing_x = signf(d.x)
+	if randf() < 0.5:
+		state = State.SIT
+		_timer = randf_range(2.0, 4.0)
+		velocity = Vector2.ZERO
 
 
 func _puff(lbl: Label, txt: String = "") -> void:

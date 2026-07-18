@@ -43,6 +43,7 @@ var worker_name: String = ""
 var level: int = 1
 var xp: int = 0
 var wtrait: int = Trait.DILIGENTE
+var _favorite_type: int = -1  ## especialización: recurso preferido de entre sus tipos
 var energy: float = 1.0
 var _resting: bool = false
 var _rest_target: Node2D = null
@@ -59,9 +60,11 @@ var _dust_accum: float = 0.0
 var _greet_cd: float = 0.0
 var _greet_scan: float = 0.0
 var _breath_cd: float = 0.0
-const GREET_RADIUS: float = 26.0
+var _chat_pause: float = 0.0  ## se paran un momento a "charlar" al cruzarse
+const GREET_RADIUS: float = 28.0
 const GREET_COOLDOWN: float = 12.0
 const GREET_EMOTES: Array = ["👋", "♪", "😀", "🤝"]
+const CHAT_EMOTES: Array = ["😄", "💬", "♪", "🤝", "✨", "😆", "👍"]
 
 var state: GameEnums.WorkerState = GameEnums.WorkerState.IDLE
 var target: Node2D = null
@@ -96,6 +99,9 @@ func _ready() -> void:
 	if worker_name == "":
 		worker_name = _random_name()
 	_apply_trait()
+	# Especialización: si maneja varios tipos, nace con un favorito propio.
+	if not preferred_resource_types.is_empty():
+		_favorite_type = preferred_resource_types[randi() % preferred_resource_types.size()]
 	_mood = _make_mood_bubble()
 	_mood_accum = randf_range(MOOD_MIN, MOOD_MAX)
 	_anim_sprite = get_node_or_null("AnimatedSprite2D") as AnimatedSprite2D
@@ -189,7 +195,8 @@ func _maybe_breath(delta: float) -> void:
 	BreathPuff.spawn(self, Vector2(_facing_x * 5.0, -32.0))
 
 
-## Saludo al cruzarse con otro worker caminando (con cooldown para no spamear).
+## Al cruzarse con otro worker caminando, se paran un momento a charlar:
+## ambos se plantan e intercambian un par de burbujas (con cooldown anti-spam).
 func _maybe_greet(delta: float) -> void:
 	_greet_cd -= delta
 	_greet_scan -= delta
@@ -202,9 +209,46 @@ func _maybe_greet(delta: float) -> void:
 		if w == self or not is_instance_valid(w) or not (w as Node2D).visible:
 			continue
 		if global_position.distance_to((w as Node2D).global_position) < GREET_RADIUS:
-			_greet_cd = GREET_COOLDOWN
-			_puff_mood(GREET_EMOTES[randi() % GREET_EMOTES.size()])
+			_start_chat(w)
 			return
+
+
+## Inicia una charla: yo saludo y "provoco" que el otro responda.
+func _start_chat(other: Node) -> void:
+	_greet_cd = GREET_COOLDOWN
+	_chat_pause = randf_range(0.8, 1.2)
+	_face_toward((other as Node2D).global_position)
+	_puff_mood(GREET_EMOTES[randi() % GREET_EMOTES.size()])
+	_chat_followup(randf_range(0.5, 0.8))
+	if other.has_method("_receive_chat"):
+		other._receive_chat(global_position)
+
+
+## Respuesta cuando otro worker nos aborda: nos paramos y contestamos.
+func _receive_chat(from_pos: Vector2) -> void:
+	if _chat_pause > 0.0:
+		return
+	_greet_cd = GREET_COOLDOWN
+	_chat_pause = randf_range(0.8, 1.2)
+	_face_toward(from_pos)
+	_chat_followup(randf_range(0.25, 0.5))
+
+
+## Suelta otra burbuja tras un pequeño retardo (el "ida y vuelta" de la charla).
+func _chat_followup(delay: float) -> void:
+	var t := get_tree().create_timer(delay)
+	t.timeout.connect(func() -> void:
+		if is_instance_valid(self):
+			_puff_mood(CHAT_EMOTES[randi() % CHAT_EMOTES.size()]))
+
+
+func _face_toward(pos: Vector2) -> void:
+	var d: Vector2 = pos - global_position
+	if absf(d.x) > absf(d.y):
+		_facing = &"side"
+		_facing_x = signf(d.x)
+	else:
+		_facing = &"down" if d.y > 0.0 else &"up"
 
 
 func _puff_mood(txt: String) -> void:
@@ -276,6 +320,12 @@ func _capture_home() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	# Charlando con otro worker: se para un momento y se orienta a él.
+	if _chat_pause > 0.0:
+		_chat_pause -= delta
+		velocity = Vector2.ZERO
+		_update_anim(delta)
+		return
 	match state:
 		GameEnums.WorkerState.IDLE:
 			_on_idle(delta)
@@ -541,6 +591,11 @@ func _find_best_target():
 	# (compat workers viejos), usamos el tipo singular.
 	if preferred_resource_types.is_empty():
 		return ResourceManager.get_closest_available_node(global_position, preferred_resource_type, self)
+	# Especialización individual: primero intenta su recurso favorito.
+	if _favorite_type >= 0:
+		var fav = ResourceManager.get_closest_available_node(global_position, _favorite_type, self)
+		if fav != null:
+			return fav
 	var best = null
 	var best_dist_sq: float = INF
 	for t in preferred_resource_types:

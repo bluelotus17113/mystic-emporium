@@ -45,6 +45,8 @@ var _idle_timer: float = 0.0
 var _wander_idle_delay: float = 8.0
 var _wander_target: Vector2 = Vector2.ZERO
 var _wander_poi: StringName = &""   ## tipo de sitio al que va (para micro-emote)
+var _curiosity_point: Vector2 = Vector2.ZERO
+var _has_curiosity: bool = false    ## acaban de construir algo → va a fisgonear
 var _look_scan: float = 0.0
 var _cat_react_cd: float = 0.0
 ## Estado de ánimo 0..1: sube con cosas buenas (ventas, mimos), baja poco a poco.
@@ -80,6 +82,8 @@ func _ready() -> void:
 		OrderManager.order_completed.connect(_on_order_celebrate)
 	if OrderManager.has_signal("order_expired"):
 		OrderManager.order_expired.connect(func(_o): _add_mood(-0.18))
+	if BuildManager.has_signal("placement_completed"):
+		BuildManager.placement_completed.connect(_on_new_build)
 
 
 var _last_coins_seen: int = -1
@@ -446,7 +450,28 @@ func _end_drag() -> void:
 	_start_land_visual()
 
 
+## Al construir algo en su zona, le pica la curiosidad y va a inspeccionarlo.
+func _on_new_build(_buildable, pos: Vector2) -> void:
+	var zr: Rect2 = GridManager.get_zone_rect_at(global_position)
+	if zr.size != Vector2.ZERO and not zr.has_point(pos):
+		return  # solo fisgonea cosas de su propia zona (no cruza paredes)
+	_curiosity_point = pos
+	_has_curiosity = true
+	_add_mood(0.05)
+	if state == State.IDLE_HOME:  # que vaya prontito
+		_idle_timer = maxf(_idle_timer, _wander_idle_delay - 1.0)
+
+
 func _start_wander() -> void:
+	# Prioridad: si hay algo nuevo construido, ir a inspeccionarlo.
+	if _has_curiosity:
+		_has_curiosity = false
+		var zr: Rect2 = GridManager.get_zone_rect_at(global_position)
+		var p: Vector2 = _curiosity_point + Vector2(0.0, 30.0)
+		_wander_target = _clamp_to_rect(p, zr) if zr.size != Vector2.ZERO else p
+		_wander_poi = &"new"
+		state = State.WANDERING
+		return
 	_wander_target = _pick_wander_point()
 	state = State.WANDERING
 
@@ -552,6 +577,7 @@ func _poi_emote() -> void:
 		&"fire": say(["🔥", "☺", "♨"].pick_random())
 		&"cat": say(["♥", "😊", "🐾"].pick_random())
 		&"counter": say(["👀", "🛎", "☺"].pick_random())
+		&"new": say(["✨", "😮", "👀", "🤩"].pick_random())
 		_: say(_cozy_thought())
 
 

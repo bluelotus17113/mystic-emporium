@@ -81,6 +81,7 @@ func _scatter_props() -> void:
 	_scatter_clutter(rng)
 	_scatter_grass(rng)
 	_scatter_butterflies(rng)
+	_scatter_birds(rng)
 
 
 ## Contenedor con y_sort_enabled: los árboles se ordenan por Y con la
@@ -157,6 +158,21 @@ func _scatter_butterflies(rng: RandomNumberGenerator) -> void:
 		b.add_to_group("natural_visual")
 		b.setup(_rect)
 		parent.add_child(b)
+		b.global_position = _random_point(rng)
+
+
+## Pájaros que se posan en los árboles y salen volando al acercarse alguien.
+func _scatter_birds(rng: RandomNumberGenerator) -> void:
+	var parent: Node = _visual_parent()
+	var tex: Texture2D = load("res://art/sprites/environment/critter_bird.png")
+	if tex == null:
+		return
+	for i in 4:
+		var b := Bird.new()
+		b.texture = tex
+		b.setup(_rect)
+		parent.add_child(b)
+		# _ready ya elige un árbol para posarse; el offset inicial se ajusta solo.
 		b.global_position = _random_point(rng)
 
 

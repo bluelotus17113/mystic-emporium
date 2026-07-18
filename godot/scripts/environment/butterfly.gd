@@ -14,6 +14,7 @@ func setup(rect: Rect2) -> void:
 
 
 func _ready() -> void:
+	add_to_group("butterfly")  # el gato las persigue
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	region_enabled = true
 	region_rect = Rect2(0, 0, 8, 8)
