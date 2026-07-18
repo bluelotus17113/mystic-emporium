@@ -7,6 +7,13 @@ extends Node2D
 
 # Árboles: van en una banda ordenada arriba de la zona, grandes.
 const TREES: Array = [
+	"res://art/sprites/environment/tree_oak.png",
+	"res://art/sprites/environment/tree_oak.png",
+	"res://art/sprites/environment/tree_birch.png",
+	"res://art/sprites/environment/tree_willow.png",
+	"res://art/sprites/environment/tree_pine.png",
+	"res://art/sprites/environment/tree_cherry.png",
+	"res://art/sprites/environment/tree_bush_big.png",
 	"res://art/sprites/minish_objects/flower_bush.png",
 	"res://art/sprites/environment/decoration_apple_tree.png",
 	"res://art/sprites/minish_objects/tree_dead.png",
