@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="BuildableData" load_steps=4 format=3 uid="uid://b5j8r7n9m1whbd"]
+
+[ext_resource type="Script" path="res://scripts/data/buildable_data.gd" id="1_bd"]
+[ext_resource type="PackedScene" uid="uid://b5j8r7n9m1wh01" path="res://scenes/environment/decorations/decoration_worker_house.tscn" id="2_scene"]
+[ext_resource type="Texture2D" path="res://art/sprites/environment/decoration_worker_house.png" id="3_icon"]
+
+[resource]
+script = ExtResource("1_bd")
+icon = ExtResource("3_icon")
+id = &"deco_worker_house"
+display_name = "Casa de Duendes"
+description = "Hogar 3x3 donde hasta 5 ayudantes entran a descansar. Solo en el patio."
+scene = ExtResource("2_scene")
+cost = 200
+allowed_zone = 1
+size = Vector2i(3, 3)
+unlocked_by_default = true
+is_decorative = true
+decoration_category = &"nature"

@@ -31,6 +31,12 @@ var _demolish_orig_modulate: Color = Color.WHITE
 var _grid_cost_lookup: Dictionary = {}  # Vector2i -> int (original cost for refund)
 var _grid_buildable_lookup: Dictionary = {}  # Vector2i -> StringName (buildable id placed)
 var _grid_rotation_lookup: Dictionary = {}  # Vector2i -> float (rotation_degrees al colocar)
+var _center_of: Dictionary = {}  # Node2D -> Vector2i (celda central de objetos multi-celda)
+
+
+## Celda superior-izq del footprint centrado en `center` (para size 3 → center-1).
+func _footprint_anchor(center: Vector2i, size: Vector2i) -> Vector2i:
+	return center - Vector2i((size.x - 1) / 2, (size.y - 1) / 2)
 
 const DEMOLISH_HIGHLIGHT: Color = Color(1.0, 0.35, 0.35, 1.0)
 
@@ -416,6 +422,9 @@ func _try_pick_for_move() -> void:
 		if node == null:
 			return
 		grid_pos = GridManager.world_to_grid(node.global_position)
+	if _center_of.has(node):
+		NotificationManager.post("Los edificios grandes no se mueven; demuélelo y reconstruye.", NotificationManager.Kind.INFO)
+		return
 	_moving_node = node
 	_moving_from = grid_pos
 	_moving_id = _grid_buildable_lookup.get(grid_pos, &"")
@@ -489,12 +498,15 @@ func _try_demolish() -> void:
 	# Si el node a borrar es el highlighted, soltar referencia para no restaurar modulate post-free.
 	if node == _demolish_highlight_node:
 		_demolish_highlight_node = null
-	var refund: int = int(_grid_cost_lookup.get(grid_pos, 30) * DEMOLISH_REFUND_RATIO)
+	# Objetos multi-celda: usar la celda central para lookups y liberar todo el área.
+	var center: Vector2i = _center_of.get(node, grid_pos)
+	var refund: int = int(_grid_cost_lookup.get(center, 30) * DEMOLISH_REFUND_RATIO)
 	InventoryManager.add_coins(refund)
-	GridManager.remove_object(grid_pos)
-	_grid_cost_lookup.erase(grid_pos)
-	_grid_buildable_lookup.erase(grid_pos)
-	_grid_rotation_lookup.erase(grid_pos)
+	GridManager.remove_area(node)
+	_grid_cost_lookup.erase(center)
+	_grid_buildable_lookup.erase(center)
+	_grid_rotation_lookup.erase(center)
+	_center_of.erase(node)
 	VFXManager.play(VFXManager.FX.BUILD, node.global_position)
 	AudioManager.play_beep(220.0, 0.15, -12.0)
 	building_demolished.emit(grid_pos, refund)
@@ -505,7 +517,7 @@ func _try_demolish() -> void:
 func _is_valid_placement(grid_pos: Vector2i) -> bool:
 	if _current_buildable == null:
 		return false
-	if GridManager.is_cell_occupied(grid_pos):
+	if not GridManager.is_area_free(_footprint_anchor(grid_pos, _current_buildable.size), _current_buildable.size):
 		return false
 	if InventoryManager.arcane_coins < _current_buildable.cost:
 		return false
@@ -525,8 +537,8 @@ func _placement_error(grid_pos: Vector2i) -> String:
 	# mismo que _is_valid_placement; ambos deben mantenerse en sincronía.
 	if _current_buildable == null:
 		return "Sin edificio seleccionado."
-	if GridManager.is_cell_occupied(grid_pos):
-		return "Casilla ocupada."
+	if not GridManager.is_area_free(_footprint_anchor(grid_pos, _current_buildable.size), _current_buildable.size):
+		return "Espacio ocupado."
 	if InventoryManager.arcane_coins < _current_buildable.cost:
 		return "Faltan %d ⚜ (tenés %d)." % [_current_buildable.cost, InventoryManager.arcane_coins]
 	var zone: GameEnums.ZoneType = GridManager.get_zone_type(grid_pos)
@@ -569,7 +581,9 @@ func _try_place() -> void:
 	_object_parent().add_child(instance)
 	instance.global_position = GridManager.grid_to_world(grid_pos)
 	instance.rotation_degrees = _ghost_rotation_deg
-	GridManager.place_object(grid_pos, instance)
+	GridManager.place_area(_footprint_anchor(grid_pos, _current_buildable.size), _current_buildable.size, instance)
+	if _current_buildable.size != Vector2i(1, 1):
+		_center_of[instance] = grid_pos
 	_grid_cost_lookup[grid_pos] = _current_buildable.cost
 	_grid_buildable_lookup[grid_pos] = _current_buildable.id
 	_grid_rotation_lookup[grid_pos] = _ghost_rotation_deg
@@ -684,7 +698,7 @@ func load_save_state(data: Dictionary) -> void:
 		if b == null or b.scene == null:
 			continue
 		var grid_pos := Vector2i(int(entry.get("x", 0)), int(entry.get("y", 0)))
-		if GridManager.is_cell_occupied(grid_pos):
+		if not GridManager.is_area_free(_footprint_anchor(grid_pos, b.size), b.size):
 			continue
 		var instance: Node2D = b.scene.instantiate() as Node2D
 		if instance == null:
@@ -694,7 +708,9 @@ func load_save_state(data: Dictionary) -> void:
 		instance.global_position = GridManager.grid_to_world(grid_pos)
 		var rot: float = float(entry.get("rot", 0.0))
 		instance.rotation_degrees = rot
-		GridManager.place_object(grid_pos, instance)
+		GridManager.place_area(_footprint_anchor(grid_pos, b.size), b.size, instance)
+		if b.size != Vector2i(1, 1):
+			_center_of[instance] = grid_pos
 		_grid_cost_lookup[grid_pos] = int(entry.get("cost", b.cost))
 		_grid_buildable_lookup[grid_pos] = b.id
 		_grid_rotation_lookup[grid_pos] = rot

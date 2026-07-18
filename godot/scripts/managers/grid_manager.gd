@@ -91,6 +91,27 @@ func remove_object(grid_pos: Vector2i) -> void:
 	_occupied.erase(grid_pos)
 
 
+## --- Footprint multi-celda (edificios grandes, p.ej. casa 3×3) ------------
+func is_area_free(anchor: Vector2i, size: Vector2i) -> bool:
+	for dx in size.x:
+		for dy in size.y:
+			if is_cell_occupied(anchor + Vector2i(dx, dy)):
+				return false
+	return true
+
+
+func place_area(anchor: Vector2i, size: Vector2i, object: Node2D) -> void:
+	for dx in size.x:
+		for dy in size.y:
+			_occupied[anchor + Vector2i(dx, dy)] = object
+
+
+func remove_area(object: Node2D) -> void:
+	for k in _occupied.keys():
+		if _occupied[k] == object:
+			_occupied.erase(k)
+
+
 func get_zone_type(grid_pos: Vector2i) -> GameEnums.ZoneType:
 	# Check tile layers first (precise)
 	for zone in [GameEnums.ZoneType.NATURE, GameEnums.ZoneType.WORKSHOP, GameEnums.ZoneType.RECEPTION]:

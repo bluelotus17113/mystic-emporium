@@ -46,6 +46,8 @@ var wtrait: int = Trait.DILIGENTE
 var energy: float = 1.0
 var _resting: bool = false
 var _rest_target: Node2D = null
+var _rest_house: Node2D = null
+var _inside: bool = false
 var _wander_mult: float = 1.0
 var _drain_mult: float = 1.0
 var _base_move_speed: float = 0.0
@@ -373,25 +375,75 @@ func _update_anim_directional(is_moving: bool) -> void:
 func _update_energy(delta: float) -> void:
 	var active: bool = velocity.length_squared() > 4.0
 	if _resting:
-		# Recupera rápido si ya está en un sitio cálido; más lento de camino.
+		# Dentro de casa recupera muy rápido; en sitio cálido rápido; de camino lento.
 		var rate: float = 0.7
-		if _rest_target == null or not is_instance_valid(_rest_target) \
+		if _inside:
+			rate = 3.5
+		elif _rest_target == null or not is_instance_valid(_rest_target) \
 				or global_position.distance_to(_rest_target.global_position) < 24.0:
 			rate = 2.5
 		energy = minf(1.0, energy + ENERGY_REGEN * rate * delta)
 		if energy >= REST_RECOVER_TO:
+			if _inside:
+				_exit_house()
 			_resting = false
 			_rest_target = null
+			_rest_house = null
 	elif active:
 		energy = maxf(0.0, energy - ENERGY_DRAIN * _drain_mult * delta)
 		if energy <= 0.0:
 			_resting = true
-			_rest_target = _find_warm_spot()
+			# Preferimos una casa con hueco; si no, un sitio cálido.
+			_rest_house = _find_worker_house()
+			_rest_target = _rest_house if _rest_house != null else _find_warm_spot()
 			_release_target()
 			_change_state(GameEnums.WorkerState.IDLE)
 			_puff_mood("💤")
 	else:
 		energy = minf(1.0, energy + ENERGY_REGEN * delta)
+
+
+## Casa de duendes con hueco libre más cercana, para descansar dentro.
+func _find_worker_house() -> Node2D:
+	var best: Node2D = null
+	var best_d: float = 520.0
+	for h in get_tree().get_nodes_in_group("worker_house"):
+		var n: Node2D = h as Node2D
+		if n == null or not is_instance_valid(n) or not n.visible:
+			continue
+		if not n.has_method("has_room") or not n.has_room():
+			continue
+		var d: float = global_position.distance_to(n.global_position)
+		if d < best_d:
+			best_d = d
+			best = n
+	return best
+
+
+func _enter_house() -> void:
+	if _rest_house == null or not is_instance_valid(_rest_house):
+		_rest_house = null
+		return
+	if not _rest_house.has_room():
+		_rest_house = null  # se llenó mientras llegaba → a un sitio cálido
+		return
+	_rest_house.enter(self)
+	_inside = true
+	velocity = Vector2.ZERO
+	visible = false
+
+
+func _exit_house() -> void:
+	if _rest_house != null and is_instance_valid(_rest_house):
+		_rest_house.leave(self)
+		global_position = _rest_house.door_point()
+	_inside = false
+	visible = true
+
+
+func _move_to_point(pos: Vector2, _delta: float) -> void:
+	velocity = (pos - global_position).normalized() * move_speed
+	move_and_slide()
 
 
 ## Sitio cálido (farol/vela/chimenea) más cercano y visible, para descansar.
@@ -413,6 +465,22 @@ func _on_idle(delta: float) -> void:
 	# Descansando: camina a un sitio cálido si lo hay y aún no llegó; si no, se
 	# planta a recuperar energía.
 	if _resting:
+		if _inside:
+			if not is_instance_valid(_rest_house):  # demolieron la casa: salir
+				_inside = false
+				visible = true
+				_rest_house = null
+			velocity = Vector2.ZERO
+			return
+		# Prioridad: entrar en una casa por la puerta.
+		if _rest_house != null and is_instance_valid(_rest_house):
+			var door: Vector2 = _rest_house.door_point()
+			if global_position.distance_to(door) > 18.0:
+				_move_to_point(door, delta)
+			else:
+				_enter_house()
+			return
+		# Si no, descansar en un sitio cálido.
 		if _rest_target != null and is_instance_valid(_rest_target) \
 				and global_position.distance_to(_rest_target.global_position) > 22.0:
 			_move_to(_rest_target, delta)
