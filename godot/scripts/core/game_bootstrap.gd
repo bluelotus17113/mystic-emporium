@@ -72,6 +72,10 @@ func _ready() -> void:
 	var nlife := NaturalLife.new()
 	nlife.name = "NaturalLife"
 	add_child(nlife)
+	# Poblar los biomas: props (pino/cactus/rocas/setas), nenúfares y fauna.
+	var blife := BiomeLife.new()
+	blife.name = "BiomeLife"
+	add_child(blife)
 	call_deferred("_spawn_default_lanterns")
 	print("[Bootstrap] Items: %d | Recipes: %d | Orders: %d | Research: %d | Buildables: %d" % [
 		_items_catalog.size(),
