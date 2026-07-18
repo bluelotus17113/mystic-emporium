@@ -8,7 +8,7 @@ extends CharacterBody2D
 @export var arrival_distance: float = 8.0
 @export var home_position_offset: Vector2 = Vector2.ZERO
 
-enum State { IDLE_HOME, DELIVERING, RETURNING, DRAGGING, WANDERING }
+enum State { IDLE_HOME, DELIVERING, RETURNING, DRAGGING, WANDERING, CHASING_CAT }
 
 const DRAG_FOLLOW_SMOOTH: float = 0.35
 const PICK_RADIUS: float = 50.0
@@ -47,6 +47,12 @@ var _wander_target: Vector2 = Vector2.ZERO
 var _wander_poi: StringName = &""   ## tipo de sitio al que va (para micro-emote)
 var _look_scan: float = 0.0
 var _cat_react_cd: float = 0.0
+## Estado de ánimo 0..1: sube con cosas buenas (ventas, mimos), baja poco a poco.
+var mood: float = 0.6
+const MOOD_BASELINE: float = 0.55
+var _mood_emote_cd: float = 12.0
+var _chase_cat: Node2D = null
+var _chase_timer: float = 0.0
 var _linger_timer: float = 0.0
 var _wander_watchdog: float = 0.0
 var _favorite_rotate_timer: float = 0.0
@@ -72,6 +78,8 @@ func _ready() -> void:
 	InventoryManager.coins_changed.connect(_on_coins_changed_fx)
 	if OrderManager.has_signal("order_completed"):
 		OrderManager.order_completed.connect(_on_order_celebrate)
+	if OrderManager.has_signal("order_expired"):
+		OrderManager.order_expired.connect(func(_o): _add_mood(-0.18))
 
 
 var _last_coins_seen: int = -1
@@ -204,6 +212,7 @@ func _physics_process(_delta: float) -> void:
 		if _breath_cd <= 0.0:
 			_breath_cd = randf_range(3.5, 6.5)
 			BreathPuff.spawn(self, Vector2(_facing_x * 5.0, -44.0))
+	_tick_mood(_delta)
 	# Cliente toma prioridad. No interrumpe drag ni delivering (a medio teleport).
 	if state != State.DRAGGING and state != State.DELIVERING:
 		_try_pickup_task()
@@ -251,6 +260,17 @@ func _physics_process(_delta: float) -> void:
 					_wander_watchdog = 0.0
 					_linger_timer = randf_range(WANDER_LINGER_MIN, WANDER_LINGER_MAX)
 					_poi_emote()  # micro-interacción al llegar
+		State.CHASING_CAT:
+			_chase_timer -= _delta
+			if _chase_cat == null or not is_instance_valid(_chase_cat) or _chase_timer <= 0.0:
+				_chase_cat = null
+				state = State.RETURNING
+			else:
+				var cd: Vector2 = _chase_cat.global_position - global_position
+				if cd.length() > 34.0:
+					_move_toward(_chase_cat.global_position)
+				else:
+					velocity = Vector2.ZERO
 	_update_anim()
 	_tick_footsteps(_delta)
 
@@ -296,6 +316,64 @@ func _unhandled_input(event: InputEvent) -> void:
 	get_viewport().set_input_as_handled()
 
 
+func _add_mood(x: float) -> void:
+	mood = clampf(mood + x, 0.0, 1.0)
+
+
+func _tick_mood(delta: float) -> void:
+	mood = lerpf(mood, MOOD_BASELINE, delta * 0.015)
+	_mood_emote_cd -= delta
+	if _mood_emote_cd <= 0.0:
+		_mood_emote_cd = randf_range(18.0, 34.0)
+		if state == State.IDLE_HOME or state == State.WANDERING:
+			if mood >= 0.75:
+				say(["♪", "😄", "✨"].pick_random())
+			elif mood < 0.3:
+				say(["😔", "💤", "…"].pick_random())
+
+
+func _mood_label() -> String:
+	if mood >= 0.8:
+		return "😄 Feliz"
+	if mood >= 0.55:
+		return "🙂 Contenta"
+	if mood >= 0.3:
+		return "😐 Normal"
+	return "😔 Desanimada"
+
+
+func _menu_chase_cat() -> void:
+	var cat: Node2D = get_tree().get_first_node_in_group("pets")
+	if cat == null or not is_instance_valid(cat):
+		say("?")
+		return
+	if global_position.distance_to(cat.global_position) > 1500.0:
+		say("🐾…")  # el gato está en otra zona, muy lejos
+		return
+	_chase_cat = cat
+	_chase_timer = 12.0
+	state = State.CHASING_CAT
+	say(["🐾", "♥", "😸"].pick_random())
+	_add_mood(0.1)
+
+
+func _menu_goto_zone(zone_name: StringName) -> void:
+	var zt: int = _ZONE_BY_NAME.get(zone_name, -1)
+	var rect: Rect2 = GridManager.get_zone_rect(zt)
+	if rect.size == Vector2.ZERO:
+		return
+	global_position = _clamp_to_rect(rect.get_center() + Vector2(0, 40), rect)
+	home_position = global_position
+	velocity = Vector2.ZERO
+	state = State.IDLE_HOME
+	_idle_timer = 0.0
+	_flash_teleport()
+	say("✨")
+	var cam: Node = get_tree().get_first_node_in_group("zone_camera")
+	if cam != null and cam.has_method("goto_zone"):
+		cam.goto_zone(zone_name)
+
+
 func _in_build_mode() -> bool:
 	return BuildManager.is_active() or BuildManager.is_move_active() \
 			or BuildManager.is_rotate_active() or BuildManager.is_demolish_active() \
@@ -308,7 +386,11 @@ func _open_menu() -> void:
 	if menu == null or not menu.has_method("open_for"):
 		return
 	var auto: bool = IdleAutomationManager.auto_orders
-	menu.open_for(self, "🧙 Protagonista", [
+	menu.open_for(self, "🧙 Protagonista · %s" % _mood_label(), [
+		{"text": "🐾 Perseguir al gato", "cb": Callable(self, "_menu_chase_cat")},
+		{"text": "🔨 Ir al Taller", "cb": Callable(self, "_menu_goto_zone").bind(&"taller")},
+		{"text": "🛎 Ir a Recepción", "cb": Callable(self, "_menu_goto_zone").bind(&"recepcion")},
+		{"text": "🌳 Ir al Patio", "cb": Callable(self, "_menu_goto_zone").bind(&"natural")},
 		{"text": "🎀 Vestuario", "cb": Callable(self, "_menu_wardrobe")},
 		{"text": "🛎 Auto-pedidos: %s" % ("ON" if auto else "OFF"), "cb": Callable(self, "_menu_toggle_orders")},
 		{"text": "😴 Descansa un poco", "cb": Callable(self, "_menu_rest")},
@@ -332,11 +414,13 @@ func _menu_rest() -> void:
 		return
 	say("😴", 24.0)
 	state = State.RETURNING  # vuelve a su sitio a descansar
+	_add_mood(0.1)
 
 
 func _menu_cheer() -> void:
 	say(["♥", "😊", "✨", "♪"].pick_random(), 30.0)
 	_start_land_visual()  # rebotecito alegre
+	_add_mood(0.2)
 
 
 func _begin_drag() -> void:
@@ -395,6 +479,7 @@ func _look_at_nearest(delta: float) -> void:
 
 ## Celebra cualquier pedido completado (si no esta a media entrega).
 func _on_order_celebrate(_o) -> void:
+	_add_mood(0.15)
 	if state == State.IDLE_HOME or state == State.WANDERING:
 		say(["👏", "★", "♪", "😊"].pick_random())
 
