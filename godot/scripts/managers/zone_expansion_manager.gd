@@ -19,6 +19,25 @@ const NATURAL_LEVELS: Array = [
 ]
 
 
+## --- Mapa de biomas 2D (Fase 2) ---------------------------------------------
+## El patio deja de ser una franja: ahora es un mapa grande explorable en las 4
+## direcciones. Borde derecho (inicio, tras la tienda pero muy a su izquierda) y
+## crece hacia izquierda/arriba/abajo. NO se solapa con el edificio (x≈-1843..0).
+const MAP_RIGHT_X: float = -5600.0
+const MAP_W: float = 3840.0   # 120 cols × 16px × 2
+const MAP_H: float = 2304.0   # 72 rows × 16px × 2
+
+func map_rect() -> Rect2:
+	return Rect2(MAP_RIGHT_X - MAP_W, -MAP_H * 0.5, MAP_W, MAP_H)
+
+func map_center() -> Vector2:
+	return map_rect().get_center()
+
+## Vista inicial: cerca del borde derecho (la pradera de inicio, junto a los generadores).
+func starter_view() -> Vector2:
+	return Vector2(MAP_RIGHT_X - 420.0, 0.0)
+
+
 func get_size_for(level: int) -> Vector2:
 	return Vector2(NATURAL_LEVELS[level].width, NATURAL_HEIGHT)
 

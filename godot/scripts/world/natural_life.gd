@@ -47,7 +47,12 @@ func _ready() -> void:
 func _nature_rect() -> Rect2:
 	for zr in _find_regions(get_tree().current_scene):
 		if zr.zone_type == GameEnums.ZoneType.NATURE:
-			return Rect2(zr.global_position - zr.size * 0.5, zr.size)
+			var full := Rect2(zr.global_position - zr.size * 0.5, zr.size)
+			# Limitar la vida a la banda templada del este (pradera/bosque),
+			# no en nieve (norte) ni desierto (sur).
+			var x0: float = full.position.x + full.size.x * 0.48
+			var y0: float = full.get_center().y - full.size.y * 0.17
+			return Rect2(x0, y0, full.end.x - x0, full.size.y * 0.34)
 	return Rect2()
 
 

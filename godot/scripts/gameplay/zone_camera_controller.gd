@@ -35,8 +35,7 @@ func _ready() -> void:
 	var z: Dictionary = ZONES[_current_index]
 	position = z.pos
 	zoom = Vector2(z.zoom, z.zoom)
-	_zone_center = z.pos
-	_zone_half_size = _get_zone_half_size(z.name)
+	_apply_bounds(z.name)
 	call_deferred("_apply_zone_visibility", z.name)
 	# Ambiente sonoro por zona (fuego en taller, aves en patio…)
 	zone_changed.connect(AudioManager.on_zone_changed)
@@ -46,16 +45,25 @@ func _ready() -> void:
 func _on_natural_level_changed(level: int) -> void:
 	_refresh_natural_config(level)
 	if get_current_zone().name == &"natural":
-		_zone_half_size = ZoneExpansionManager.get_size_for(level) * 0.5
-		_zone_center = ZONES[0].pos
+		_apply_bounds(&"natural")
 
 
-func _refresh_natural_config(level: int) -> void:
-	var size: Vector2 = ZoneExpansionManager.get_size_for(level)
-	# Filosofía idle: zoom para que se vea toda la altura. La anchura se navega panneando.
-	var z: float = clamp(600.0 / size.y, 0.7, 2.0)
-	ZONES[0].pos = ZoneExpansionManager.get_center_for(level)
-	ZONES[0].zoom = z
+func _refresh_natural_config(_level: int) -> void:
+	# Mapa de biomas 2D: la vista arranca en la pradera de inicio (borde derecho)
+	# y se explora libremente con pan en las 4 direcciones.
+	ZONES[0].pos = ZoneExpansionManager.starter_view()
+	ZONES[0].zoom = 1.3
+
+
+## Fija centro/medio-tamaño para el clamp de paneo. En Natural = el mapa entero
+## (roam libre); en interior = el rect de la zona.
+func _apply_bounds(zname: StringName) -> void:
+	if zname == &"natural":
+		_zone_center = ZoneExpansionManager.map_center()
+		_zone_half_size = ZoneExpansionManager.map_rect().size * 0.5
+	else:
+		_zone_center = get_current_zone().pos
+		_zone_half_size = _get_zone_half_size(zname)
 
 
 func toggle_follow() -> void:
@@ -104,13 +112,15 @@ func _process(delta: float) -> void:
 		return
 	if get_current_zone().name != &"natural":
 		return
-	# ponytail: filosofía idle horizontal — solo paneo lateral, nada vertical.
-	var mouse_x: float = get_viewport().get_mouse_position().x
-	var vp_w: float = get_viewport_rect().size.x
-	var pan_x: float = -1.0 if mouse_x < EDGE_SCROLL_MARGIN else (1.0 if mouse_x > vp_w - EDGE_SCROLL_MARGIN else 0.0)
-	if pan_x == 0.0:
+	# Mapa de biomas: pan en las 4 direcciones con el borde del ratón.
+	var mp: Vector2 = get_viewport().get_mouse_position()
+	var vp: Vector2 = get_viewport_rect().size
+	var pan_x: float = -1.0 if mp.x < EDGE_SCROLL_MARGIN else (1.0 if mp.x > vp.x - EDGE_SCROLL_MARGIN else 0.0)
+	var pan_y: float = -1.0 if mp.y < EDGE_SCROLL_MARGIN else (1.0 if mp.y > vp.y - EDGE_SCROLL_MARGIN else 0.0)
+	if pan_x == 0.0 and pan_y == 0.0:
 		return
 	position.x += pan_x * EDGE_SCROLL_SPEED * delta / zoom.x
+	position.y += pan_y * EDGE_SCROLL_SPEED * delta / zoom.y
 	_clamp_to_zone_bounds()
 
 
@@ -150,8 +160,7 @@ func _goto_index(i: int) -> void:
 	_tween.tween_property(self, "position", z.pos, TWEEN_DURATION)
 	_tween.tween_property(self, "zoom", Vector2(z.zoom, z.zoom), TWEEN_DURATION)
 	# Cargar bounds del rect de la zona para constraint de paneo (solo Natural lo usa).
-	_zone_center = z.pos
-	_zone_half_size = _get_zone_half_size(z.name)
+	_apply_bounds(z.name)
 	# ponytail: visibility-toggle por grupos, mutuamente exclusivos. Cada zona muestra
 	# solo sus nodos; gameplay sigue corriendo (los generadores no necesitan estar
 	# visibles para tickear), solo cambiamos lo que se renderiza.
@@ -219,6 +228,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		_is_panning = event.pressed
 	elif event is InputEventMouseMotion and _is_panning:
 		position.x -= event.relative.x / zoom.x
+		position.y -= event.relative.y / zoom.y
 		_clamp_to_zone_bounds()
 
 

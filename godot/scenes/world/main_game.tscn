@@ -39,7 +39,7 @@
 [ext_resource type="Texture2D" uid="uid://6hs1bakgg0uc" path="res://art/sprites/tiles/taller_background.png" id="38_wood"]
 [ext_resource type="Texture2D" uid="uid://dke6hslp76gox" path="res://art/sprites/tiles/recepcion_background.png" id="39_recep"]
 [ext_resource type="Texture2D" uid="uid://d3nguo3gl6pol" path="res://art/sprites/tiles/natural_background.png" id="40_natgrass"]
-[ext_resource type="Script" uid="uid://djhhks40il6kb" path="res://scripts/world/natural_background.gd" id="41_natbg"]
+[ext_resource type="Script" path="res://scripts/world/biome_map.gd" id="41_natbg"]
 [ext_resource type="Texture2D" path="res://art/sprites/fx/vignette.png" id="50_vig"]
 [ext_resource type="PackedScene" uid="uid://b5j8r7oam1p01" path="res://scenes/world/ambient_particles.tscn" id="42_amb"]
 [ext_resource type="PackedScene" uid="uid://cppurrkl810vu" path="res://scenes/ui/ending_overlay.tscn" id="43_end"]
@@ -77,9 +77,9 @@ script = ExtResource("35_zcam")
 
 [node name="ZoneNature" type="Node2D" parent="Zones" unique_id=1234173312 groups=["natural_visual"]]
 visible = false
-position = Vector2(-6000, 0)
+position = Vector2(-7520, 0)
 script = ExtResource("16_zone")
-size = Vector2(800, 400)
+size = Vector2(3840, 2304)
 fill_color = Color(0.18, 0.42, 0.22, 0.04)
 border_color = Color(0.4, 0.85, 0.45, 0.55)
 label_text = "Patio Natural"
