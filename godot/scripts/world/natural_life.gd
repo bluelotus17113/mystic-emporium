@@ -11,7 +11,7 @@ const TREES: Array = [
 	"res://art/sprites/environment/decoration_apple_tree.png",
 	"res://art/sprites/minish_objects/tree_dead.png",
 ]
-const TREE_COUNT: int = 26
+const TREE_COUNT: int = 40
 const TREE_TARGET_H: float = 108.0  ## alto objetivo en px → escala grande y uniforme
 # Maleza de suelo: dispersa por debajo de la banda de árboles.
 const CLUTTER: Array = [
@@ -21,10 +21,10 @@ const CLUTTER: Array = [
 	"res://art/sprites/environment/decoration_fallen_log.png",
 	"res://art/sprites/minish_objects/hay_bale.png",
 ]
-const CLUTTER_COUNT: int = 32
+const CLUTTER_COUNT: int = 44
 # Briznas de pasto que se mecen al pisarlas.
 const GRASS_TUFT: String = "res://art/sprites/environment/decoration_grass_tuft.png"
-const GRASS_COUNT: int = 54
+const GRASS_COUNT: int = 80
 const WEED_SCENE: String = "res://scenes/environment/resource_node_weed.tscn"
 const WEED_MAX: int = 8
 const WEED_INTERVAL_MIN: float = 22.0
@@ -45,14 +45,13 @@ func _ready() -> void:
 
 
 func _nature_rect() -> Rect2:
-	for zr in _find_regions(get_tree().current_scene):
-		if zr.zone_type == GameEnums.ZoneType.NATURE:
-			var full := Rect2(zr.global_position - zr.size * 0.5, zr.size)
-			# Patio verde uniforme: repartir la vida por casi toda la superficie
-			# (con un margen), dejando sitio para construir/decorar.
-			var m := Vector2(full.size.x * 0.06, full.size.y * 0.08)
-			return Rect2(full.position + m, full.size - m * 2.0)
-	return Rect2()
+	# Límites reales del mapa (autoritativo), con un margen. Así la vida se
+	# reparte por TODO el patio, no solo cerca del inicio.
+	var full: Rect2 = ZoneExpansionManager.map_rect()
+	if full.size == Vector2.ZERO:
+		return Rect2()
+	var m := Vector2(full.size.x * 0.05, full.size.y * 0.06)
+	return Rect2(full.position + m, full.size - m * 2.0)
 
 
 func _find_regions(root: Node) -> Array:
