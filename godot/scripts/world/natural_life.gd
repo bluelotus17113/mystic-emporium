@@ -11,7 +11,7 @@ const TREES: Array = [
 	"res://art/sprites/environment/decoration_apple_tree.png",
 	"res://art/sprites/minish_objects/tree_dead.png",
 ]
-const TREE_COUNT: int = 8
+const TREE_COUNT: int = 26
 const TREE_TARGET_H: float = 108.0  ## alto objetivo en px → escala grande y uniforme
 # Maleza de suelo: dispersa por debajo de la banda de árboles.
 const CLUTTER: Array = [
@@ -21,10 +21,10 @@ const CLUTTER: Array = [
 	"res://art/sprites/environment/decoration_fallen_log.png",
 	"res://art/sprites/minish_objects/hay_bale.png",
 ]
-const CLUTTER_COUNT: int = 14
+const CLUTTER_COUNT: int = 32
 # Briznas de pasto que se mecen al pisarlas.
 const GRASS_TUFT: String = "res://art/sprites/environment/decoration_grass_tuft.png"
-const GRASS_COUNT: int = 16
+const GRASS_COUNT: int = 54
 const WEED_SCENE: String = "res://scenes/environment/resource_node_weed.tscn"
 const WEED_MAX: int = 8
 const WEED_INTERVAL_MIN: float = 22.0
@@ -48,11 +48,10 @@ func _nature_rect() -> Rect2:
 	for zr in _find_regions(get_tree().current_scene):
 		if zr.zone_type == GameEnums.ZoneType.NATURE:
 			var full := Rect2(zr.global_position - zr.size * 0.5, zr.size)
-			# Limitar la vida a la banda templada del este (pradera/bosque),
-			# no en nieve (norte) ni desierto (sur).
-			var x0: float = full.position.x + full.size.x * 0.48
-			var y0: float = full.get_center().y - full.size.y * 0.17
-			return Rect2(x0, y0, full.end.x - x0, full.size.y * 0.34)
+			# Patio verde uniforme: repartir la vida por casi toda la superficie
+			# (con un margen), dejando sitio para construir/decorar.
+			var m := Vector2(full.size.x * 0.06, full.size.y * 0.08)
+			return Rect2(full.position + m, full.size - m * 2.0)
 	return Rect2()
 
 
@@ -85,9 +84,6 @@ func _visual_parent() -> Node:
 ## Árboles alineados en una banda superior de la zona, grandes y uniformes.
 func _scatter_trees(rng: RandomNumberGenerator) -> void:
 	var parent: Node = _visual_parent()
-	var margin: float = 70.0
-	var span: float = maxf(0.0, _rect.size.x - margin * 2.0)
-	var band_top: float = _rect.position.y + 46.0
 	for i in TREE_COUNT:
 		var tex: Texture2D = load(TREES[rng.randi() % TREES.size()])
 		if tex == null:
@@ -95,10 +91,9 @@ func _scatter_trees(rng: RandomNumberGenerator) -> void:
 		var s := Sprite2D.new()
 		s.texture = tex
 		s.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-		# Reparto horizontal parejo con leve jitter; poca variación vertical.
-		var t: float = (float(i) + 0.5) / float(TREE_COUNT)
-		var x: float = _rect.position.x + margin + span * t + rng.randf_range(-26.0, 26.0)
-		var y: float = band_top + rng.randf_range(0.0, 64.0)
+		# Repartidos por todo el patio.
+		var x: float = rng.randf_range(_rect.position.x + 40.0, _rect.end.x - 40.0)
+		var y: float = rng.randf_range(_rect.position.y + 50.0, _rect.end.y - 40.0)
 		var k: float = TREE_TARGET_H / float(tex.get_height())
 		s.scale = Vector2(k, k)
 		s.offset = Vector2(0, -tex.get_height() * 0.5 + 4)
@@ -113,7 +108,6 @@ func _scatter_trees(rng: RandomNumberGenerator) -> void:
 ## Maleza/props menores dispersos por debajo de la banda de árboles.
 func _scatter_clutter(rng: RandomNumberGenerator) -> void:
 	var parent: Node = _visual_parent()
-	var band_bottom: float = _rect.position.y + 150.0
 	for i in CLUTTER_COUNT:
 		var tex: Texture2D = load(CLUTTER[rng.randi() % CLUTTER.size()])
 		if tex == null:
@@ -122,7 +116,7 @@ func _scatter_clutter(rng: RandomNumberGenerator) -> void:
 		s.texture = tex
 		s.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 		var x: float = rng.randf_range(_rect.position.x + 40.0, _rect.end.x - 40.0)
-		var y: float = rng.randf_range(band_bottom, _rect.end.y - 30.0)
+		var y: float = rng.randf_range(_rect.position.y + 50.0, _rect.end.y - 30.0)
 		var k: float = 1.4 if "mushroom" in tex.resource_path else 1.7
 		s.scale = Vector2(k, k)
 		s.offset = Vector2(0, -tex.get_height() * 0.5 + 4)

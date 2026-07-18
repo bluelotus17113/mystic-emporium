@@ -190,6 +190,7 @@ const DECO_CATEGORIES: Array = [
 	{"id": &"",       "label": "Todas"},
 	{"id": &"wall",   "label": "🖼 Pared"},
 	{"id": &"floor",  "label": "🟪 Suelo"},
+	{"id": &"terreno", "label": "🌿 Terreno"},
 	{"id": &"table",  "label": "🕯 Mesa"},
 	{"id": &"nature", "label": "🍄 Natural"},
 	{"id": &"luz",    "label": "🏮 Luz"},
