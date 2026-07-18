@@ -160,10 +160,15 @@ func _goto_index(i: int) -> void:
 
 
 func _apply_zone_visibility(zone_name: StringName) -> void:
-	for zn in [&"natural", &"taller", &"recepcion"]:
-		var on: bool = zone_name == zn
-		for n in get_tree().get_nodes_in_group(String(zn) + "_visual"):
-			n.visible = on
+	# Taller y Recepción son un mismo edificio (dos secciones contiguas): se ven
+	# juntas. El Patio Natural es exterior y es la única zona que se oculta.
+	var indoor: bool = zone_name != &"natural"
+	for n in get_tree().get_nodes_in_group("taller_visual"):
+		n.visible = indoor
+	for n in get_tree().get_nodes_in_group("recepcion_visual"):
+		n.visible = indoor
+	for n in get_tree().get_nodes_in_group("natural_visual"):
+		n.visible = zone_name == &"natural"
 
 
 func _get_zone_half_size(zone_name: StringName) -> Vector2:
