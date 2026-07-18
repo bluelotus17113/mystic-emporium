@@ -97,12 +97,15 @@ func _scatter_trees(rng: RandomNumberGenerator) -> void:
 		var tex: Texture2D = load(TREES[rng.randi() % TREES.size()])
 		if tex == null:
 			continue
-		var s := Sprite2D.new()
+		var s := TreeWind.new()
 		s.texture = tex
 		s.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 		# Repartidos por todo el patio.
 		var x: float = rng.randf_range(_rect.position.x + 40.0, _rect.end.x - 40.0)
 		var y: float = rng.randf_range(_rect.position.y + 50.0, _rect.end.y - 40.0)
+		# Desfase por posición: la ráfaga recorre el patio como una onda.
+		s.phase = x * 0.008
+		s.amp = rng.randf_range(0.035, 0.06)  # cada árbol mece un poco distinto
 		var k: float = TREE_TARGET_H / float(tex.get_height())
 		s.scale = Vector2(k, k)
 		# Bajamos el punto de orden (global_position.y) y compensamos el offset
@@ -181,6 +184,7 @@ func _random_point(rng: RandomNumberGenerator) -> Vector2:
 
 
 func _process(delta: float) -> void:
+	Wind.update(delta)  # avanza el viento global que leen árboles y hierba
 	_weed_timer -= delta
 	if _weed_timer > 0.0:
 		return
