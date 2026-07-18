@@ -1,11 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://b5j8r7n9m1d17"]
+[gd_scene load_steps=2 format=3 uid="uid://b5j8r7n9m1win7"]
 
-[ext_resource type="Texture2D" path="res://art/sprites/environment/decoration_window.png" id="1_tex"]
+[ext_resource type="Script" path="res://scripts/environment/window_deco.gd" id="1_win"]
 
 [node name="DecoWindow" type="Node2D"]
-y_sort_enabled = true
-
-[node name="Sprite2D" type="Sprite2D" parent="."]
-texture_filter = 1
-scale = Vector2(2, 2)
-texture = ExtResource("1_tex")
+script = ExtResource("1_win")

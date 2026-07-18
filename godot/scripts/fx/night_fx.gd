@@ -6,8 +6,6 @@ extends Node2D
 ## Lo instala game_bootstrap. Se apaga solo de día.
 
 const UPDATE_INTERVAL: float = 0.15
-const GLOW_TEX: String = "res://art/sprites/fx/lantern_glow.png"
-const WINDOW_TEX: String = "res://art/sprites/environment/window_lit.png"
 const CRICKETS: String = "res://audio/sfx/ambient_crickets.wav"
 
 var _accum: float = 0.0
@@ -23,11 +21,8 @@ func _ready() -> void:
 			continue
 		seen[zr.zone_type] = true
 		var rect := Rect2(zr.global_position - zr.size * 0.5, zr.size)
-		match zr.zone_type:
-			GameEnums.ZoneType.NATURE:
-				_setup_natural(rect)
-			GameEnums.ZoneType.WORKSHOP:
-				_setup_workshop(rect)
+		if zr.zone_type == GameEnums.ZoneType.NATURE:
+			_setup_natural(rect)
 	_apply(CalendarManager.get_darkness())
 
 
@@ -62,32 +57,6 @@ func _setup_natural(rect: Rect2) -> void:
 	_cricket.volume_db = -80.0
 	_cricket.autoplay = true
 	add_child(_cricket)
-
-
-func _setup_workshop(rect: Rect2) -> void:
-	var glow_tex: Texture2D = load(GLOW_TEX)
-	var win_tex: Texture2D = load(WINDOW_TEX)
-	var wall_y: float = rect.position.y + 52.0
-	for off in [-rect.size.x * 0.28, rect.size.x * 0.28]:
-		var holder := Node2D.new()
-		holder.add_to_group("taller_visual")
-		add_child(holder)
-		holder.global_position = Vector2(rect.get_center().x + off, wall_y)
-		var glow := Sprite2D.new()
-		glow.texture = glow_tex
-		glow.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-		glow.scale = Vector2(0.9, 0.9)
-		var mat := CanvasItemMaterial.new()
-		mat.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
-		glow.material = mat
-		glow.modulate = Color(1, 0.85, 0.55)
-		holder.add_child(glow)
-		var win := Sprite2D.new()
-		win.texture = win_tex
-		win.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-		win.scale = Vector2(2, 2)
-		holder.add_child(win)
-		_fade.append({"node": holder, "max": 1.0})
 
 
 ## Emisor radial reutilizable (partículas suaves sin assets).
