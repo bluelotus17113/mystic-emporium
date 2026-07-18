@@ -52,6 +52,14 @@ func _ready() -> void:
 	var seasonfx := SeasonFX.new()
 	seasonfx.name = "SeasonFX"
 	add_child(seasonfx)
+	# Fundido suave al cambiar de zona.
+	var zfade := preload("res://scripts/fx/zone_fade.gd").new()
+	zfade.name = "ZoneFade"
+	add_child(zfade)
+	# Confeti + corazón al completar pedidos.
+	var celeb := preload("res://scripts/fx/celebration_fx.gd").new()
+	celeb.name = "CelebrationFX"
+	add_child(celeb)
 	call_deferred("_spawn_cat")
 	# Vida del patio natural: scatter de props + maleza que crece sola.
 	var nlife := NaturalLife.new()

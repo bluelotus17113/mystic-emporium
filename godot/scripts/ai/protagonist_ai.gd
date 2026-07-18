@@ -22,6 +22,14 @@ const BUBBLE_BASE_Y: float = -64.0
 const PLAYABLE_MARGIN: float = 20.0
 const DELIVER_DURATION: float = 0.7
 const IDLE_EMOJIS := ["♪", "♫", "✨", "★", "☕", "♥", "🌙", "🍀", "💭", "🌸"]
+const THOUGHTS_DAY := ["qué paz ☕", "buen día ☀", "¿un té? 🍵", "todo en calma"]
+const THOUGHTS_NIGHT := ["a descansar 🌙", "qué tranquilo", "buenas noches ✨"]
+const THOUGHTS_SEASON := {
+	3: ["qué frío ❄", "brr… 🧣"],   # WINTER
+	2: ["hojas 🍂", "huele a otoño"], # AUTUMN
+	0: ["flores 🌸", "qué primavera"],# SPRING
+	1: ["calorcito ☀", "verano 🍉"],  # SUMMER
+}
 
 var state: State = State.IDLE_HOME
 var home_position: Vector2 = Vector2.ZERO
@@ -151,6 +159,17 @@ func _create_bubble() -> void:
 	add_child(_bubble_label)
 
 
+## Mezcla emojis sueltos con frases cozy contextuales (hora/estación).
+func _cozy_thought() -> String:
+	if randf() < 0.5:
+		return IDLE_EMOJIS[randi() % IDLE_EMOJIS.size()]
+	var pool: Array = []
+	pool += THOUGHTS_NIGHT if CalendarManager.is_night() else THOUGHTS_DAY
+	if THOUGHTS_SEASON.has(CalendarManager.current_season):
+		pool += THOUGHTS_SEASON[CalendarManager.current_season]
+	return pool[randi() % pool.size()] if not pool.is_empty() else "♪"
+
+
 func say(emoji: String, lift: float = 28.0) -> void:
 	if _bubble_label == null:
 		return
@@ -167,11 +186,19 @@ func say(emoji: String, lift: float = 28.0) -> void:
 	_bubble_tween.tween_property(_bubble_label, "modulate:a", 0.0, 0.5)
 
 
+var _breath_cd: float = 0.0
+
 func _physics_process(_delta: float) -> void:
 	_favorite_rotate_timer += _delta
 	if _favorite_rotate_timer >= FAVORITE_ROTATE_SECONDS:
 		_favorite_rotate_timer = 0.0
 		_rotate_favorite_home()
+	# Vaho en invierno.
+	if CalendarManager.current_season == CalendarManager.Season.WINTER:
+		_breath_cd -= _delta
+		if _breath_cd <= 0.0:
+			_breath_cd = randf_range(3.5, 6.5)
+			BreathPuff.spawn(self, Vector2(_facing_x * 5.0, -44.0))
 	# Cliente toma prioridad. No interrumpe drag ni delivering (a medio teleport).
 	if state != State.DRAGGING and state != State.DELIVERING:
 		_try_pickup_task()
@@ -205,7 +232,7 @@ func _physics_process(_delta: float) -> void:
 				velocity = Vector2.ZERO
 				_linger_timer -= _delta
 				if _linger_timer <= 0.0:
-					say(IDLE_EMOJIS[randi() % IDLE_EMOJIS.size()])
+					say(_cozy_thought())
 					state = State.RETURNING
 			else:
 				_move_toward(_wander_target)

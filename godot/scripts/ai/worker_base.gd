@@ -53,6 +53,7 @@ var _mood_accum: float = 0.0
 var _dust_accum: float = 0.0
 var _greet_cd: float = 0.0
 var _greet_scan: float = 0.0
+var _breath_cd: float = 0.0
 const GREET_RADIUS: float = 26.0
 const GREET_COOLDOWN: float = 12.0
 const GREET_EMOTES: Array = ["👋", "♪", "😀", "🤝"]
@@ -170,6 +171,17 @@ func _maybe_mood(delta: float) -> void:
 		_:
 			pool = ["🍃", "😌", "💭", "♪"]
 	_puff_mood(pool[randi() % pool.size()])
+
+
+## Vaho blanco al respirar en invierno.
+func _maybe_breath(delta: float) -> void:
+	if CalendarManager.current_season != CalendarManager.Season.WINTER:
+		return
+	_breath_cd -= delta
+	if _breath_cd > 0.0:
+		return
+	_breath_cd = randf_range(3.5, 6.5)
+	BreathPuff.spawn(self, Vector2(_facing_x * 5.0, -32.0))
 
 
 ## Saludo al cruzarse con otro worker caminando (con cooldown para no spamear).
@@ -297,6 +309,7 @@ func _physics_process(delta: float) -> void:
 	_update_anim(delta)
 	_maybe_mood(delta)
 	_maybe_greet(delta)
+	_maybe_breath(delta)
 	_update_energy(delta)
 	# pasos suaves + polvo (solo si el worker está en la zona visible)
 	if visible and velocity.length_squared() > 4.0:

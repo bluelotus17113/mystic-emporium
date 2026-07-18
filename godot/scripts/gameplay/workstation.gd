@@ -133,11 +133,17 @@ func _on_hover_enter() -> void:
 	if _hover_label != null:
 		_hover_label.visible = true
 		_refresh_hover_text()
+	Input.set_default_cursor_shape(Input.CURSOR_POINTING_HAND)
+	if _sprite != null:
+		_sprite.self_modulate = Color(1.18, 1.18, 1.18)
 
 
 func _on_hover_exit() -> void:
 	if _hover_label != null:
 		_hover_label.visible = false
+	Input.set_default_cursor_shape(Input.CURSOR_ARROW)
+	if _sprite != null:
+		_sprite.self_modulate = Color.WHITE
 
 
 func _refresh_hover_text() -> void:

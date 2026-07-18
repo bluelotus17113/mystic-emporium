@@ -1,7 +1,7 @@
-[gd_resource type="Resource" script_class="BuildableData" load_steps=4 format=3 uid="uid://b5j8r7n9m1h39"]
+[gd_resource type="Resource" script_class="BuildableData" load_steps=4 format=3 uid="uid://b5j8r7n9m1firebd"]
 
 [ext_resource type="Script" path="res://scripts/data/buildable_data.gd" id="1_bd"]
-[ext_resource type="PackedScene" uid="uid://b5j8r7n9m1e29" path="res://scenes/environment/decorations/decoration_fireplace.tscn" id="2_scene"]
+[ext_resource type="PackedScene" uid="uid://b5j8r7n9m1fire7" path="res://scenes/environment/decorations/decoration_fireplace.tscn" id="2_scene"]
 [ext_resource type="Texture2D" path="res://art/sprites/environment/decoration_fireplace.png" id="3_icon"]
 
 [resource]
@@ -9,11 +9,11 @@ script = ExtResource("1_bd")
 icon = ExtResource("3_icon")
 id = &"deco_fireplace"
 display_name = "Chimenea"
-description = "Chimenea de piedra con fuego y reloj (3×1)."
+description = "Chimenea de piedra con fuego crepitante. El corazón del hogar."
 scene = ExtResource("2_scene")
-cost = 160
-allowed_zone = 2
-size = Vector2i(3, 1)
+cost = 90
+allowed_zone = 0
+size = Vector2i(1, 1)
 unlocked_by_default = true
 is_decorative = true
-decoration_category = &"table"
+decoration_category = &"luz"

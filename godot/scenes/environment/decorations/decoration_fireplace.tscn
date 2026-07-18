@@ -1,11 +1,14 @@
-[gd_scene load_steps=2 format=3 uid="uid://b5j8r7n9m1e29"]
+[gd_scene load_steps=2 format=3 uid="uid://b5j8r7n9m1fire7"]
 
-[ext_resource type="Texture2D" path="res://art/sprites/environment/decoration_fireplace.png" id="1_tex"]
+[ext_resource type="Script" path="res://scripts/environment/warm_light.gd" id="1_wl"]
 
 [node name="DecoFireplace" type="Node2D"]
-y_sort_enabled = true
-
-[node name="Sprite2D" type="Sprite2D" parent="."]
-texture_filter = 1
-scale = Vector2(2, 2)
-texture = ExtResource("1_tex")
+script = ExtResource("1_wl")
+tex_path = "res://art/sprites/environment/decoration_fireplace.png"
+sprite_offset = Vector2(0, -12)
+glow_scale = 0.8
+glow_offset = Vector2(0, -14)
+base_glow = 0.5
+night_glow = 0.35
+solid = true
+solid_size = Vector2(46, 12)
