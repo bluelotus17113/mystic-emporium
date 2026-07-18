@@ -5,6 +5,7 @@ extends Node2D
 ## Lo instala game_bootstrap. Determinista (semilla fija).
 
 const ENV: String = "res://art/sprites/environment/"
+const FAUNA: bool = false  ## bichos que se mueven (zorro/pájaro/ardilla/rana/libélula)
 
 
 func _ready() -> void:
@@ -25,15 +26,18 @@ func _ready() -> void:
 	_scatter(parent, rng, map, "biome_cave_mushroom", "arcane", 6, 1.5)
 	# Nenúfares en el estanque.
 	_scatter_rect(parent, rng, map.pond_world_rect(), "biome_lilypad", 7, 1.6, false)
-	# Fauna por bioma.
-	var forest: Rect2 = map.biome_world_rect("forest").merge(map.biome_world_rect("meadow"))
+	# Estanque: brillo del agua (la fauna queda desactivada por ahora).
 	var pond: Rect2 = map.pond_world_rect()
-	_critters(parent, rng, "critter_fox", forest, 2, 1.7, 44.0, true)
-	_critters(parent, rng, "critter_bird", forest, 6, 1.2, 58.0, true)
-	_critters(parent, rng, "critter_squirrel", forest, 3, 1.3, 40.0, true)
-	_critters(parent, rng, "critter_frog", pond.grow(24.0), 3, 1.3, 16.0, false)
-	_spawn_dragonflies(parent, rng, pond)
 	_pond_shimmer(parent, pond)
+	# Fauna (zorros/pájaros/ardillas/ranas/libélulas) — desactivada; pon FAUNA=true
+	# para reactivarla cuando queramos.
+	if FAUNA:
+		var forest: Rect2 = map.biome_world_rect("forest").merge(map.biome_world_rect("meadow"))
+		_critters(parent, rng, "critter_fox", forest, 2, 1.7, 44.0, true)
+		_critters(parent, rng, "critter_bird", forest, 6, 1.2, 58.0, true)
+		_critters(parent, rng, "critter_squirrel", forest, 3, 1.3, 40.0, true)
+		_critters(parent, rng, "critter_frog", pond.grow(24.0), 3, 1.3, 16.0, false)
+		_spawn_dragonflies(parent, rng, pond)
 
 
 func _scatter(parent: Node, rng: RandomNumberGenerator, map: Node, asset: String, biome: String, n: int, k: float) -> void:
