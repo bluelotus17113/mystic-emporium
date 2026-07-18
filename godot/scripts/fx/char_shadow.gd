@@ -8,8 +8,9 @@ static var _tex_cache: GradientTexture2D = null
 static func attach(body: Node2D, width: float = 22.0) -> void:
 	if body == null or body.get_node_or_null("BlobShadow") != null:
 		return
-	# Los personajes renderizan por encima de props/scatter (z 0).
-	body.z_index = max(body.z_index, 2)
+	# El cuerpo se queda en z=0 para que el y-sort lo ordene junto a árboles,
+	# estaciones y demás props (poder caminar por detrás/delante). La sombra
+	# igual queda debajo del personaje gracias a show_behind_parent.
 	var s := Sprite2D.new()
 	s.name = "BlobShadow"
 	s.texture = _tex()
