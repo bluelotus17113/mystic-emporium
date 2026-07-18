@@ -23,6 +23,10 @@ class ActiveOrder:
 
 var _possible_orders: Array[OrderData] = []
 var _active: Array[ActiveOrder] = []
+## Clientes satisfechos → algunos vuelven como habituales.
+var _regulars: Array = []
+const REGULAR_CHANCE: float = 0.28
+const REGULARS_MAX: int = 8
 
 # Wired by game_bootstrap at scene load.
 var customer_scene: PackedScene = null
@@ -45,9 +49,19 @@ func _process(delta: float) -> void:
 	if _active.size() >= get_capacity():
 		return
 	_timer += delta
-	if _timer >= time_between_orders:
+	if _timer >= time_between_orders * _rhythm_mult():
 		_timer = 0.0
 		generate_new_order()
+
+
+## Ritmo del día (reloj real): rush de mañana, tarde normal, noche floja.
+func _rhythm_mult() -> float:
+	var t: float = CalendarManager.time_of_day
+	if t < 0.28: return 2.2      # madrugada: casi cerrado
+	elif t < 0.42: return 0.6    # mañana: afluencia
+	elif t < 0.68: return 1.0    # mediodía/tarde
+	elif t < 0.82: return 1.4    # atardecer baja
+	return 2.0                   # noche floja
 
 
 func get_capacity() -> int:
@@ -128,6 +142,10 @@ func _spawn_customer_for(entry: ActiveOrder) -> void:
 		target_point = chair
 	else:
 		counter_offset = Vector2(0, (entry.counter_slot - 1) * 28.0)
+	# Habitual: a veces vuelve un cliente satisfecho, con su skin recordada.
+	if not _regulars.is_empty() and randf() < REGULAR_CHANCE:
+		c.set("is_regular", true)
+		c.set("forced_skin", _regulars.pick_random())
 	c.setup(entry.data, target_point, exit_point)
 	c.set("counter_offset", counter_offset)
 	c.arrived_at_counter.connect(_on_customer_arrived)
@@ -188,6 +206,13 @@ func get_history() -> Array:
 func _on_customer_left(_customer, entry: ActiveOrder) -> void:
 	# El cliente llegó al exit point. Si la orden ya fue marcada como completed,
 	# la entry ya fue removida en try_complete_at — esto es un no-op.
+	# Cliente satisfecho → recordarlo como posible habitual.
+	if entry.completed and _customer != null and is_instance_valid(_customer):
+		var skin: StringName = _customer.get("skin_name")
+		if skin != &"" and not _regulars.has(skin):
+			_regulars.append(skin)
+			if _regulars.size() > REGULARS_MAX:
+				_regulars.pop_front()
 	if entry.chair != null and is_instance_valid(entry.chair):
 		entry.chair.release()
 		entry.chair = null

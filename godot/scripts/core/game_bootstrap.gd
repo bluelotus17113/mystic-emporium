@@ -60,6 +60,13 @@ func _ready() -> void:
 	var celeb := preload("res://scripts/fx/celebration_fx.gd").new()
 	celeb.name = "CelebrationFX"
 	add_child(celeb)
+	# Tráfico de fondo en la recepción (transeúntes) + micro-eventos cozy.
+	var village := VillageLife.new()
+	village.name = "VillageLife"
+	add_child(village)
+	var micro := MicroEvents.new()
+	micro.name = "MicroEvents"
+	add_child(micro)
 	call_deferred("_spawn_cat")
 	# Vida del patio natural: scatter de props + maleza que crece sola.
 	var nlife := NaturalLife.new()

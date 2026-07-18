@@ -45,6 +45,7 @@ var xp: int = 0
 var wtrait: int = Trait.DILIGENTE
 var energy: float = 1.0
 var _resting: bool = false
+var _rest_target: Node2D = null
 var _wander_mult: float = 1.0
 var _drain_mult: float = 1.0
 var _base_move_speed: float = 0.0
@@ -372,14 +373,20 @@ func _update_anim_directional(is_moving: bool) -> void:
 func _update_energy(delta: float) -> void:
 	var active: bool = velocity.length_squared() > 4.0
 	if _resting:
-		velocity = Vector2.ZERO
-		energy = minf(1.0, energy + ENERGY_REGEN * 1.8 * delta)
+		# Recupera rápido si ya está en un sitio cálido; más lento de camino.
+		var rate: float = 0.7
+		if _rest_target == null or not is_instance_valid(_rest_target) \
+				or global_position.distance_to(_rest_target.global_position) < 24.0:
+			rate = 2.5
+		energy = minf(1.0, energy + ENERGY_REGEN * rate * delta)
 		if energy >= REST_RECOVER_TO:
 			_resting = false
+			_rest_target = null
 	elif active:
 		energy = maxf(0.0, energy - ENERGY_DRAIN * _drain_mult * delta)
 		if energy <= 0.0:
 			_resting = true
+			_rest_target = _find_warm_spot()
 			_release_target()
 			_change_state(GameEnums.WorkerState.IDLE)
 			_puff_mood("💤")
@@ -387,10 +394,30 @@ func _update_energy(delta: float) -> void:
 		energy = minf(1.0, energy + ENERGY_REGEN * delta)
 
 
+## Sitio cálido (farol/vela/chimenea) más cercano y visible, para descansar.
+func _find_warm_spot() -> Node2D:
+	var best: Node2D = null
+	var best_d: float = 420.0
+	for w in get_tree().get_nodes_in_group("warm_spot"):
+		var n: Node2D = w as Node2D
+		if n == null or not is_instance_valid(n) or not n.visible:
+			continue
+		var d: float = global_position.distance_to(n.global_position)
+		if d < best_d:
+			best_d = d
+			best = n
+	return best
+
+
 func _on_idle(delta: float) -> void:
-	# Descansando: se queda quieto recuperando energía.
+	# Descansando: camina a un sitio cálido si lo hay y aún no llegó; si no, se
+	# planta a recuperar energía.
 	if _resting:
-		velocity = Vector2.ZERO
+		if _rest_target != null and is_instance_valid(_rest_target) \
+				and global_position.distance_to(_rest_target.global_position) > 22.0:
+			_move_to(_rest_target, delta)
+		else:
+			velocity = Vector2.ZERO
 		return
 	# Si el inventario está lleno, no recolectar más (evita spam y trabajo en vacío).
 	if InventoryManager.get_total_count() >= InventoryManager.max_capacity:

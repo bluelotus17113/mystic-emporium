@@ -23,6 +23,7 @@ var _seed: float = 0.0
 
 
 func _ready() -> void:
+	add_to_group("warm_spot")
 	_phase = randf() * TAU
 	_seed = randf() * 100.0
 	if tex_path != "":

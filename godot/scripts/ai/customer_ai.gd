@@ -91,6 +91,9 @@ var _facing: StringName = &"down"
 var _facing_x: float = 1.0
 var _sits: bool = false        ## su objetivo es una silla (no el mostrador)
 var _is_seated: bool = false   ## ya sentado (mantiene la anim 'sit')
+var is_regular: bool = false   ## cliente habitual (vuelve y te reconoce)
+var forced_skin: StringName = &""  ## si se fija, usa esta skin (habituales)
+var _react_accum: float = 3.0
 const SEAT_OFFSET: Vector2 = Vector2(0, -4)  ## ajuste fino para "posarse" en el asiento
 
 ## Un NPC es direccional si existe su hoja npc_X_anim.png (detección automática:
@@ -140,6 +143,8 @@ func _apply_random_skin() -> void:
 		return
 	var path: String = pool[randi() % pool.size()]
 	var base_name: String = path.get_file().get_basename()  # "npc_aldeano"
+	if forced_skin != &"":  # habitual: reusa su skin recordada
+		base_name = String(forced_skin)
 	skin_name = StringName(base_name)
 	var frames: SpriteFrames = _build_sprite_frames(base_name)
 	if frames == null:
@@ -248,6 +253,64 @@ func _ready() -> void:
 	CharShadow.attach(self)
 	_update_label()
 	_create_patience_bar()
+	_react_accum = randf_range(3.0, 7.0)
+	if OrderManager.has_signal("order_completed"):
+		OrderManager.order_completed.connect(_on_other_served)
+
+
+## Burbuja corta (emoji) sobre la cabeza.
+func _emote(txt: String, dur: float = 1.6) -> void:
+	var b := Label.new()
+	b.text = txt
+	b.position = Vector2(-14, -72)
+	b.add_theme_font_size_override(&"font_size", 18)
+	b.add_theme_color_override(&"font_outline_color", Color(0, 0, 0, 0.9))
+	b.add_theme_constant_override(&"outline_size", 4)
+	b.modulate.a = 0.0
+	b.z_index = 25
+	add_child(b)
+	var tw := create_tween()
+	tw.tween_property(b, "modulate:a", 1.0, 0.2)
+	tw.parallel().tween_property(b, "position:y", -84.0, dur)
+	tw.tween_property(b, "modulate:a", 0.0, 0.3)
+	tw.tween_callback(b.queue_free)
+
+
+## Vida de la cola: mientras espera, mira alrededor / charla / se impacienta.
+func _maybe_react(delta: float) -> void:
+	_react_accum -= delta
+	if _react_accum > 0.0:
+		return
+	_react_accum = randf_range(4.0, 8.0)
+	var frac: float = _patience_remaining / maxf(1.0, patience_seconds)
+	var pool: Array
+	if frac < 0.33:
+		pool = ["⏰", "💢", "😤", "😒"]
+	elif _has_nearby_waiter():
+		pool = ["💬", "😊", "🗨", "♪", "☺"]
+	else:
+		pool = ["👀", "🤔", "…", "🎵", "💭"]
+	_emote(pool.pick_random())
+
+
+func _has_nearby_waiter() -> bool:
+	for c in get_tree().get_nodes_in_group("customers"):
+		if c == self or not is_instance_valid(c):
+			continue
+		if c.get("state") == GameEnums.WorkerState.WAITING \
+				and global_position.distance_to((c as Node2D).global_position) < 80.0:
+			return true
+	return false
+
+
+## Reacciona cuando sirven a OTRO cliente (ánimo o envidia).
+func _on_other_served(_o) -> void:
+	if state != GameEnums.WorkerState.WAITING or _has_expired:
+		return
+	if randf() < 0.5:
+		_emote(["👏", "😊", "🙂", "😮"].pick_random())
+	else:
+		_emote(["😒", "⏳", "😑", "😤"].pick_random())
 
 
 func _create_patience_bar() -> void:
@@ -264,6 +327,7 @@ func _create_patience_bar() -> void:
 func _process(delta: float) -> void:
 	if state == GameEnums.WorkerState.WAITING and not _has_expired:
 		_patience_remaining -= delta
+		_maybe_react(delta)
 		if _patience_bar != null:
 			_patience_bar.value = (_patience_remaining / patience_seconds) * 100.0
 		if _patience_remaining <= 0.0:
@@ -371,6 +435,8 @@ func _update_label() -> void:
 func _show_greeting() -> void:
 	# ponytail: Label temporal sobre la cabeza. Sin scene file ni tween manager.
 	var lines: Array = personality.get("greetings", [])
+	if is_regular:
+		lines = ["¡Otra vez por aquí!", "¡Qué bueno volver!", "Mi tienda favorita ♥", "¡Hola de nuevo!"]
 	if lines.is_empty():
 		return
 	var bubble := Label.new()
