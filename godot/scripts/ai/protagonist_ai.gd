@@ -255,6 +255,7 @@ func _tick_footsteps(delta: float) -> void:
 		_step_accum = 0.34
 		AudioManager.play_named(&"footstep", 0.22)
 		FootDust.spawn(self)
+		FootPrint.maybe(self)
 
 
 func _unhandled_input(event: InputEvent) -> void:

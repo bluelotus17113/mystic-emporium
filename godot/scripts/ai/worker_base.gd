@@ -48,6 +48,8 @@ var _resting: bool = false
 var _rest_target: Node2D = null
 var _rest_house: Node2D = null
 var _inside: bool = false
+var _sleeping: bool = false   ## durmiendo de noche (no despierta hasta el día)
+var _sleep_scan: float = 0.0
 var _wander_mult: float = 1.0
 var _drain_mult: float = 1.0
 var _base_move_speed: float = 0.0
@@ -313,6 +315,7 @@ func _physics_process(delta: float) -> void:
 	_maybe_mood(delta)
 	_maybe_greet(delta)
 	_maybe_breath(delta)
+	_maybe_sleep(delta)
 	_update_energy(delta)
 	# pasos suaves + polvo (solo si el worker está en la zona visible)
 	if visible and velocity.length_squared() > 4.0:
@@ -321,6 +324,7 @@ func _physics_process(delta: float) -> void:
 			_step_accum = 0.42
 			AudioManager.play_named(&"footstep", 0.3)
 			FootDust.spawn(self)
+			FootPrint.maybe(self)
 	else:
 		_step_accum = 0.2
 
@@ -383,7 +387,7 @@ func _update_energy(delta: float) -> void:
 				or global_position.distance_to(_rest_target.global_position) < 24.0:
 			rate = 2.5
 		energy = minf(1.0, energy + ENERGY_REGEN * rate * delta)
-		if energy >= REST_RECOVER_TO:
+		if energy >= REST_RECOVER_TO and not _sleeping:
 			if _inside:
 				_exit_house()
 			_resting = false
@@ -401,6 +405,33 @@ func _update_energy(delta: float) -> void:
 			_puff_mood("💤")
 	else:
 		energy = minf(1.0, energy + ENERGY_REGEN * delta)
+
+
+## Rutina: de noche los duendes vuelven a casa a dormir; despiertan de día.
+func _maybe_sleep(delta: float) -> void:
+	_sleep_scan -= delta
+	if _sleep_scan > 0.0:
+		return
+	_sleep_scan = 1.0
+	var night: bool = CalendarManager.get_darkness() > 0.55
+	if night:
+		if not _sleeping and not _resting:
+			var h: Node2D = _find_worker_house()
+			if h != null:
+				_sleeping = true
+				_resting = true
+				_rest_house = h
+				_rest_target = h
+				_release_target()
+				_change_state(GameEnums.WorkerState.IDLE)
+				_puff_mood("😴")
+	elif _sleeping:
+		# Amaneció: despertar.
+		_sleeping = false
+		if _inside:
+			_exit_house()
+		_resting = false
+		_rest_house = null
 
 
 ## Casa de duendes con hueco libre más cercana, para descansar dentro.
