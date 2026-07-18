@@ -19,7 +19,7 @@ const TREES: Array = [
 	"res://art/sprites/minish_objects/tree_dead.png",
 ]
 const TREE_COUNT: int = 40
-const TREE_TARGET_H: float = 108.0  ## alto objetivo en px → escala grande y uniforme
+const TREE_TARGET_H: float = 140.0  ## alto objetivo en px → escala grande y uniforme
 # Maleza de suelo: dispersa por debajo de la banda de árboles.
 const CLUTTER: Array = [
 	"res://art/sprites/minish_objects/bush.png",
