@@ -269,7 +269,16 @@ func _tick_footsteps(delta: float) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if not (event is InputEventMouseButton) or event.button_index != MOUSE_BUTTON_LEFT:
+	if not (event is InputEventMouseButton):
+		return
+	# Clic derecho sobre ella → menú de acciones (sin pisar el drag de clic izq).
+	if event.button_index == MOUSE_BUTTON_RIGHT and event.pressed and state != State.DRAGGING:
+		var pp: Vector2 = global_position + Vector2(0.0, PICK_OFFSET_Y)
+		if not _in_build_mode() and get_global_mouse_position().distance_to(pp) <= PICK_RADIUS:
+			_open_menu()
+			get_viewport().set_input_as_handled()
+		return
+	if event.button_index != MOUSE_BUTTON_LEFT:
 		return
 	if state == State.DRAGGING:
 		if not event.pressed:
@@ -285,6 +294,49 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	_begin_drag()
 	get_viewport().set_input_as_handled()
+
+
+func _in_build_mode() -> bool:
+	return BuildManager.is_active() or BuildManager.is_move_active() \
+			or BuildManager.is_rotate_active() or BuildManager.is_demolish_active() \
+			or BuildManager.is_copy_active()
+
+
+## Menú contextual de la protagonista (clic derecho). Reusa el entity_menu.
+func _open_menu() -> void:
+	var menu: Node = get_tree().get_first_node_in_group("entity_menu")
+	if menu == null or not menu.has_method("open_for"):
+		return
+	var auto: bool = IdleAutomationManager.auto_orders
+	menu.open_for(self, "🧙 Protagonista", [
+		{"text": "🎀 Vestuario", "cb": Callable(self, "_menu_wardrobe")},
+		{"text": "🛎 Auto-pedidos: %s" % ("ON" if auto else "OFF"), "cb": Callable(self, "_menu_toggle_orders")},
+		{"text": "😴 Descansa un poco", "cb": Callable(self, "_menu_rest")},
+		{"text": "✨ Anímala", "cb": Callable(self, "_menu_cheer")},
+	])
+
+
+func _menu_wardrobe() -> void:
+	UIManager.open(&"wardrobe")
+
+
+func _menu_toggle_orders() -> void:
+	IdleAutomationManager.auto_orders = not IdleAutomationManager.auto_orders
+	var on: bool = IdleAutomationManager.auto_orders
+	say("🛎" if on else "🚫")
+	NotificationManager.post("Auto-pedidos %s." % ("activados" if on else "pausados"), NotificationManager.Kind.INFO)
+
+
+func _menu_rest() -> void:
+	if state == State.DRAGGING or state == State.DELIVERING:
+		return
+	say("😴", 24.0)
+	state = State.RETURNING  # vuelve a su sitio a descansar
+
+
+func _menu_cheer() -> void:
+	say(["♥", "😊", "✨", "♪"].pick_random(), 30.0)
+	_start_land_visual()  # rebotecito alegre
 
 
 func _begin_drag() -> void:
