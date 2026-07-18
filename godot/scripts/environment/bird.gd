@@ -6,6 +6,13 @@ extends Sprite2D
 
 enum St { PERCH, FLY }
 
+const SHEET: String = "res://art/sprites/environment/bird_fly.png"
+const FRAME: int = 48           ## ancho/alto de cada frame en la hoja
+const FLY_FRAMES: Array = [0, 1, 2, 1]  ## ciclo de aleteo
+const FOLD_FRAME: int = 3       ## alas plegadas (posado)
+const FLAP_FPS: float = 14.0    ## velocidad de aleteo al volar
+const FLUTTER_FPS: float = 9.0  ## aleteo suave y breve al despegar/aterrizar
+
 const TWEET_MIN: float = 3.5
 const TWEET_MAX: float = 8.0
 const PERCH_MIN: float = 6.0   ## cada cuánto cambia de árbol por su cuenta
@@ -20,6 +27,8 @@ var _tweet_cd: float = 0.0
 var _perch_cd: float = 0.0
 var _scan_cd: float = 0.0
 var _bob_t: float = 0.0
+var _anim_t: float = 0.0     ## acumulador de frames de aleteo
+var _flutter: float = 0.0    ## aleteo breve estando posado (al piar/aterrizar)
 var _fly_t: float = 0.0
 var _fly_from: Vector2 = Vector2.ZERO
 var _fly_to: Vector2 = Vector2.ZERO
@@ -32,7 +41,10 @@ func setup(rect: Rect2) -> void:
 
 func _ready() -> void:
 	add_to_group("natural_visual")
+	texture = load(SHEET)
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	region_enabled = true
+	_set_frame(FOLD_FRAME)
 	scale = Vector2(0.55, 0.55)
 	z_index = 3
 	_tweet = Label.new()
@@ -52,14 +64,24 @@ func _process(delta: float) -> void:
 		visible = false
 		return
 	visible = true
+	var base_off: float = -FRAME * 0.5
 	match _st:
 		St.PERCH:
 			_bob_t += delta * 3.0
-			offset = Vector2(0, -texture.get_height() * 0.5 + sin(_bob_t) * 1.2)
+			offset = Vector2(0, base_off + sin(_bob_t) * 1.2)
+			# Alas plegadas; al piar o recién aterrizar, un aleteo breve.
+			if _flutter > 0.0:
+				_flutter -= delta
+				_anim_t += delta * FLUTTER_FPS
+				_set_frame(FLY_FRAMES[int(_anim_t) % FLY_FRAMES.size()])
+			else:
+				_set_frame(FOLD_FRAME)
 			_tweet_cd -= delta
 			if _tweet_cd <= 0.0:
 				_tweet_cd = randf_range(TWEET_MIN, TWEET_MAX)
 				_puff("♪")
+				_flutter = 0.45
+				_anim_t = 0.0
 			_scan_cd -= delta
 			if _scan_cd <= 0.0:
 				_scan_cd = 0.25
@@ -71,18 +93,25 @@ func _process(delta: float) -> void:
 				_perch_cd = randf_range(PERCH_MIN, PERCH_MAX)
 				_flee(false)
 		St.FLY:
+			# Aleteo continuo mientras vuela.
+			_anim_t += delta * FLAP_FPS
+			_set_frame(FLY_FRAMES[int(_anim_t) % FLY_FRAMES.size()])
+			offset = Vector2(0, base_off)
 			_fly_t += delta / FLY_TIME
 			if _fly_t >= 1.0:
 				global_position = _fly_to
-				offset = Vector2(0, -texture.get_height() * 0.5)
+				_flutter = 0.5  # aleteo breve al posarse
+				_anim_t = 0.0
 				_st = St.PERCH
 				return
 			var p: Vector2 = _fly_from.lerp(_fly_to, _fly_t)
 			p.y -= sin(_fly_t * PI) * ARC_HEIGHT
 			global_position = p
 			flip_h = _fly_to.x < _fly_from.x
-			# aleteo: pequeño temblor vertical del sprite
-			offset = Vector2(0, -texture.get_height() * 0.5 + sin(_fly_t * 40.0) * 2.0)
+
+
+func _set_frame(i: int) -> void:
+	region_rect = Rect2(i * FRAME, 0, FRAME, FRAME)
 
 
 func _flee(startled: bool) -> void:

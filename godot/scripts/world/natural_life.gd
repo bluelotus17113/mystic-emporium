@@ -164,12 +164,8 @@ func _scatter_butterflies(rng: RandomNumberGenerator) -> void:
 ## Pájaros que se posan en los árboles y salen volando al acercarse alguien.
 func _scatter_birds(rng: RandomNumberGenerator) -> void:
 	var parent: Node = _visual_parent()
-	var tex: Texture2D = load("res://art/sprites/environment/critter_bird.png")
-	if tex == null:
-		return
 	for i in 4:
-		var b := Bird.new()
-		b.texture = tex
+		var b := Bird.new()  # carga su propia hoja de vuelo en _ready
 		b.setup(_rect)
 		parent.add_child(b)
 		# _ready ya elige un árbol para posarse; el offset inicial se ajusta solo.
