@@ -20,6 +20,9 @@ const TREES: Array = [
 ]
 const TREE_COUNT: int = 40
 const TREE_TARGET_H: float = 140.0  ## alto objetivo en px → escala grande y uniforme
+## El punto de orden Y se empuja hacia el borde delantero del tronco: así los
+## personajes se ocultan de forma más limpia al pasar por detrás del árbol.
+const TRUNK_SORT_NUDGE: float = 12.0
 # Maleza de suelo: dispersa por debajo de la banda de árboles.
 const CLUTTER: Array = [
 	"res://art/sprites/minish_objects/bush.png",
@@ -102,13 +105,16 @@ func _scatter_trees(rng: RandomNumberGenerator) -> void:
 		var y: float = rng.randf_range(_rect.position.y + 50.0, _rect.end.y - 40.0)
 		var k: float = TREE_TARGET_H / float(tex.get_height())
 		s.scale = Vector2(k, k)
-		s.offset = Vector2(0, -tex.get_height() * 0.5 + 4)
+		# Bajamos el punto de orden (global_position.y) y compensamos el offset
+		# para que el árbol se vea idéntico pero se ordene por su base delantera.
+		s.offset = Vector2(0, -tex.get_height() * 0.5 + 4 - TRUNK_SORT_NUDGE / k)
 		s.add_to_group("natural_visual")
 		s.add_to_group("foliage")
 		parent.add_child(s)
-		s.global_position = Vector2(x, y)
+		s.global_position = Vector2(x, y + TRUNK_SORT_NUDGE)
 		# Tronco sólido estrecho en la base: se puede pasar por detrás, no a través.
-		SolidBase.attach(s, Vector2(maxf(20.0, tex.get_width() * k * 0.28), 12.0), Vector2(0, -2))
+		# Compensamos el TRUNK_SORT_NUDGE para que el colisionador siga sobre el tronco visible.
+		SolidBase.attach(s, Vector2(maxf(20.0, tex.get_width() * k * 0.28), 12.0), Vector2(0, -2 - TRUNK_SORT_NUDGE / k))
 
 
 ## Maleza/props menores dispersos por debajo de la banda de árboles.
