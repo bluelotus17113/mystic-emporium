@@ -89,6 +89,9 @@ var _browse_watchdog: float = 0.0
 var skin_name: StringName = &""  ## base_name de la skin, para el álbum de clientes
 var _facing: StringName = &"down"
 var _facing_x: float = 1.0
+var _sits: bool = false        ## su objetivo es una silla (no el mostrador)
+var _is_seated: bool = false   ## ya sentado (mantiene la anim 'sit')
+const SEAT_OFFSET: Vector2 = Vector2(0, -4)  ## ajuste fino para "posarse" en el asiento
 
 ## Un NPC es direccional si existe su hoja npc_X_anim.png (detección automática:
 ## no hay lista que mantener; al añadir la hoja el NPC se anima solo).
@@ -105,6 +108,7 @@ func setup(p_order: OrderData, p_counter: Node2D, p_exit: Node2D) -> void:
 	order = p_order
 	counter_point = p_counter
 	exit_point = p_exit
+	_sits = p_counter != null and p_counter.is_in_group("customer_chairs")
 	state = GameEnums.WorkerState.ARRIVING
 	_assign_personality()
 	_patience_remaining = patience_seconds * personality.patience_mult
@@ -167,9 +171,44 @@ func _build_sprite_frames(base_name: String) -> SpriteFrames:
 					at.atlas = tex
 					at.region = Rect2(c * 64, r[1] * 64, 64, 64)
 					sf.add_frame(anim, at)
+			# Frame "sit" derivado del idle_down (piernas ocultas → parece sentado).
+			var sit_tex: Texture2D = _make_sit_texture(base_name, tex)
+			if sit_tex != null:
+				sf.add_animation(&"sit")
+				sf.set_animation_loop(&"sit", true)
+				sf.set_animation_speed(&"sit", 2.0)
+				sf.add_frame(&"sit", sit_tex)
 			sf.remove_animation(&"default")
 			return sf
 	return _static_frames(base_name)
+
+
+## Deriva un frame "sentado" del idle_down: recorta las piernas (que la silla
+## tapa) y baja un poco el cuerpo. Cacheado por skin. Universal para animados.
+static var _sit_cache: Dictionary = {}
+
+func _make_sit_texture(base_name: String, sheet: Texture2D) -> Texture2D:
+	if _sit_cache.has(base_name):
+		return _sit_cache[base_name]
+	var img: Image = sheet.get_image()
+	if img == null:
+		return null
+	img = img.duplicate()
+	if img.is_compressed():
+		img.decompress()
+	img.convert(Image.FORMAT_RGBA8)
+	var frame := Image.create(64, 64, false, Image.FORMAT_RGBA8)
+	frame.blit_rect(img, Rect2i(0, 0, 64, 64), Vector2i(0, 0))
+	var used: Rect2i = frame.get_used_rect()
+	if used.size.x == 0 or used.size.y == 0:
+		return null
+	var hip: int = used.position.y + int(used.size.y * 0.80)
+	var sit := Image.create(64, 64, false, Image.FORMAT_RGBA8)
+	sit.blit_rect(frame, Rect2i(0, used.position.y, 64, hip - used.position.y),
+			Vector2i(0, used.position.y + 6))
+	var tex := ImageTexture.create_from_image(sit)
+	_sit_cache[base_name] = tex
+	return tex
 
 
 func _static_frames(base_name: String) -> SpriteFrames:
@@ -284,6 +323,8 @@ func _physics_process(_delta: float) -> void:
 			if global_position.distance_to(target_pos) <= arrival_distance:
 				state = GameEnums.WorkerState.WAITING
 				velocity = Vector2.ZERO
+				if _sits:
+					_sit_down()
 				if _patience_bar != null:
 					_patience_bar.visible = true
 				_show_greeting()
@@ -300,7 +341,20 @@ func _physics_process(_delta: float) -> void:
 			if global_position.distance_to(exit_point.global_position) <= arrival_distance:
 				left.emit(self)
 				queue_free()
-	_update_anim(velocity.length_squared() > 4.0)
+	if not _is_seated:
+		_update_anim(velocity.length_squared() > 4.0)
+
+
+func _sit_down() -> void:
+	var spr: AnimatedSprite2D = get_node_or_null("AnimatedSprite2D")
+	if spr == null or spr.sprite_frames == null or not spr.sprite_frames.has_animation(&"sit"):
+		return
+	_is_seated = true
+	_facing = &"down"
+	spr.flip_h = false
+	spr.play(&"sit")
+	z_index = 3
+	global_position += SEAT_OFFSET
 
 
 func _move_toward(target_pos: Vector2) -> void:
@@ -310,6 +364,9 @@ func _move_toward(target_pos: Vector2) -> void:
 
 
 func leave() -> void:
+	if _is_seated:
+		_is_seated = false
+		z_index = 0
 	state = GameEnums.WorkerState.LEAVING
 
 
