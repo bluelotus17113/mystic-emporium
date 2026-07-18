@@ -29,6 +29,8 @@ var _current_node: ResourceNode = null
 var _timer: float = 0.0
 var _waiting: bool = true
 var _hover_label: Label = null
+var _ready_marker: Label = null
+var _marker_t: float = 0.0
 
 
 func _ready() -> void:
@@ -44,6 +46,7 @@ func _ready() -> void:
 	ZoneExpansionManager.natural_level_changed.connect(_on_natural_level_changed)
 	_apply_gating(ZoneExpansionManager.natural_level)
 	_build_hover_label()
+	_build_ready_marker()
 	# La parcela controla su frame manualmente (crecimiento sincronizado al
 	# cooldown), no en loop libre. Empezamos en tierra vacía (frame 0).
 	if _anim != null:
@@ -65,6 +68,31 @@ func _build_hover_label() -> void:
 	_hover_label.visible = false
 	_hover_label.z_index = 100
 	add_child(_hover_label)
+
+
+func _build_ready_marker() -> void:
+	_ready_marker = Label.new()
+	_ready_marker.text = "❗"
+	_ready_marker.position = Vector2(-8, -74)
+	_ready_marker.add_theme_font_size_override(&"font_size", 20)
+	_ready_marker.add_theme_color_override(&"font_color", Color(1.0, 0.9, 0.35))
+	_ready_marker.add_theme_color_override(&"font_outline_color", Color(0, 0, 0, 0.85))
+	_ready_marker.add_theme_constant_override(&"outline_size", 5)
+	_ready_marker.z_index = 90
+	_ready_marker.visible = false
+	add_child(_ready_marker)
+
+
+## Muestra un "!" que rebota sobre la parcela cuando el material está maduro.
+func _update_ready_marker(delta: float) -> void:
+	if _ready_marker == null:
+		return
+	var mature: bool = _current_node != null and is_instance_valid(_current_node) \
+			and _current_node.is_available()
+	_ready_marker.visible = mature
+	if mature:
+		_marker_t += delta * 5.0
+		_ready_marker.position.y = -74.0 + sin(_marker_t) * 4.0
 
 
 func _on_hover_enter() -> void:
@@ -145,6 +173,7 @@ func _process(delta: float) -> void:
 	if _hover_label != null and _hover_label.visible:
 		_refresh_hover_text()
 	_update_growth_visual()
+	_update_ready_marker(delta)
 	if _current_node != null and _current_node.is_available():
 		# Maduro esperando recolección: el frame se queda estático (lo fija
 		# _update_growth_visual en el último frame).

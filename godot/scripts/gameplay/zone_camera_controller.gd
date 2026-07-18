@@ -182,6 +182,15 @@ func get_current_zone() -> Dictionary:
 	return ZONES[_current_index]
 
 
+## Zoom libre con la rueda (multiplicativo, clamp). Cancela el follow si estaba.
+func _zoom_by(factor: float) -> void:
+	if is_following():
+		stop_follow()
+	var z: float = clampf(zoom.x * factor, MIN_ZOOM, MAX_ZOOM)
+	zoom = Vector2(z, z)
+	_clamp_to_zone_bounds()
+
+
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo:
 		match event.keycode:
@@ -190,17 +199,17 @@ func _unhandled_input(event: InputEvent) -> void:
 			KEY_1: goto_zone(&"natural")
 			KEY_2: goto_zone(&"taller")
 			KEY_3: goto_zone(&"recepcion")
-	# ponytail: rueda/drag = pan horizontal solo en Natural; otras zonas son fijas.
+	# Rueda = zoom libre en cualquier zona.
+	if event is InputEventMouseButton and event.pressed:
+		if event.button_index == MOUSE_BUTTON_WHEEL_UP:
+			_zoom_by(ZOOM_STEP)
+			return
+		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+			_zoom_by(1.0 / ZOOM_STEP)
+			return
+	# Arrastre derecho = pan horizontal solo en Natural; otras zonas son fijas.
 	if get_current_zone().name != &"natural":
 		return
-	if event is InputEventMouseButton and event.pressed:
-		match event.button_index:
-			MOUSE_BUTTON_WHEEL_DOWN:
-				position.x += 120.0 / zoom.x
-				_clamp_to_zone_bounds()
-			MOUSE_BUTTON_WHEEL_UP:
-				position.x -= 120.0 / zoom.x
-				_clamp_to_zone_bounds()
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT:
 		_is_panning = event.pressed
 	elif event is InputEventMouseMotion and _is_panning:

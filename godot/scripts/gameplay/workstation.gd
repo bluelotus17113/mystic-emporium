@@ -20,6 +20,7 @@ const MAX_LEVEL: int = 5
 var _current_recipe: RecipeData = null
 var _is_crafting: bool = false
 var _craft_timer: float = 0.0
+var _steam: GPUParticles2D = null
 ## Override por-estación del auto-craft. Cuando IdleAutomationManager itera
 ## stations, se salta las que tengan esto en false. El toggle global de
 ## auto_craft sigue funcionando; este es un filtro fino encima.
@@ -58,6 +59,36 @@ func _ready() -> void:
 		_bob_time = randf() * TAU  # offset así no se sincronizan todas
 	_build_hover_label()
 	_setup_positional_loop()
+	_setup_steam()
+
+
+## Vapor/humo suave que sube mientras la estación craftea.
+func _setup_steam() -> void:
+	if station_type == GameEnums.StationType.COUNTER:
+		return
+	_steam = GPUParticles2D.new()
+	_steam.texture = CharShadow._tex()
+	_steam.amount = 10
+	_steam.lifetime = 1.6
+	_steam.position = Vector2(0, -46)
+	_steam.emitting = false
+	_steam.z_index = 3
+	var mat := ParticleProcessMaterial.new()
+	mat.direction = Vector3(0, -1, 0)
+	mat.gravity = Vector3(0, -20, 0)
+	mat.spread = 22.0
+	mat.initial_velocity_min = 6.0
+	mat.initial_velocity_max = 14.0
+	mat.scale_min = 0.12
+	mat.scale_max = 0.24
+	var grad := Gradient.new()
+	grad.set_color(0, Color(0.95, 0.95, 1.0, 0.5))
+	grad.set_color(1, Color(0.9, 0.9, 1.0, 0.0))
+	var ramp := GradientTexture1D.new()
+	ramp.gradient = grad
+	mat.color_ramp = ramp
+	_steam.process_material = mat
+	add_child(_steam)
 
 
 ## Sonido ambiental posicional: el caldero burbujea y la forja cruje
@@ -157,6 +188,8 @@ func _exit_tree() -> void:
 
 func _process(delta: float) -> void:
 	_apply_idle_bob(delta)
+	if _steam != null:
+		_steam.emitting = _is_crafting
 	if _hover_label != null and _hover_label.visible:
 		_refresh_hover_text()
 	if not _is_crafting or _current_recipe == null:

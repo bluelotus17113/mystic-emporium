@@ -105,6 +105,21 @@ func is_night() -> bool:
 	return current_phase == Phase.NIGHT
 
 
+## Oscuridad 0..1 según la hora real: 0 = mediodía, 1 = noche cerrada.
+## Fuente única para faroles, grillos, luciérnagas y ventanas.
+func get_darkness() -> float:
+	var t: float = time_of_day
+	if t < 0.24:
+		return 1.0
+	elif t < 0.32:
+		return 1.0 - (t - 0.24) / 0.08
+	elif t < 0.66:
+		return 0.0
+	elif t < 0.78:
+		return (t - 0.66) / 0.12
+	return 1.0
+
+
 func get_ambient_modulate() -> Color:
 	# Tinte global aplicable a la cámara/escenario según hora.
 	match current_phase:

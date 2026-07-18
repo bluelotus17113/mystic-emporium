@@ -58,6 +58,20 @@ func _ready() -> void:
 	WardrobeManager.outfit_changed.connect(_on_outfit_changed)
 	if WardrobeManager.current_outfit != &"default":
 		_on_outfit_changed(WardrobeManager.current_outfit)
+	InventoryManager.coins_changed.connect(_on_coins_changed_fx)
+
+
+var _last_coins_seen: int = -1
+
+## Monedas flotantes cuando entran ⚜ (ventas, logros): feedback en la protagonista.
+func _on_coins_changed_fx(total: int) -> void:
+	if _last_coins_seen < 0:
+		_last_coins_seen = total
+		return
+	var diff: int = total - _last_coins_seen
+	_last_coins_seen = total
+	if diff > 0:
+		FloatingText.spawn(self, "+%d ⚜" % diff, Color(1.0, 0.86, 0.36))
 
 
 ## Cambia la hoja de sprites al outfit elegido (mismo layout 512x384:

@@ -61,15 +61,5 @@ func _apply(dark: float) -> void:
 	_glow.modulate.a = clampf(dark * flick, 0.0, 1.0) * 0.9
 
 
-## Oscuridad 0..1 según la hora del reloj real: 1 = noche, 0 = mediodía.
 func _darkness() -> float:
-	var t: float = CalendarManager.time_of_day
-	if t < 0.24:
-		return 1.0
-	elif t < 0.32:
-		return 1.0 - (t - 0.24) / 0.08   # amanecer: se apaga
-	elif t < 0.66:
-		return 0.0                        # día
-	elif t < 0.78:
-		return (t - 0.66) / 0.12          # atardecer: se enciende
-	return 1.0
+	return CalendarManager.get_darkness()

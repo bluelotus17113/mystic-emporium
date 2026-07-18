@@ -44,6 +44,14 @@ func _ready() -> void:
 	var ambience := ZoneAmbience.new()
 	ambience.name = "ZoneAmbience"
 	add_child(ambience)
+	# Ambiente nocturno: luciérnagas/grillos/ventanas que se encienden de noche.
+	var nightfx := NightFX.new()
+	nightfx.name = "NightFX"
+	add_child(nightfx)
+	# Detalles de estación (pétalos/hojas/nieve + tinte del follaje).
+	var seasonfx := SeasonFX.new()
+	seasonfx.name = "SeasonFX"
+	add_child(seasonfx)
 	call_deferred("_spawn_cat")
 	# Vida del patio natural: scatter de props + maleza que crece sola.
 	var nlife := NaturalLife.new()

@@ -58,6 +58,7 @@ func collect() -> bool:
 	if item_data != null:
 		InventoryManager.add_item(item_data, yield_quantity)
 		StatsManager.bump("items_collected_total", yield_quantity)
+		FloatingText.spawn(self, "+%d %s" % [yield_quantity, _res_emoji()], Color(0.72, 1.0, 0.6))
 		print("[Collect] +%d %s" % [yield_quantity, item_data.display_name])
 	VFXManager.play(VFXManager.FX.COLLECT, global_position)
 	collected.emit(self)
@@ -83,6 +84,19 @@ func _respawn() -> void:
 
 func respawn() -> void:
 	_respawn()
+
+
+func _res_emoji() -> String:
+	match resource_type:
+		GameEnums.ResourceType.HERB: return "🌿"
+		GameEnums.ResourceType.CRYSTAL: return "💎"
+		GameEnums.ResourceType.ARCANE_WOOD: return "🪵"
+		GameEnums.ResourceType.IRON_ORE, GameEnums.ResourceType.IRON_INGOT: return "⛏"
+		GameEnums.ResourceType.SPIRIT_ESSENCE: return "👻"
+		GameEnums.ResourceType.ARCANE_WATER: return "💧"
+		GameEnums.ResourceType.MOON_DUST: return "🌙"
+		GameEnums.ResourceType.AMETHYST_FRAGMENT: return "🔮"
+		_: return "✦"
 
 
 func set_generator_owner(owner_node: Node) -> void:

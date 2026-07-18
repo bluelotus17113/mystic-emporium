@@ -67,6 +67,7 @@ func _scatter_props() -> void:
 	_scatter_trees(rng)
 	_scatter_clutter(rng)
 	_scatter_grass(rng)
+	_scatter_butterflies(rng)
 
 
 ## Contenedor con y_sort_enabled: los árboles se ordenan por Y con la
@@ -97,6 +98,7 @@ func _scatter_trees(rng: RandomNumberGenerator) -> void:
 		s.scale = Vector2(k, k)
 		s.offset = Vector2(0, -tex.get_height() * 0.5 + 4)
 		s.add_to_group("natural_visual")
+		s.add_to_group("foliage")
 		parent.add_child(s)
 		s.global_position = Vector2(x, y)
 		# Tronco sólido estrecho en la base: se puede pasar por detrás, no a través.
@@ -127,6 +129,23 @@ func _scatter_clutter(rng: RandomNumberGenerator) -> void:
 			SolidBase.attach(s, Vector2(tex.get_width() * k * 0.5, 12.0), Vector2(0, -2))
 
 
+## Mariposas que revolotean por el patio de día.
+func _scatter_butterflies(rng: RandomNumberGenerator) -> void:
+	var parent: Node = _visual_parent()
+	var tex: Texture2D = load("res://art/sprites/environment/butterfly.png")
+	if tex == null:
+		return
+	var palette: Array = [Color(1, 1, 1), Color(1.0, 0.9, 0.7), Color(0.85, 0.9, 1.1), Color(1.05, 0.8, 0.9)]
+	for i in 5:
+		var b := Butterfly.new()
+		b.texture = tex
+		b.modulate = palette[rng.randi() % palette.size()]
+		b.add_to_group("natural_visual")
+		b.setup(_rect)
+		parent.add_child(b)
+		b.global_position = _random_point(rng)
+
+
 ## Briznas de pasto repartidas por todo el patio; se mecen al pisarlas.
 func _scatter_grass(rng: RandomNumberGenerator) -> void:
 	var parent: Node = _visual_parent()
@@ -139,6 +158,7 @@ func _scatter_grass(rng: RandomNumberGenerator) -> void:
 		g.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 		g.scale = Vector2(1.6, 1.6)
 		g.add_to_group("natural_visual")
+		g.add_to_group("foliage")
 		parent.add_child(g)
 		g.global_position = _random_point(rng)
 

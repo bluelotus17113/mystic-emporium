@@ -51,6 +51,11 @@ var _base_move_speed: float = 0.0
 var _mood: Label = null
 var _mood_accum: float = 0.0
 var _dust_accum: float = 0.0
+var _greet_cd: float = 0.0
+var _greet_scan: float = 0.0
+const GREET_RADIUS: float = 26.0
+const GREET_COOLDOWN: float = 12.0
+const GREET_EMOTES: Array = ["👋", "♪", "😀", "🤝"]
 
 var state: GameEnums.WorkerState = GameEnums.WorkerState.IDLE
 var target: Node2D = null
@@ -167,6 +172,24 @@ func _maybe_mood(delta: float) -> void:
 	_puff_mood(pool[randi() % pool.size()])
 
 
+## Saludo al cruzarse con otro worker caminando (con cooldown para no spamear).
+func _maybe_greet(delta: float) -> void:
+	_greet_cd -= delta
+	_greet_scan -= delta
+	if _greet_cd > 0.0 or _greet_scan > 0.0:
+		return
+	_greet_scan = 0.4
+	if velocity.length_squared() < 4.0:
+		return
+	for w in get_tree().get_nodes_in_group("workers"):
+		if w == self or not is_instance_valid(w) or not (w as Node2D).visible:
+			continue
+		if global_position.distance_to((w as Node2D).global_position) < GREET_RADIUS:
+			_greet_cd = GREET_COOLDOWN
+			_puff_mood(GREET_EMOTES[randi() % GREET_EMOTES.size()])
+			return
+
+
 func _puff_mood(txt: String) -> void:
 	if _mood == null:
 		return
@@ -273,6 +296,7 @@ func _physics_process(delta: float) -> void:
 			pass
 	_update_anim(delta)
 	_maybe_mood(delta)
+	_maybe_greet(delta)
 	_update_energy(delta)
 	# pasos suaves + polvo (solo si el worker está en la zona visible)
 	if visible and velocity.length_squared() > 4.0:
