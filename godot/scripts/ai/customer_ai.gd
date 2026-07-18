@@ -171,44 +171,21 @@ func _build_sprite_frames(base_name: String) -> SpriteFrames:
 					at.atlas = tex
 					at.region = Rect2(c * 64, r[1] * 64, 64, 64)
 					sf.add_frame(anim, at)
-			# Frame "sit" derivado del idle_down (piernas ocultas → parece sentado).
-			var sit_tex: Texture2D = _make_sit_texture(base_name, tex)
-			if sit_tex != null:
-				sf.add_animation(&"sit")
-				sf.set_animation_loop(&"sit", true)
-				sf.set_animation_speed(&"sit", 2.0)
-				sf.add_frame(&"sit", sit_tex)
+			# Sentado: hoja real npc_X_sit.png (192×64 = down|up|side) si existe.
+			var sit_path: String = "res://art/sprites/characters/%s_sit.png" % base_name
+			if ResourceLoader.exists(sit_path):
+				var sit_tex: Texture2D = load(sit_path)
+				for sr in [[&"sit_down", 0], [&"sit_up", 1], [&"sit_side", 2]]:
+					sf.add_animation(sr[0])
+					sf.set_animation_loop(sr[0], true)
+					sf.set_animation_speed(sr[0], 2.0)
+					var sat := AtlasTexture.new()
+					sat.atlas = sit_tex
+					sat.region = Rect2(sr[1] * 64, 0, 64, 64)
+					sf.add_frame(sr[0], sat)
 			sf.remove_animation(&"default")
 			return sf
 	return _static_frames(base_name)
-
-
-## Deriva un frame "sentado" del idle_down: recorta las piernas (que la silla
-## tapa) y baja un poco el cuerpo. Cacheado por skin. Universal para animados.
-static var _sit_cache: Dictionary = {}
-
-func _make_sit_texture(base_name: String, sheet: Texture2D) -> Texture2D:
-	if _sit_cache.has(base_name):
-		return _sit_cache[base_name]
-	var img: Image = sheet.get_image()
-	if img == null:
-		return null
-	img = img.duplicate()
-	if img.is_compressed():
-		img.decompress()
-	img.convert(Image.FORMAT_RGBA8)
-	var frame := Image.create(64, 64, false, Image.FORMAT_RGBA8)
-	frame.blit_rect(img, Rect2i(0, 0, 64, 64), Vector2i(0, 0))
-	var used: Rect2i = frame.get_used_rect()
-	if used.size.x == 0 or used.size.y == 0:
-		return null
-	var hip: int = used.position.y + int(used.size.y * 0.80)
-	var sit := Image.create(64, 64, false, Image.FORMAT_RGBA8)
-	sit.blit_rect(frame, Rect2i(0, used.position.y, 64, hip - used.position.y),
-			Vector2i(0, used.position.y + 6))
-	var tex := ImageTexture.create_from_image(sit)
-	_sit_cache[base_name] = tex
-	return tex
 
 
 func _static_frames(base_name: String) -> SpriteFrames:
@@ -347,12 +324,24 @@ func _physics_process(_delta: float) -> void:
 
 func _sit_down() -> void:
 	var spr: AnimatedSprite2D = get_node_or_null("AnimatedSprite2D")
-	if spr == null or spr.sprite_frames == null or not spr.sprite_frames.has_animation(&"sit"):
+	if spr == null or spr.sprite_frames == null:
 		return
+	# Dirección según hacia dónde apunta la silla.
+	var face: StringName = &"down"
+	if counter_point is CustomerChair:
+		face = (counter_point as CustomerChair).facing
+	var anim: StringName = &"sit_down"
+	var flip: bool = false
+	match face:
+		&"up": anim = &"sit_up"
+		&"left": anim = &"sit_side"
+		&"right": anim = &"sit_side"; flip = true
+		_: anim = &"sit_down"
+	if not spr.sprite_frames.has_animation(anim):
+		return  # aún sin hoja de sentado (lote en curso) → se queda de pie
 	_is_seated = true
-	_facing = &"down"
-	spr.flip_h = false
-	spr.play(&"sit")
+	spr.flip_h = flip
+	spr.play(anim)
 	z_index = 3
 	global_position += SEAT_OFFSET
 
