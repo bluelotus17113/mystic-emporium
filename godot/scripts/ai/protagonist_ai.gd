@@ -44,6 +44,9 @@ var _wobble_tween: Tween = null
 var _idle_timer: float = 0.0
 var _wander_idle_delay: float = 8.0
 var _wander_target: Vector2 = Vector2.ZERO
+var _wander_poi: StringName = &""   ## tipo de sitio al que va (para micro-emote)
+var _look_scan: float = 0.0
+var _cat_react_cd: float = 0.0
 var _linger_timer: float = 0.0
 var _wander_watchdog: float = 0.0
 var _favorite_rotate_timer: float = 0.0
@@ -67,6 +70,8 @@ func _ready() -> void:
 	if WardrobeManager.current_outfit != &"default":
 		_on_outfit_changed(WardrobeManager.current_outfit)
 	InventoryManager.coins_changed.connect(_on_coins_changed_fx)
+	if OrderManager.has_signal("order_completed"):
+		OrderManager.order_completed.connect(_on_order_celebrate)
 
 
 var _last_coins_seen: int = -1
@@ -205,11 +210,16 @@ func _physics_process(_delta: float) -> void:
 	match state:
 		State.IDLE_HOME:
 			velocity = Vector2.ZERO
+			_look_at_nearest(_delta)
 			_idle_timer += _delta
 			if _idle_timer >= _wander_idle_delay:
 				_idle_timer = 0.0
-				_wander_idle_delay = randf_range(WANDER_IDLE_DELAY_MIN, WANDER_IDLE_DELAY_MAX)
-				_start_wander()
+				var dark: float = CalendarManager.get_darkness()
+				_wander_idle_delay = randf_range(WANDER_IDLE_DELAY_MIN, WANDER_IDLE_DELAY_MAX) * (1.0 + 1.8 * dark)
+				if dark > 0.7 and randf() < 0.5:
+					say(["😴", "🌙", "💤"].pick_random())  # de noche a veces solo bosteza
+				else:
+					_start_wander()
 		State.DELIVERING:
 			velocity = Vector2.ZERO
 			_delivering_timer -= _delta
@@ -232,7 +242,6 @@ func _physics_process(_delta: float) -> void:
 				velocity = Vector2.ZERO
 				_linger_timer -= _delta
 				if _linger_timer <= 0.0:
-					say(_cozy_thought())
 					state = State.RETURNING
 			else:
 				_move_toward(_wander_target)
@@ -241,6 +250,7 @@ func _physics_process(_delta: float) -> void:
 						or _wander_watchdog > 7.0:
 					_wander_watchdog = 0.0
 					_linger_timer = randf_range(WANDER_LINGER_MIN, WANDER_LINGER_MAX)
+					_poi_emote()  # micro-interacción al llegar
 	_update_anim()
 	_tick_footsteps(_delta)
 
@@ -305,24 +315,107 @@ func _start_wander() -> void:
 	state = State.WANDERING
 
 
+## Estando quieta, se orienta hacia lo mas cercano interesante (gato/cliente/worker).
+func _look_at_nearest(delta: float) -> void:
+	_look_scan -= delta
+	if _look_scan > 0.0:
+		return
+	_look_scan = 0.5
+	var best: Node2D = null
+	var best_d: float = 130.0
+	for g in ["pets", "customers", "workers"]:
+		for n in get_tree().get_nodes_in_group(g):
+			var n2: Node2D = n as Node2D
+			if n2 != null and is_instance_valid(n2) and n2.visible:
+				var d: float = global_position.distance_to(n2.global_position)
+				if d < best_d:
+					best_d = d
+					best = n2
+	if best == null:
+		return
+	var dir: Vector2 = best.global_position - global_position
+	if absf(dir.x) > absf(dir.y):
+		_facing = &"side"
+		_facing_x = signf(dir.x)
+	else:
+		_facing = &"down" if dir.y > 0.0 else &"up"
+
+
+## Celebra cualquier pedido completado (si no esta a media entrega).
+func _on_order_celebrate(_o) -> void:
+	if state == State.IDLE_HOME or state == State.WANDERING:
+		say(["👏", "★", "♪", "😊"].pick_random())
+
+
 func _pick_wander_point() -> Vector2:
-	# Wander queda confinado a la zona donde está parada. No cruza por voluntad propia.
+	# Ronda con propósito, confinada a la zona actual (no cruza por voluntad propia).
+	_wander_poi = &""
 	var zone_rect: Rect2 = GridManager.get_zone_rect_at(global_position)
 	if zone_rect.size == Vector2.ZERO:
 		zone_rect = GridManager.get_playable_rect()
-	var stations: Array = get_tree().get_nodes_in_group("workstations")
-	if not stations.is_empty() and randf() < 0.55:
-		var in_zone: Array = []
-		for st in stations:
-			if zone_rect.has_point((st as Node2D).global_position):
-				in_zone.append(st)
-		if not in_zone.is_empty():
-			var st: Node2D = in_zone[randi() % in_zone.size()] as Node2D
-			var candidate: Vector2 = st.global_position + Vector2(randf_range(-26.0, 26.0), randf_range(8.0, 28.0))
-			return _clamp_to_rect(candidate, zone_rect)
+	# 1) Si hay clientes esperando y estoy en Recepción → asomarme al mostrador.
+	var cp: Vector2 = _counter_pos()
+	if _customers_waiting() and cp != Vector2.ZERO and zone_rect.has_point(cp) and randf() < 0.7:
+		_wander_poi = &"counter"
+		return _clamp_to_rect(cp + Vector2(randf_range(-24.0, 24.0), 30.0), zone_rect)
+	# 2) A veces ir a saludar/acariciar al gato.
+	var cat: Node2D = _node_in_zone("pets", zone_rect)
+	if cat != null and randf() < 0.22:
+		_wander_poi = &"cat"
+		return _clamp_to_rect(cat.global_position + Vector2(randf_range(-14.0, 14.0), 18.0), zone_rect)
+	# 3) Un punto de interés: caldero/forja/biblioteca, parcela o sitio cálido.
+	var poi: Array = _pick_poi_node(zone_rect)
+	if not poi.is_empty() and randf() < 0.68:
+		_wander_poi = poi[1]
+		return _clamp_to_rect((poi[0] as Node2D).global_position + Vector2(randf_range(-24.0, 24.0), randf_range(10.0, 26.0)), zone_rect)
+	# 4) Punto libre.
 	var min_p: Vector2 = zone_rect.position + Vector2(PLAYABLE_MARGIN, PLAYABLE_MARGIN)
 	var max_p: Vector2 = zone_rect.position + zone_rect.size - Vector2(PLAYABLE_MARGIN, PLAYABLE_MARGIN)
 	return Vector2(randf_range(min_p.x, max_p.x), randf_range(min_p.y, max_p.y))
+
+
+func _pick_poi_node(zone_rect: Rect2) -> Array:
+	var kinds: Dictionary = {"workstations": &"station", "generators": &"plant", "warm_spot": &"fire"}
+	var pool: Array = []
+	for g in kinds:
+		for n in get_tree().get_nodes_in_group(g):
+			var n2: Node2D = n as Node2D
+			if n2 != null and is_instance_valid(n2) and n2.visible and zone_rect.has_point(n2.global_position):
+				pool.append([n2, kinds[g]])
+	if pool.is_empty():
+		return []
+	return pool[randi() % pool.size()]
+
+
+func _counter_pos() -> Vector2:
+	var m: Node = get_tree().get_first_node_in_group("customer_counter")
+	return (m as Node2D).global_position if m is Node2D else Vector2.ZERO
+
+
+func _customers_waiting() -> bool:
+	for c in get_tree().get_nodes_in_group("customers"):
+		if is_instance_valid(c) and c.get("state") == GameEnums.WorkerState.WAITING:
+			return true
+	return false
+
+
+func _node_in_zone(group: StringName, zone_rect: Rect2) -> Node2D:
+	for n in get_tree().get_nodes_in_group(group):
+		var n2: Node2D = n as Node2D
+		if n2 != null and is_instance_valid(n2) and n2.visible and zone_rect.has_point(n2.global_position):
+			return n2
+	return null
+
+
+## Micro-interacción al llegar a un punto de interés.
+func _poi_emote() -> void:
+	match _wander_poi:
+		&"station": say(["⚗", "🔨", "✨", "☺"].pick_random())
+		&"plant": say(["🌿", "🌱", "♪"].pick_random())
+		&"fire": say(["🔥", "☺", "♨"].pick_random())
+		&"cat": say(["♥", "😊", "🐾"].pick_random())
+		&"counter": say(["👀", "🛎", "☺"].pick_random())
+		_: say(_cozy_thought())
 
 
 func _rotate_favorite_home() -> void:
