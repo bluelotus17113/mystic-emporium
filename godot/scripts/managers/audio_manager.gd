@@ -29,6 +29,7 @@ const MUSIC_TRACKS: Dictionary = {
 }
 const MUSIC_CROSSFADE_SECONDS: float = 4.0
 var _current_music_key: StringName = &""
+var _current_zone: StringName = &"taller"  ## zona activa (para música por ambiente)
 var _music_streams_cache: Dictionary = {}
 var _music_crossfade_tween: Tween = null
 const SFX_PATHS: Dictionary = {
@@ -128,7 +129,7 @@ func _load_music_cache() -> void:
 
 
 func _start_ambient_music() -> void:
-	var key: StringName = _phase_to_key(CalendarManager.current_phase)
+	var key: StringName = _resolve_music_key()
 	var stream: AudioStream = _music_streams_cache.get(key)
 	if stream == null:
 		# Fallback: cualquier track disponible
@@ -152,9 +153,26 @@ func _phase_to_key(phase: int) -> StringName:
 	return &"day"
 
 
-func _on_phase_changed(phase: int) -> void:
-	var key: StringName = _phase_to_key(phase)
-	_crossfade_to_track(key)
+## Música según ambiente: de día cambia por zona (taller rítmico, recepción de
+## mercado, patio cozy); al amanecer/atardecer/noche mandan las pistas de fase
+## (la noche del patio usa meditación). Reutiliza los tracks ya existentes.
+func _resolve_music_key() -> StringName:
+	var phase: int = CalendarManager.current_phase
+	if phase == CalendarManager.Phase.NIGHT:
+		return &"meditation" if _current_zone == &"natural" else &"night"
+	if phase == CalendarManager.Phase.DAWN:
+		return &"dawn"
+	if phase == CalendarManager.Phase.DUSK:
+		return &"dusk"
+	match _current_zone:  # DAY
+		&"taller": return &"working"
+		&"recepcion": return &"market"
+		&"natural": return &"day"
+	return &"day"
+
+
+func _on_phase_changed(_phase: int) -> void:
+	_crossfade_to_track(_resolve_music_key())
 
 
 func _crossfade_to_track(key: StringName) -> void:
@@ -209,6 +227,9 @@ func get_loop_stream(sfx_name: StringName) -> AudioStream:
 
 ## Ambiente según la zona activa de la cámara (fuego en taller, aves en patio).
 func on_zone_changed(zone_name: StringName) -> void:
+	# Música por ambiente: cruza a la pista de la nueva zona (según la hora).
+	_current_zone = zone_name
+	_crossfade_to_track(_resolve_music_key())
 	var want: Dictionary = ZONE_AMBIENCE.get(zone_name, {})
 	for key in _ambient_players:
 		if not want.has(key):
