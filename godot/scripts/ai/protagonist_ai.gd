@@ -8,7 +8,7 @@ extends CharacterBody2D
 @export var arrival_distance: float = 8.0
 @export var home_position_offset: Vector2 = Vector2.ZERO
 
-enum State { IDLE_HOME, DELIVERING, RETURNING, DRAGGING, WANDERING, CHASING_CAT }
+enum State { IDLE_HOME, DELIVERING, RETURNING, DRAGGING, WANDERING, CHASING_CAT, THROUGH_DOOR }
 
 const DRAG_FOLLOW_SMOOTH: float = 0.35
 const PICK_RADIUS: float = 50.0
@@ -62,6 +62,9 @@ var _delivering_timer: float = 0.0
 var _bubble_label: Label = null
 var _bubble_tween: Tween = null
 var _step_accum: float = 0.0
+var _door_node: ZoneDoor = null       ## puerta que va a cruzar
+var _door_approach: Vector2 = Vector2.ZERO
+var _door_watchdog: float = 0.0
 
 
 func _ready() -> void:
@@ -275,6 +278,16 @@ func _physics_process(_delta: float) -> void:
 					_move_toward(_chase_cat.global_position)
 				else:
 					velocity = Vector2.ZERO
+		State.THROUGH_DOOR:
+			if _door_node == null or not is_instance_valid(_door_node):
+				velocity = Vector2.ZERO
+				state = State.IDLE_HOME
+			else:
+				_move_toward(_door_approach)
+				_door_watchdog += _delta
+				if global_position.distance_to(_door_approach) <= arrival_distance + 6.0 \
+						or _door_watchdog > 6.0:
+					_pass_through_door()
 	_update_anim()
 	_tick_footsteps(_delta)
 
@@ -376,6 +389,68 @@ func _menu_goto_zone(zone_name: StringName) -> void:
 	var cam: Node = get_tree().get_first_node_in_group("zone_camera")
 	if cam != null and cam.has_method("goto_zone"):
 		cam.goto_zone(zone_name)
+
+
+## Una puerta pide que la maga la cruce: camina hasta ella y al llegar viaja a
+## la zona destino (destello + reubicación en la puerta hermana + cámara).
+func walk_through_door(door: ZoneDoor) -> void:
+	if state == State.DRAGGING or state == State.DELIVERING:
+		return
+	if door == null or not is_instance_valid(door):
+		return
+	_door_node = door
+	var dzr: Rect2 = GridManager.get_zone_rect(_ZONE_BY_NAME.get(door.my_zone, -1))
+	var ap: Vector2 = door.global_position + Vector2(0.0, 34.0)
+	_door_approach = _clamp_to_rect(ap, dzr) if dzr.size != Vector2.ZERO else ap
+	# Si estuviera en otra zona (raro), aparece de una frente a la puerta.
+	if dzr.size != Vector2.ZERO and not dzr.has_point(global_position):
+		global_position = _door_approach
+		_flash_teleport()
+	_door_watchdog = 0.0
+	_idle_timer = 0.0
+	state = State.THROUGH_DOOR
+	say(["🚪", "✨", "🚶"].pick_random())
+
+
+func _pass_through_door() -> void:
+	var door: ZoneDoor = _door_node
+	_door_node = null
+	if door == null or not is_instance_valid(door):
+		state = State.IDLE_HOME
+		return
+	var target: StringName = door.target_zone
+	door.open_flash()
+	var rect: Rect2 = GridManager.get_zone_rect(_ZONE_BY_NAME.get(target, -1))
+	var dest_door: ZoneDoor = _sibling_door(target, door.my_zone)
+	var dest: Vector2
+	if dest_door != null:
+		dest = dest_door.global_position + Vector2(0.0, 40.0)
+	elif rect.size != Vector2.ZERO:
+		dest = rect.get_center()
+	else:
+		state = State.IDLE_HOME
+		return
+	if rect.size != Vector2.ZERO:
+		dest = _clamp_to_rect(dest, rect)
+	global_position = dest
+	home_position = dest
+	velocity = Vector2.ZERO
+	_idle_timer = 0.0
+	state = State.IDLE_HOME
+	_flash_teleport()
+	say("✨")
+	var cam: Node = get_tree().get_first_node_in_group("zone_camera")
+	if cam != null and cam.has_method("goto_zone"):
+		cam.goto_zone(target)
+
+
+## Puerta de la zona `zone` que vuelve hacia `back_to` (para reaparecer en ella).
+func _sibling_door(zone: StringName, back_to: StringName) -> ZoneDoor:
+	for d in get_tree().get_nodes_in_group("zone_doors"):
+		var zd: ZoneDoor = d as ZoneDoor
+		if zd != null and is_instance_valid(zd) and zd.my_zone == zone and zd.target_zone == back_to:
+			return zd
+	return null
 
 
 func _in_build_mode() -> bool:

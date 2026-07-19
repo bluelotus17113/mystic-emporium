@@ -73,6 +73,7 @@ func _ready() -> void:
 	nlife.name = "NaturalLife"
 	add_child(nlife)
 	call_deferred("_spawn_default_lanterns")
+	call_deferred("_spawn_zone_doors")
 	print("[Bootstrap] Items: %d | Recipes: %d | Orders: %d | Research: %d | Buildables: %d" % [
 		_items_catalog.size(),
 		_recipes_catalog.size(),
@@ -117,6 +118,52 @@ func _spawn_default_lanterns() -> void:
 			# Registrar en el grid → se puede mover/demoler/copiar como cualquier objeto.
 			# cost 0: al ser gratis, no da reembolso al demolerlos.
 			BuildManager.register_prebuilt(lan, lan.global_position, &"deco_lantern", 0)
+
+
+## Puertas entre zonas contiguas (recepción↔taller, taller↔patio). La maga las
+## cruza con un clic y viaja sola, sin arrastrarla. Se colocan en la pared
+## trasera del lado que mira al vecino.
+func _spawn_zone_doors() -> void:
+	if not get_tree().get_nodes_in_group("zone_doors").is_empty():
+		return
+	var world: Node = get_tree().get_first_node_in_group("world_container")
+	if world == null:
+		return
+	# Mapear nombre de zona -> su ZoneRegion (centro y tamaño).
+	var regions: Dictionary = {}
+	for zr in _find_zone_regions(get_tree().current_scene):
+		var info: Array = _zone_name_group(zr.zone_type)
+		if not info.is_empty():
+			regions[info[0]] = zr
+	var cam: Node = get_tree().get_first_node_in_group("zone_camera")
+	var cur: StringName = &""
+	if cam != null and cam.has_method("get_current_zone"):
+		cur = cam.get_current_zone().name
+	# Adyacencias: [zona, destino]. Cada par tiene su puerta de vuelta.
+	var links: Array = [
+		[&"recepcion", &"taller"],
+		[&"taller", &"recepcion"],
+		[&"taller", &"natural"],
+		[&"natural", &"taller"],
+	]
+	for link in links:
+		var mine: StringName = link[0]
+		var target: StringName = link[1]
+		var zr: ZoneRegion = regions.get(mine)
+		var tzr: ZoneRegion = regions.get(target)
+		if zr == null or tzr == null:
+			continue
+		# Lado hacia el vecino: si el destino está a la izquierda, puerta a la izquierda.
+		var dir: float = -1.0 if tzr.global_position.x < zr.global_position.x else 1.0
+		var edge_x: float = zr.global_position.x + dir * (zr.size.x * 0.5 - 46.0)
+		var top_y: float = zr.global_position.y - zr.size.y * 0.5 + 70.0
+		var door := ZoneDoor.new()
+		door.setup(mine, target)
+		world.add_child(door)
+		door.global_position = Vector2(edge_x, top_y)
+		var info: Array = _zone_name_group(zr.zone_type)
+		door.add_to_group(info[1])  # *_visual → se oculta/enseña con la zona
+		door.visible = (cur == &"" or cur == mine)
 
 
 func _find_zone_regions(root: Node) -> Array:
