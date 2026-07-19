@@ -619,7 +619,13 @@ func _try_place() -> void:
 	_spawn_pop(instance)
 	AudioManager.play_beep(540.0, 0.1, -12.0)
 	placement_completed.emit(_current_buildable, instance.global_position)
-	exit_build_mode()
+	# Estilo Sims: seguimos en modo obra para colocar más copias sin reabrir el
+	# menú. Mantenemos la rotación actual. Esc / clic derecho sale del modo.
+	var keep_rot: float = _ghost_rotation_deg
+	_respawn_ghost()
+	_ghost_rotation_deg = keep_rot
+	if _ghost != null:
+		_ghost.rotation_degrees = keep_rot
 
 
 func _is_portal(b: BuildableData) -> bool:
@@ -653,9 +659,11 @@ func _try_place_portal(grid_pos: Vector2i) -> void:
 	VFXManager.play(VFXManager.FX.BUILD, b_node.global_position)
 	AudioManager.play_beep(600.0, 0.1, -12.0)
 	placement_completed.emit(_current_buildable, b_node.global_position)
-	# Limpiar el estado pendiente ANTES de salir para no deshacer el par completo.
+	# Limpiar el estado pendiente ANTES de continuar para no deshacer el par completo.
 	_portal_first_node = null
-	exit_build_mode()
+	# Estilo Sims: seguimos en modo obra listos para colocar otra pareja (A→B).
+	_respawn_ghost()
+	NotificationManager.post("Portal creado. Coloca otra pareja o Esc para salir.", NotificationManager.Kind.INFO)
 
 
 ## Instancia un portal "vivo" y lo registra en el grid (sin cobrar).
