@@ -463,7 +463,40 @@ func _open_menu() -> void:
 		{"text": "🛎 Auto-pedidos: %s" % ("ON" if auto else "OFF"), "cb": Callable(self, "_menu_toggle_orders")},
 		{"text": "😴 Descansa un poco", "cb": Callable(self, "_menu_rest")},
 		{"text": "✨ Anímala", "cb": Callable(self, "_menu_cheer")},
-	])
+	], Callable(self, "_stats_data"), _portrait_texture())
+
+
+## Stats para el menú: ánimo (mood) + actividad actual.
+func _stats_data() -> Array:
+	var m: float = clampf(mood, 0.0, 1.0)
+	var mcol: Color = Color(0.45, 0.85, 0.4)
+	if m <= 0.3:
+		mcol = Color(0.9, 0.4, 0.4)
+	elif m <= 0.55:
+		mcol = Color(0.9, 0.8, 0.35)
+	return [
+		{"label": "Ánimo", "ratio": m, "color": mcol, "value_text": _mood_label()},
+		{"label": "Ahora", "text": _proto_state_label()},
+	]
+
+
+func _proto_state_label() -> String:
+	match state:
+		State.IDLE_HOME: return "😌 En su sitio"
+		State.DELIVERING: return "📦 Entregando"
+		State.RETURNING: return "↩ Volviendo"
+		State.DRAGGING: return "✋ En tu mano"
+		State.WANDERING: return "🚶 Paseando"
+		State.CHASING_CAT: return "🐾 Tras el gato"
+		State.THROUGH_DOOR: return "🌀 Al portal"
+		_: return "…"
+
+
+func _portrait_texture() -> Texture2D:
+	if _anim_sprite != null and _anim_sprite.sprite_frames != null \
+			and _anim_sprite.sprite_frames.has_animation(_anim_sprite.animation):
+		return _anim_sprite.sprite_frames.get_frame_texture(_anim_sprite.animation, _anim_sprite.frame)
+	return null
 
 
 func _menu_wardrobe() -> void:

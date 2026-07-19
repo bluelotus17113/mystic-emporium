@@ -14,6 +14,7 @@ var _stats_box: VBoxContainer
 var _stats_getter: Callable = Callable()
 var _stat_rows: Array = []
 var _stats_cd: float = 0.0
+var _portrait: TextureRect
 
 
 func _ready() -> void:
@@ -35,9 +36,22 @@ func _ready() -> void:
 	m.add_theme_constant_override(&"margin_bottom", 6)
 	_panel.add_child(m)
 	m.add_child(_vb)
+	# Cabecera: mini-retrato del personaje + título.
+	var header := HBoxContainer.new()
+	header.add_theme_constant_override(&"separation", 8)
+	_portrait = TextureRect.new()
+	_portrait.custom_minimum_size = Vector2(48, 48)
+	_portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	_portrait.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	_portrait.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	header.add_child(_portrait)
 	_title = Label.new()
 	_title.add_theme_font_size_override(&"font_size", 14)
-	_vb.add_child(_title)
+	_title.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	_title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_title.custom_minimum_size = Vector2(150, 0)
+	header.add_child(_title)
+	_vb.add_child(header)
 	_vb.add_child(HSeparator.new())
 	# Bloque de stats (barras vivas): entre el título y las acciones.
 	_stats_box = VBoxContainer.new()
@@ -53,11 +67,13 @@ func _ready() -> void:
 	hide()
 
 
-func open_for(node: Node2D, title: String, actions: Array = [], stats_getter: Callable = Callable()) -> void:
+func open_for(node: Node2D, title: String, actions: Array = [], stats_getter: Callable = Callable(), icon: Texture2D = null) -> void:
 	if node == null:
 		return
 	_target = node
 	_title.text = title
+	_portrait.texture = icon
+	_portrait.visible = icon != null
 	_stats_getter = stats_getter
 	_build_stats()
 	_rebuild_extra(actions)

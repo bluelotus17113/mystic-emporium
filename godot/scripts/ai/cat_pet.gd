@@ -31,6 +31,7 @@ var _bob_t: float = 0.0
 var _chase_target: Node2D = null
 var _beg_cd: float = 0.0  ## pedir mimos cuando la protagonista pasa cerca
 var _portal: Node2D = null  ## portal al que va para viajar de zona
+var _affection: float = 0.6  ## cariño 0..1: sube al acariciar, baja despacio
 
 @onready var _spr: AnimatedSprite2D = $AnimatedSprite2D
 
@@ -77,8 +78,36 @@ func _setup_click_area() -> void:
 				menu.open_for(self, "🐱 Gato", [{
 					"text": "♥ Acariciar",
 					"cb": Callable(self, "pet"),
-				}])
+				}], Callable(self, "_stats_data"), _portrait_texture())
 				get_viewport().set_input_as_handled())
+
+
+## Stats para el menú: cariño (sube al acariciar) + actividad actual.
+func _stats_data() -> Array:
+	var a: float = clampf(_affection, 0.0, 1.0)
+	return [
+		{"label": "♥ Cariño", "ratio": a, "color": Color(0.95, 0.5, 0.62), "value_text": "%d%%" % int(round(a * 100.0))},
+		{"label": "Ahora", "text": _cat_state_label()},
+	]
+
+
+func _cat_state_label() -> String:
+	match state:
+		State.SLEEP: return "😴 Durmiendo"
+		State.WANDER: return "🚶 Paseando"
+		State.SIT: return "🪑 Sentado"
+		State.GROOM: return "😽 Acicalándose"
+		State.PLAY: return "🐾 Jugando"
+		State.FOLLOW: return "🫏 Siguiendo"
+		State.CHASE: return "🦋 Cazando"
+		State.PORTAL: return "🌀 Al portal"
+		_: return "…"
+
+
+func _portrait_texture() -> Texture2D:
+	if _spr != null and _spr.sprite_frames != null and _spr.sprite_frames.has_animation(_spr.animation):
+		return _spr.sprite_frames.get_frame_texture(_spr.animation, _spr.frame)
+	return null
 
 
 ## Mimo: corazones, ronroneo y se sienta feliz un rato.
@@ -86,6 +115,7 @@ func pet() -> void:
 	state = State.SIT
 	_timer = randf_range(3.0, 5.0)
 	velocity = Vector2.ZERO
+	_affection = minf(1.0, _affection + 0.25)
 	_squash()
 	for i in 3:
 		var t := get_tree().create_timer(0.18 * float(i))
@@ -95,6 +125,7 @@ func pet() -> void:
 
 func _physics_process(delta: float) -> void:
 	_timer -= delta
+	_affection = lerpf(_affection, 0.5, delta * 0.01)  # cariño vuelve a la línea base
 	_maybe_emote(delta)
 	_maybe_beg(delta)
 	match state:

@@ -294,8 +294,17 @@ func _on_body_clicked(_vp: Node, event: InputEvent, _idx: int) -> void:
 			"text": "✏ Renombrar",
 			"get": Callable(self, "_get_name"),
 			"set": Callable(self, "set_worker_name"),
-		}], Callable(self, "_stats_data"))
+		}], Callable(self, "_stats_data"), _portrait_texture())
 		get_viewport().set_input_as_handled()
+
+
+## Frame actual del sprite como mini-retrato para el menú (o null).
+func _portrait_texture() -> Texture2D:
+	if _anim_sprite != null and _anim_sprite.sprite_frames != null:
+		var a: StringName = _anim_sprite.animation
+		if _anim_sprite.sprite_frames.has_animation(a):
+			return _anim_sprite.sprite_frames.get_frame_texture(a, _anim_sprite.frame)
+	return null
 
 
 ## Stats para el menú contextual: barra de energía/cansancio, XP, rasgo,
