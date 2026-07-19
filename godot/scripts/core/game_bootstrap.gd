@@ -67,14 +67,6 @@ func _ready() -> void:
 	var micro := MicroEvents.new()
 	micro.name = "MicroEvents"
 	add_child(micro)
-	# Ciudad decorativa alrededor del Emporium (suelo/calles/casas) + NPCs que
-	# deambulan por las calles: el local se siente dentro de una aldea viva.
-	var town := TownBackdrop.new()
-	town.name = "TownBackdrop"
-	add_child(town)
-	var townlife := TownLife.new()
-	townlife.name = "TownLife"
-	add_child(townlife)
 	call_deferred("_spawn_cat")
 	# Vida del patio natural: scatter de props + maleza que crece sola.
 	var nlife := NaturalLife.new()

@@ -12,10 +12,6 @@ var ZONES: Array = [
 	{"name": &"recepcion", "label": "Recepción",     "pos": Vector2(-300, 0),  "zoom": 1.3},
 ]
 
-## Área del pueblo decorativo que rodea al Emporium (Taller+Recepción). Cuando
-## estás en interiores el paneo se permite por toda esta zona para ver la ciudad.
-const TOWN_RECT: Rect2 = Rect2(-2704, -1008, 3808, 2016)
-
 const TWEEN_DURATION: float = 0.45
 const PAN_BOUND_MARGIN: float = 200.0  ## cuánto puedes salirte del rect de la zona
 const EDGE_SCROLL_MARGIN: float = 35.0  ## px desde el borde para activar pan automático
@@ -66,9 +62,8 @@ func _apply_bounds(zname: StringName) -> void:
 		_zone_center = ZoneExpansionManager.map_center()
 		_zone_half_size = ZoneExpansionManager.map_rect().size * 0.5
 	else:
-		# Interiores: el paneo abarca todo el pueblo (para ver la ciudad alrededor).
-		_zone_center = TOWN_RECT.get_center()
-		_zone_half_size = TOWN_RECT.size * 0.5
+		_zone_center = get_current_zone().pos
+		_zone_half_size = _get_zone_half_size(zname)
 
 
 func toggle_follow() -> void:
@@ -174,15 +169,15 @@ func _goto_index(i: int) -> void:
 
 
 func _apply_zone_visibility(zone_name: StringName) -> void:
-	# El Emporium (Taller+Recepción) y el pueblo decorativo que lo rodea forman un
-	# mismo lugar: se ven juntos. El Patio Natural es OTRA localización (se llega
-	# por portal, está lejos) y se oculta mientras estás en el pueblo, y viceversa.
+	# Taller y Recepción son un mismo edificio (dos secciones contiguas): se ven
+	# juntas. El Patio Natural es exterior y es la única zona que se oculta.
 	var indoor: bool = zone_name != &"natural"
-	for grp in ["taller_visual", "recepcion_visual", "town_visual"]:
-		for n in get_tree().get_nodes_in_group(grp):
-			n.visible = indoor
+	for n in get_tree().get_nodes_in_group("taller_visual"):
+		n.visible = indoor
+	for n in get_tree().get_nodes_in_group("recepcion_visual"):
+		n.visible = indoor
 	for n in get_tree().get_nodes_in_group("natural_visual"):
-		n.visible = not indoor
+		n.visible = zone_name == &"natural"
 
 
 func _get_zone_half_size(zone_name: StringName) -> Vector2:
