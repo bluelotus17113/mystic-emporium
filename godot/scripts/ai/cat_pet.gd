@@ -15,6 +15,7 @@ const SLEEP_MAX: float = 40.0
 const AWAKE_MIN: float = 8.0
 const AWAKE_MAX: float = 16.0
 const EMOTES: Array = ["♥", "🐾", "🐟", "✨", "🧶", "😽"]
+const HAPPY_EMOTES: Array = ["🎉", "♪", "✨", "💛", "😺"]
 
 var state: State = State.SLEEP
 var home_position: Vector2 = Vector2.ZERO
@@ -32,6 +33,7 @@ var _chase_target: Node2D = null
 var _beg_cd: float = 0.0  ## pedir mimos cuando la protagonista pasa cerca
 var _portal: Node2D = null  ## portal al que va para viajar de zona
 var _affection: float = 0.6  ## cariño 0..1: sube al acariciar, baja despacio
+var _react_cd: float = 0.0  ## cooldown para reaccionar a eventos del local
 
 @onready var _spr: AnimatedSprite2D = $AnimatedSprite2D
 
@@ -45,6 +47,40 @@ func _ready() -> void:
 	_emote = _make_bubble("♥", Vector2(4.0, -44.0))
 	_setup_click_area()
 	_emote_accum = randf_range(4.0, 9.0)
+	# Reacciona a la vida del local: se alegra con cada venta y se pone curioso
+	# cuando una estación termina de craftear (solo si está a la vista).
+	OrderManager.order_completed.connect(_on_sale)
+	call_deferred("_hook_workstations")
+
+
+func _hook_workstations() -> void:
+	for ws in get_tree().get_nodes_in_group("workstations"):
+		if ws.has_signal(&"craft_completed") and not ws.craft_completed.is_connected(_on_craft_done):
+			ws.craft_completed.connect(_on_craft_done)
+
+
+## Venta completada: el gato celebra con un emote y un saltito feliz.
+func _on_sale(_order: Object = null) -> void:
+	_react(HAPPY_EMOTES[randi() % HAPPY_EMOTES.size()], 0.06, true)
+
+
+## Estación termina un crafteo: a veces asoma curioso.
+func _on_craft_done(_recipe: Object = null) -> void:
+	if randf() < 0.5:
+		_react("❔", 0.0, false)
+
+
+## Reacción común: solo si está visible y fuera de cooldown. `hop` da un squash
+## (si no duerme) y `aff` sube un poco el cariño.
+func _react(txt: String, aff: float, hop: bool) -> void:
+	if not visible or _react_cd > 0.0:
+		return
+	_react_cd = randf_range(2.5, 4.0)
+	_puff(_emote, txt)
+	if aff > 0.0:
+		_affection = minf(1.0, _affection + aff)
+	if hop and state != State.SLEEP:
+		_squash()
 
 
 func _make_bubble(txt: String, pos: Vector2) -> Label:
@@ -125,6 +161,7 @@ func pet() -> void:
 
 func _physics_process(delta: float) -> void:
 	_timer -= delta
+	_react_cd -= delta
 	_affection = lerpf(_affection, 0.5, delta * 0.01)  # cariño vuelve a la línea base
 	_maybe_emote(delta)
 	_maybe_beg(delta)
