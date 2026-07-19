@@ -508,7 +508,7 @@ func _update_energy(delta: float) -> void:
 			_rest_target = null
 			_rest_house = null
 	elif active:
-		energy = maxf(0.0, energy - ENERGY_DRAIN * _drain_mult * delta)
+		energy = maxf(0.0, energy - ENERGY_DRAIN * _drain_mult * EmporiumUpgradeManager.vigor_multiplier() * delta)
 		if energy <= 0.0:
 			_resting = true
 			# Preferimos una casa con hueco; si no, un sitio cálido.

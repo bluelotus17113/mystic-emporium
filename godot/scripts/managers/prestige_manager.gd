@@ -37,6 +37,7 @@ func do_prestige() -> bool:
 	var gain: int = preview_stars_gain()
 	# ponytail: reset por método explícito en cada manager. Nada de magic broadcasting.
 	InventoryManager.reset_for_prestige()
+	EmporiumUpgradeManager.reset_for_prestige()
 	BuildManager.reset_for_prestige()
 	ResearchManager.reset_for_prestige()
 	RecipeManager.reset_for_prestige()

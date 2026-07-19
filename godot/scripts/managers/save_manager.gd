@@ -89,6 +89,7 @@ func save_game(slot: int = -1) -> void:
 		"version": SAVE_VERSION,
 		"timestamp": Time.get_unix_time_from_system(),
 		"inventory": InventoryManager.get_save_state(),
+		"upgrades": EmporiumUpgradeManager.get_save_state(),
 		"stats": StatsManager.get_save_state(),
 		"calendar": CalendarManager.get_save_state(),
 		"recipes": RecipeManager.get_save_state(),
@@ -166,6 +167,8 @@ func load_game(slot: int = -1) -> bool:
 		push_warning("[Save] Slot %d corrupt — recovered from .bak" % slot)
 	if parsed.has("inventory"):
 		InventoryManager.load_save_state(parsed.inventory)
+	if parsed.has("upgrades"):
+		EmporiumUpgradeManager.load_save_state(parsed.upgrades)
 	if parsed.has("stats"):
 		StatsManager.load_save_state(parsed.stats)
 	if parsed.has("calendar"):

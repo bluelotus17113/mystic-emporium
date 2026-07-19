@@ -726,6 +726,17 @@ icon = ExtResource("13_ico_ward")
 expand_icon = true
 theme_override_font_sizes/font_size = 28
 
+[node name="UpgradesButton" type="Button" parent="Root/ActionBar"]
+custom_minimum_size = Vector2(72, 64)
+layout_mode = 2
+theme_override_styles/normal = SubResource("SBF_action_btn")
+theme_override_styles/hover = SubResource("SBF_action_btn_hover")
+theme_override_styles/pressed = SubResource("SBF_action_btn_pressed")
+theme_override_styles/focus = SubResource("SBF_action_btn_hover")
+tooltip_text = "Mejoras del Local"
+text = "⬆"
+theme_override_font_sizes/font_size = 30
+
 [node name="CompanionButton" type="Button" parent="Root/ActionBar"]
 custom_minimum_size = Vector2(72, 64)
 layout_mode = 2

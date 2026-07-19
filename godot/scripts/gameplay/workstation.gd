@@ -152,7 +152,7 @@ func _refresh_hover_text() -> void:
 	var lines: Array[String] = []
 	lines.append("%s · Nv %d" % [_station_display_name(), current_level])
 	if _is_crafting and _current_recipe != null:
-		var total: float = _current_recipe.crafting_time * crafting_time_multiplier
+		var total: float = _total_craft_time()
 		var remaining: float = max(0.0, total - _craft_timer)
 		lines.append("⚗ %s" % _current_recipe.display_name)
 		lines.append("⏱ %.1fs" % remaining)
@@ -192,6 +192,13 @@ func _exit_tree() -> void:
 	WorkstationManager.unregister(self)
 
 
+## Tiempo total de crafteo con las mejoras del local aplicadas (velocidad).
+func _total_craft_time() -> float:
+	if _current_recipe == null:
+		return 0.0
+	return _current_recipe.crafting_time * crafting_time_multiplier / EmporiumUpgradeManager.craft_speed_multiplier()
+
+
 func _process(delta: float) -> void:
 	_apply_idle_bob(delta)
 	if _steam != null:
@@ -201,7 +208,7 @@ func _process(delta: float) -> void:
 	if not _is_crafting or _current_recipe == null:
 		return
 	_craft_timer += delta
-	var total: float = _current_recipe.crafting_time * crafting_time_multiplier
+	var total: float = _total_craft_time()
 	craft_progress.emit(_current_recipe, clamp(_craft_timer / total, 0.0, 1.0))
 	if _craft_timer >= total:
 		_finish_craft()

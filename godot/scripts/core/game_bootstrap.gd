@@ -67,6 +67,12 @@ func _ready() -> void:
 	var micro := MicroEvents.new()
 	micro.name = "MicroEvents"
 	add_child(micro)
+	# Panel del árbol de mejoras del local (se auto-registra en UIManager).
+	var ui_canvas: Node = get_tree().current_scene.get_node_or_null("UICanvas")
+	if ui_canvas != null:
+		var up_panel: Control = preload("res://scripts/ui/emporium_upgrade_panel.gd").new()
+		up_panel.name = "EmporiumUpgradePanel"
+		ui_canvas.add_child(up_panel)
 	call_deferred("_spawn_cat")
 	# Vida del patio natural: scatter de props + maleza que crece sola.
 	var nlife := NaturalLife.new()

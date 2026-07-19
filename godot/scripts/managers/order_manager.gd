@@ -289,8 +289,8 @@ func try_complete_at(index: int) -> bool:
 	if entry.customer != null and is_instance_valid(entry.customer) and entry.customer.has_method("get_coin_mult"):
 		pers_coin = entry.customer.get_coin_mult()
 		pers_rep = entry.customer.get_rep_mult()
-	InventoryManager.add_coins(int(order.coin_reward * coin_mult * pers_coin))
-	InventoryManager.add_reputation(int((order.reputation_reward + rep_bonus) * pers_rep))
+	InventoryManager.add_coins(int(order.coin_reward * coin_mult * pers_coin * EmporiumUpgradeManager.sale_multiplier()))
+	InventoryManager.add_reputation(int((order.reputation_reward + rep_bonus) * pers_rep * EmporiumUpgradeManager.rep_multiplier()))
 	if entry.customer != null and is_instance_valid(entry.customer):
 		_spawn_reaction_emoji(entry.customer.global_position, "♥", Color(1.0, 0.45, 0.55))
 		if "skin_name" in entry.customer:
