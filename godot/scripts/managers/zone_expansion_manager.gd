@@ -4,18 +4,24 @@ extends Node
 
 signal natural_level_changed(new_level: int)
 
-# ponytail: layout horizontal puro. Anchor a la izquierda x=1000, crece hacia la derecha.
-# Altura fija 400 (cabe en companion mode strip y en ventana normal). Filosofía idle:
-# el patio es una franja horizontal que el jugador puede pasear con la rueda/raton.
-const NATURAL_LEFT_X: float = -6400.0
-const NATURAL_HEIGHT: float = 400.0
+# El Patio Natural es un mapa 2D grande (map_rect) que se ve entero (pradera).
+# Comprar "expansión" agranda la porción USABLE (donde se camina/construye), que
+# crece DENTRO de la pradera visible: anclada al borde derecho (la pradera de
+# inicio) y centrada en vertical, se agranda hacia la izquierda/arriba/abajo
+# hasta cubrir todo el mapa. Así el terreno comprado siempre cae sobre pradera
+# iluminada (nunca en la zona oscura fuera del mapa).
+const NATURAL_LEFT_X: float = -6400.0  # (legado; ya no ancla la zona usable)
+const NATURAL_HEIGHT: float = 400.0    # (legado)
+const MAP_MARGIN: float = 40.0         # margen interno respecto al borde del mapa
 const NATURAL_LEVELS: Array = [
-	{"width": 800.0,  "cost": 0,     "label": "Pequeño"},
-	{"width": 1300.0, "cost": 150,   "label": "Mediano"},
-	{"width": 1900.0, "cost": 500,   "label": "Grande"},
-	{"width": 2600.0, "cost": 1500,  "label": "Vasto"},
-	{"width": 3400.0, "cost": 4000,  "label": "Inmenso"},
-	{"width": 4500.0, "cost": 10000, "label": "Bosque"},
+	{"width": 900.0,  "height": 520.0,  "cost": 0,     "label": "Pradera"},
+	{"width": 1250.0, "height": 700.0,  "cost": 120,   "label": "Claro"},
+	{"width": 1650.0, "height": 920.0,  "cost": 350,   "label": "Bosquecillo"},
+	{"width": 2100.0, "height": 1180.0, "cost": 800,   "label": "Arboleda"},
+	{"width": 2600.0, "height": 1460.0, "cost": 1800,  "label": "Espesura"},
+	{"width": 3150.0, "height": 1760.0, "cost": 4000,  "label": "Fronda"},
+	{"width": 3600.0, "height": 2050.0, "cost": 9000,  "label": "Selva"},
+	{"width": 4000.0, "height": 2400.0, "cost": 20000, "label": "Bosque Ancestral"},
 ]
 
 
@@ -33,18 +39,30 @@ func map_rect() -> Rect2:
 func map_center() -> Vector2:
 	return map_rect().get_center()
 
-## Vista inicial: cerca del borde derecho (la pradera de inicio, junto a los generadores).
+## Vista inicial: centro de la porción usable inicial (pradera de inicio).
 func starter_view() -> Vector2:
-	return Vector2(MAP_RIGHT_X - 420.0, 0.0)
+	return natural_rect(0).get_center()
+
+
+## Porción USABLE del patio para un nivel: sub-rect de la pradera visible,
+## anclado al borde derecho y centrado en vertical, que crece hacia la
+## izquierda/arriba/abajo. Se recorta al mapa (con margen) para no salirse.
+func natural_rect(level: int) -> Rect2:
+	var m: Rect2 = map_rect()
+	var d: Dictionary = NATURAL_LEVELS[clamp(level, 0, NATURAL_LEVELS.size() - 1)]
+	var w: float = minf(float(d.width), m.size.x - 2.0 * MAP_MARGIN)
+	var h: float = minf(float(d.height), m.size.y - 2.0 * MAP_MARGIN)
+	var right: float = m.end.x - MAP_MARGIN
+	var cy: float = m.get_center().y
+	return Rect2(Vector2(right - w, cy - h * 0.5), Vector2(w, h))
 
 
 func get_size_for(level: int) -> Vector2:
-	return Vector2(NATURAL_LEVELS[level].width, NATURAL_HEIGHT)
+	return natural_rect(level).size
 
 
 func get_center_for(level: int) -> Vector2:
-	# Left-anchored: center_x = NATURAL_LEFT_X + width/2
-	return Vector2(NATURAL_LEFT_X + NATURAL_LEVELS[level].width * 0.5, 0)
+	return natural_rect(level).get_center()
 
 var natural_level: int = 0
 
