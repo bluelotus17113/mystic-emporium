@@ -1,12 +1,17 @@
 class_name ZoneDoor
 extends Area2D
-## Portal mágico de piso entre dos zonas contiguas. Al hacer clic, la maga
-## camina hasta él y lo "cruza": destello + reubicación en el portal hermano de
-## la zona destino + la cámara la acompaña. Sustituye al arrastre para viajar.
+## Portal mágico de piso. Al hacer clic, la maga (o el gato) camina hasta él y
+## lo "cruza": destello + reubicación en el portal enlazado + la cámara acompaña.
+##
+## Dos tipos de enlace:
+##  - Automáticos (los instala game_bootstrap entre zonas contiguas): se enlazan
+##    por zona (my_zone/target_zone → portal hermano).
+##  - Colocables (comprados en el menú de obra, en PAREJA): se enlazan por
+##    `pair`/`pair_id` directamente entre sí, en cualquier zona.
 ##
 ## Es un VFX dibujado por código (anillos translúcidos que giran, aplanados al
-## suelo): minimalista y transparente, deja ver el suelo. Los instala
-## game_bootstrap (_spawn_zone_doors), no requiere edición de escena.
+## suelo): minimalista y transparente, deja ver el suelo. Solo actúa como portal
+## real cuando `live == true` (el fantasma de colocación queda como preview).
 
 const R: float = 26.0            ## radio del portal en px
 const SQUASH: float = 0.6        ## achatado vertical (perspectiva de suelo)
@@ -18,8 +23,15 @@ const C_RING: Color = Color(0.45, 0.9, 0.95)   ## turquesa
 const C_INNER: Color = Color(0.8, 0.65, 1.0)   ## lavanda
 const C_FILL: Color = Color(0.62, 0.43, 1.0)   ## púrpura
 
+## Enlace por zona (portales automáticos).
 var target_zone: StringName = &""   ## zona a la que lleva
 var my_zone: StringName = &""       ## zona en la que está
+## Enlace por pareja (portales colocables). pair es la referencia directa;
+## pair_id persiste el enlace a través de guardado/carga.
+@export var live: bool = false
+var pair: ZoneDoor = null
+var pair_id: int = -1
+
 var _hover: bool = false
 var _t: float = 0.0
 var _flash_t: float = 0.0
@@ -31,24 +43,27 @@ func setup(mine: StringName, target: StringName) -> void:
 
 
 func _ready() -> void:
-	add_to_group("zone_doors")
 	_t = randf() * TAU  # cada portal gira/pulsa con su propio desfase
 	z_index = -1        # VFX de suelo: sobre el fondo, bajo los personajes
 	# Blend aditivo: los anillos brillan y el suelo se ve a través.
 	var mat := CanvasItemMaterial.new()
 	mat.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
 	material = mat
-	input_pickable = true
-	monitoring = false
-	monitorable = false
-	var col := CollisionShape2D.new()
-	var shape := CircleShape2D.new()
-	shape.radius = R
-	col.shape = shape
-	add_child(col)
-	input_event.connect(_on_input_event)
-	mouse_entered.connect(func() -> void: _hover = true)
-	mouse_exited.connect(func() -> void: _hover = false)
+	if live:
+		add_to_group("zone_doors")
+		input_pickable = true
+		monitoring = false
+		monitorable = false
+		var col := CollisionShape2D.new()
+		var shape := CircleShape2D.new()
+		shape.radius = R
+		col.shape = shape
+		add_child(col)
+		input_event.connect(_on_input_event)
+		mouse_entered.connect(func() -> void: _hover = true)
+		mouse_exited.connect(func() -> void: _hover = false)
+	else:
+		input_pickable = false  # el fantasma de colocación no intercepta clics
 
 
 func _process(delta: float) -> void:
@@ -88,6 +103,45 @@ func _draw() -> void:
 		draw_circle(p, 1.5, Color(C_RING.r, C_RING.g, C_RING.b, 0.85 * a))
 	# Brillo central.
 	draw_circle(Vector2.ZERO, R * 0.16, Color(1.0, 1.0, 1.0, 0.45 * a))
+
+
+## Portal de destino: pareja directa, por pair_id (tras cargar), o hermano por
+## zona (portales automáticos). Devuelve null si quedó huérfano.
+func linked_portal() -> ZoneDoor:
+	if pair != null and is_instance_valid(pair):
+		return pair
+	if pair_id >= 0:
+		for d in get_tree().get_nodes_in_group("zone_doors"):
+			var zd := d as ZoneDoor
+			if zd != null and zd != self and is_instance_valid(zd) and zd.pair_id == pair_id:
+				return zd
+		return null
+	# Automático: hermano por zona.
+	for d in get_tree().get_nodes_in_group("zone_doors"):
+		var zd := d as ZoneDoor
+		if zd != null and zd != self and is_instance_valid(zd) \
+				and zd.my_zone == target_zone and zd.target_zone == my_zone:
+			return zd
+	return null
+
+
+## Nombre de zona del portal de destino (para que la cámara acompañe).
+func dest_zone_name() -> StringName:
+	var lp: ZoneDoor = linked_portal()
+	if lp == null:
+		return &""
+	if lp.my_zone != &"":
+		return lp.my_zone
+	return _zone_name_at(lp.global_position)
+
+
+func _zone_name_at(pos: Vector2) -> StringName:
+	var zt: int = GridManager.get_zone_type(GridManager.world_to_grid(pos))
+	match zt:
+		GameEnums.ZoneType.NATURE: return &"natural"
+		GameEnums.ZoneType.WORKSHOP: return &"taller"
+		GameEnums.ZoneType.RECEPTION: return &"recepcion"
+	return &""
 
 
 func _on_input_event(_vp: Node, event: InputEvent, _idx: int) -> void:

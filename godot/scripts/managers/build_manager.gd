@@ -32,6 +32,11 @@ var _grid_cost_lookup: Dictionary = {}  # Vector2i -> int (original cost for ref
 var _grid_buildable_lookup: Dictionary = {}  # Vector2i -> StringName (buildable id placed)
 var _grid_rotation_lookup: Dictionary = {}  # Vector2i -> float (rotation_degrees al colocar)
 var _center_of: Dictionary = {}  # Node2D -> Vector2i (celda central de objetos multi-celda)
+# --- portales: colocación en pareja (A obligatorio + B para completar) ---
+var _portal_first_node: Node2D = null   ## primer portal colocado, esperando su par
+var _portal_first_grid: Vector2i = Vector2i.ZERO
+var _grid_portal_pair: Dictionary = {}  # Vector2i -> int (id de pareja para enlazar/guardar)
+var _portal_pair_counter: int = 0
 
 
 ## Celda superior-izq del footprint centrado en `center` (para size 3 → center-1).
@@ -133,6 +138,8 @@ func enter_build_mode(buildable: BuildableData) -> void:
 
 
 func exit_build_mode() -> void:
+	# Portal a medias: si se colocó A pero no B, se cancela → quitar A sin cobrar.
+	_cancel_pending_portal()
 	if _ghost != null and is_instance_valid(_ghost):
 		_ghost.queue_free()
 	_ghost = null
@@ -141,6 +148,21 @@ func exit_build_mode() -> void:
 		_is_active = false
 		build_mode_exited.emit()
 		tool_mode_changed.emit(&"")
+
+
+## Deshace el portal A si quedó sin pareja (cancelación / cambio de herramienta).
+func _cancel_pending_portal() -> void:
+	if _portal_first_node == null:
+		return
+	if is_instance_valid(_portal_first_node):
+		GridManager.remove_area(_portal_first_node)
+		_portal_first_node.queue_free()
+	_grid_cost_lookup.erase(_portal_first_grid)
+	_grid_buildable_lookup.erase(_portal_first_grid)
+	_grid_rotation_lookup.erase(_portal_first_grid)
+	_grid_portal_pair.erase(_portal_first_grid)
+	_portal_first_node = null
+	NotificationManager.post("Portal cancelado: necesita su pareja.", NotificationManager.Kind.INFO)
 
 
 func is_active() -> bool:
@@ -574,6 +596,10 @@ func _try_place() -> void:
 		NotificationManager.post("🚫 %s" % err, NotificationManager.Kind.ALERT)
 		AudioManager.play_named(&"build_error")
 		return
+	# Portales: colocación en pareja (A obligatorio + B para completar la compra).
+	if _is_portal(_current_buildable):
+		_try_place_portal(grid_pos)
+		return
 	if not InventoryManager.spend_coins(_current_buildable.cost):
 		return
 	var instance: Node2D = _current_buildable.scene.instantiate() as Node2D
@@ -594,6 +620,76 @@ func _try_place() -> void:
 	AudioManager.play_beep(540.0, 0.1, -12.0)
 	placement_completed.emit(_current_buildable, instance.global_position)
 	exit_build_mode()
+
+
+func _is_portal(b: BuildableData) -> bool:
+	return b != null and b.decoration_category == &"portal"
+
+
+## Colocación en pareja: el primer clic pone el portal A (sin cobrar) y sigue en
+## modo obra pidiendo el B; el segundo clic cobra el par, los enlaza y completa.
+## Si se cancela (Esc/cambiar de herramienta) con solo A puesto, se deshace todo.
+func _try_place_portal(grid_pos: Vector2i) -> void:
+	if _portal_first_node == null:
+		# Portal A: se coloca pero aún no se cobra ni se completa la compra.
+		_portal_first_node = _instantiate_portal(grid_pos)
+		_portal_first_grid = grid_pos
+		_respawn_ghost()  # nuevo fantasma para el B; seguimos en modo obra
+		AudioManager.play_beep(500.0, 0.09, -12.0)
+		NotificationManager.post("Portal A colocado. Ahora coloca su pareja (B). Esc para cancelar.", NotificationManager.Kind.INFO)
+		return
+	# Portal B: cobra el par completo y enlaza ambos.
+	if not InventoryManager.spend_coins(_current_buildable.cost):
+		return
+	var b_node: Node2D = _instantiate_portal(grid_pos)
+	var pid: int = _portal_pair_counter
+	_portal_pair_counter += 1
+	_portal_first_node.set(&"pair", b_node)
+	_portal_first_node.set(&"pair_id", pid)
+	b_node.set(&"pair", _portal_first_node)
+	b_node.set(&"pair_id", pid)
+	_grid_portal_pair[_portal_first_grid] = pid
+	_grid_portal_pair[grid_pos] = pid
+	VFXManager.play(VFXManager.FX.BUILD, b_node.global_position)
+	AudioManager.play_beep(600.0, 0.1, -12.0)
+	placement_completed.emit(_current_buildable, b_node.global_position)
+	# Limpiar el estado pendiente ANTES de salir para no deshacer el par completo.
+	_portal_first_node = null
+	exit_build_mode()
+
+
+## Instancia un portal "vivo" y lo registra en el grid (sin cobrar).
+func _instantiate_portal(grid_pos: Vector2i) -> Node2D:
+	var instance: Node2D = _current_buildable.scene.instantiate() as Node2D
+	instance.set(&"live", true)  # actúa como portal real (no como fantasma)
+	_apply_custom_id(instance, _current_buildable)
+	_object_parent().add_child(instance)
+	instance.global_position = GridManager.grid_to_world(grid_pos)
+	GridManager.place_area(_footprint_anchor(grid_pos, _current_buildable.size), _current_buildable.size, instance)
+	_grid_cost_lookup[grid_pos] = _current_buildable.cost
+	_grid_buildable_lookup[grid_pos] = _current_buildable.id
+	_grid_rotation_lookup[grid_pos] = 0.0
+	# Visibilidad según la zona REAL donde se colocó (allowed_zone es NONE = cualquiera).
+	_assign_zone_visual_group(instance, GridManager.get_zone_type(grid_pos))
+	_spawn_pop(instance)
+	return instance
+
+
+## Recrea el fantasma del buildable actual (para colocar el segundo portal).
+func _respawn_ghost() -> void:
+	if _ghost != null and is_instance_valid(_ghost):
+		_ghost.queue_free()
+	_ghost = _current_buildable.scene.instantiate() as Node2D
+	if _ghost == null:
+		return
+	_apply_custom_id(_ghost, _current_buildable)
+	_ghost.modulate = Color(1, 1, 1, 0.5)
+	_ghost_rotation_deg = 0.0
+	_ghost.rotation_degrees = 0.0
+	for child in _ghost.get_children():
+		if child is CollisionObject2D:
+			(child as CollisionObject2D).input_pickable = false
+	get_tree().current_scene.add_child(_ghost)
 
 
 ## Colisión de pies para decoraciones físicas (mesas, muebles, naturaleza).
@@ -678,6 +774,7 @@ func get_save_state() -> Dictionary:
 			"y": grid_pos.y,
 			"cost": _grid_cost_lookup.get(grid_pos, 0),
 			"rot": _grid_rotation_lookup.get(grid_pos, 0.0),
+			"pair": _grid_portal_pair.get(grid_pos, -1),
 		})
 	var unlocked_ids: Array = []
 	for b in _unlocked_buildables:
@@ -703,6 +800,10 @@ func load_save_state(data: Dictionary) -> void:
 		var instance: Node2D = b.scene.instantiate() as Node2D
 		if instance == null:
 			continue
+		var is_portal: bool = _is_portal(b)
+		if is_portal:
+			instance.set(&"live", true)  # antes de add_child para que _ready lo cablee
+			instance.set(&"pair_id", int(entry.get("pair", -1)))
 		_apply_custom_id(instance, b)
 		_object_parent().add_child(instance)
 		instance.global_position = GridManager.grid_to_world(grid_pos)
@@ -714,5 +815,10 @@ func load_save_state(data: Dictionary) -> void:
 		_grid_cost_lookup[grid_pos] = int(entry.get("cost", b.cost))
 		_grid_buildable_lookup[grid_pos] = b.id
 		_grid_rotation_lookup[grid_pos] = rot
-		_assign_zone_visual_group(instance, b.allowed_zone)
-		_attach_deco_solid(instance, b)
+		if is_portal:
+			_grid_portal_pair[grid_pos] = int(entry.get("pair", -1))
+			_portal_pair_counter = maxi(_portal_pair_counter, int(entry.get("pair", -1)) + 1)
+			_assign_zone_visual_group(instance, GridManager.get_zone_type(grid_pos))
+		else:
+			_assign_zone_visual_group(instance, b.allowed_zone)
+			_attach_deco_solid(instance, b)

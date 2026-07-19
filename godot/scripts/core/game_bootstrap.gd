@@ -158,6 +158,7 @@ func _spawn_zone_doors() -> void:
 		var edge_x: float = zr.global_position.x + dir * (zr.size.x * 0.5 - 70.0)
 		var floor_y: float = zr.global_position.y + zr.size.y * 0.16
 		var door := ZoneDoor.new()
+		door.live = true  # portal real (no fantasma)
 		door.setup(mine, target)
 		world.add_child(door)
 		door.global_position = Vector2(edge_x, floor_y)

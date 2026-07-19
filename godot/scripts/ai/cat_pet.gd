@@ -3,7 +3,9 @@ extends CharacterBody2D
 ## sentarse, acicalarse, jugar (abalanzarse) y seguir a la protagonista.
 ## Clic izquierdo → menú contextual (seguir con la cámara). Emotes sueltos.
 
-enum State { SLEEP, WANDER, SIT, GROOM, PLAY, FOLLOW, CHASE }
+enum State { SLEEP, WANDER, SIT, GROOM, PLAY, FOLLOW, CHASE, PORTAL }
+
+const PORTAL_RANGE: float = 220.0   ## distancia para elegir un portal cercano
 
 const WANDER_SPEED: float = 42.0
 const FOLLOW_SPEED: float = 78.0
@@ -28,6 +30,7 @@ var _pounces: int = 0
 var _bob_t: float = 0.0
 var _chase_target: Node2D = null
 var _beg_cd: float = 0.0  ## pedir mimos cuando la protagonista pasa cerca
+var _portal: Node2D = null  ## portal al que va para viajar de zona
 
 @onready var _spr: AnimatedSprite2D = $AnimatedSprite2D
 
@@ -157,6 +160,18 @@ func _physics_process(delta: float) -> void:
 					velocity = Vector2.ZERO
 				if _timer <= 0.0:
 					_next_activity()
+		State.PORTAL:
+			if _portal == null or not is_instance_valid(_portal) or _timer <= 0.0:
+				_portal = null
+				_next_activity()
+			else:
+				var pd: Vector2 = _portal.global_position - global_position
+				if pd.length() > 8.0:
+					velocity = pd.normalized() * FOLLOW_SPEED
+					move_and_slide()
+				else:
+					velocity = Vector2.ZERO
+					_use_portal()
 	_update_anim()
 
 
@@ -176,6 +191,9 @@ func _next_activity(just_woke: bool = false) -> void:
 	elif roll < 0.54 and _pick_chase_prey():
 		state = State.CHASE
 		_puff(_emote, "🐾")
+	elif roll < 0.58 and _pick_portal():
+		state = State.PORTAL
+		_puff(_emote, "🌀")
 	elif roll < 0.62:
 		state = State.SIT
 	elif roll < 0.74:
@@ -219,6 +237,66 @@ func _pick_chase_worker() -> bool:
 		return false
 	_chase_target = candidates[randi() % candidates.size()]
 	return true
+
+
+## Elige un portal cercano de la misma zona para viajar (como la maga).
+func _pick_portal() -> bool:
+	var rect: Rect2 = GridManager.get_zone_rect_at(global_position)
+	var best: Node2D = null
+	var best_d: float = PORTAL_RANGE
+	for d in get_tree().get_nodes_in_group("zone_doors"):
+		var n2: Node2D = d as Node2D
+		if n2 == null or not is_instance_valid(n2):
+			continue
+		if rect.size != Vector2.ZERO and not rect.has_point(n2.global_position):
+			continue
+		var dist: float = global_position.distance_to(n2.global_position)
+		if dist < best_d:
+			best_d = dist
+			best = n2
+	if best == null:
+		return false
+	_portal = best
+	return true
+
+
+## Cruza el portal: aparece en el enlazado, ajusta zona/visibilidad.
+func _use_portal() -> void:
+	var portal: Node2D = _portal
+	_portal = null
+	if portal == null or not is_instance_valid(portal) or not portal.has_method("linked_portal"):
+		_next_activity()
+		return
+	var lp: Node2D = portal.call("linked_portal")
+	if lp == null or not is_instance_valid(lp):
+		_next_activity()
+		return
+	portal.call("open_flash")
+	var zn: StringName = portal.call("dest_zone_name")
+	global_position = lp.global_position + Vector2(0.0, 6.0)
+	home_position = global_position
+	_puff(_emote, "🌀")
+	_set_zone_visual(zn)
+	_next_activity()
+
+
+## Cambia el grupo visual del gato a la zona destino (y su visibilidad actual).
+func _set_zone_visual(zone_name: StringName) -> void:
+	if zone_name == &"":
+		return
+	for g in ["natural_visual", "taller_visual", "recepcion_visual"]:
+		if is_in_group(g):
+			remove_from_group(g)
+	var grp: StringName = &""
+	match zone_name:
+		&"natural": grp = &"natural_visual"
+		&"taller": grp = &"taller_visual"
+		&"recepcion": grp = &"recepcion_visual"
+	if grp != &"":
+		add_to_group(grp)
+	var cam: Node = get_tree().get_first_node_in_group("zone_camera")
+	if cam != null and cam.has_method("get_current_zone"):
+		visible = cam.get_current_zone().name == zone_name
 
 
 func _go_sleep() -> void:

@@ -399,7 +399,7 @@ func walk_through_door(door: ZoneDoor) -> void:
 	if door == null or not is_instance_valid(door):
 		return
 	_door_node = door
-	var dzr: Rect2 = GridManager.get_zone_rect(_ZONE_BY_NAME.get(door.my_zone, -1))
+	var dzr: Rect2 = GridManager.get_zone_rect_at(door.global_position)
 	var ap: Vector2 = door.global_position + Vector2(0.0, 8.0)
 	_door_approach = _clamp_to_rect(ap, dzr) if dzr.size != Vector2.ZERO else ap
 	# Si estuviera en otra zona (raro), aparece de una frente a la puerta.
@@ -418,18 +418,16 @@ func _pass_through_door() -> void:
 	if door == null or not is_instance_valid(door):
 		state = State.IDLE_HOME
 		return
-	var target: StringName = door.target_zone
-	door.open_flash()
-	var rect: Rect2 = GridManager.get_zone_rect(_ZONE_BY_NAME.get(target, -1))
-	var dest_door: ZoneDoor = _sibling_door(target, door.my_zone)
-	var dest: Vector2
-	if dest_door != null:
-		dest = dest_door.global_position + Vector2(0.0, 40.0)
-	elif rect.size != Vector2.ZERO:
-		dest = rect.get_center()
-	else:
+	var dest_door: ZoneDoor = door.linked_portal()
+	if dest_door == null:
+		# Portal huérfano (su pareja fue demolida): no viaja.
+		say("❓")
 		state = State.IDLE_HOME
 		return
+	door.open_flash()
+	var target: StringName = door.dest_zone_name()
+	var rect: Rect2 = GridManager.get_zone_rect(_ZONE_BY_NAME.get(target, -1))
+	var dest: Vector2 = dest_door.global_position + Vector2(0.0, 8.0)
 	if rect.size != Vector2.ZERO:
 		dest = _clamp_to_rect(dest, rect)
 	global_position = dest
@@ -440,17 +438,8 @@ func _pass_through_door() -> void:
 	_flash_teleport()
 	say("✨")
 	var cam: Node = get_tree().get_first_node_in_group("zone_camera")
-	if cam != null and cam.has_method("goto_zone"):
+	if target != &"" and cam != null and cam.has_method("goto_zone"):
 		cam.goto_zone(target)
-
-
-## Puerta de la zona `zone` que vuelve hacia `back_to` (para reaparecer en ella).
-func _sibling_door(zone: StringName, back_to: StringName) -> ZoneDoor:
-	for d in get_tree().get_nodes_in_group("zone_doors"):
-		var zd: ZoneDoor = d as ZoneDoor
-		if zd != null and is_instance_valid(zd) and zd.my_zone == zone and zd.target_zone == back_to:
-			return zd
-	return null
 
 
 func _in_build_mode() -> bool:
