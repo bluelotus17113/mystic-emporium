@@ -278,18 +278,50 @@ func stop_music() -> void:
 	_music_player.stop()
 
 
-func play_sfx(stream: AudioStream, pitch_variation: float = 0.0) -> void:
+func play_sfx(stream: AudioStream, pitch_variation: float = 0.0, extra_db: float = 0.0) -> void:
 	if stream == null:
 		return
 	for p in _sfx_pool:
 		if not p.playing:
 			p.stream = stream
 			p.pitch_scale = 1.0 + randf_range(-pitch_variation, pitch_variation)
+			p.volume_db = sfx_master_volume_db + extra_db
 			p.play()
 			return
 	# Fallback: reuse the first one
 	_sfx_pool[0].stream = stream
+	_sfx_pool[0].volume_db = sfx_master_volume_db + extra_db
 	_sfx_pool[0].play()
+
+
+## Reproduce un SFX atenuado por la cámara: fuerte solo si hay zoom cercano y el
+## emisor está cerca del centro de la vista; se apaga con la cámara alejada o el
+## emisor fuera de foco. Para sonidos "de proximidad" como los pasos.
+const _AUDIBLE_ZOOM_MIN: float = 1.05   ## por debajo de esto, prácticamente en silencio
+const _FULL_ZOOM: float = 1.9           ## desde aquí, sin penalización por zoom
+const _NEAR_PX: float = 130.0           ## radio (en px de pantalla) de volumen pleno
+const _FAR_PX: float = 560.0            ## más allá, silencio
+const _MIN_GAIN: float = 0.03           ## por debajo, ni se reproduce
+const _MAX_ATTEN_DB: float = -26.0      ## atenuación máxima audible
+
+func play_positional(sfx_name: StringName, world_pos: Vector2, pitch_variation: float = 0.06) -> void:
+	var stream: AudioStream = _sfx_cache.get(sfx_name)
+	if stream == null:
+		return
+	var cam: Camera2D = get_viewport().get_camera_2d() if get_viewport() != null else null
+	if cam == null:
+		play_sfx(stream, pitch_variation)
+		return
+	var zoom_level: float = cam.zoom.x
+	var zoom_factor: float = smoothstep(_AUDIBLE_ZOOM_MIN, _FULL_ZOOM, zoom_level)
+	if zoom_factor <= 0.0:
+		return
+	var screen_dist: float = cam.get_screen_center_position().distance_to(world_pos) * zoom_level
+	var proximity: float = 1.0 - smoothstep(_NEAR_PX, _FAR_PX, screen_dist)
+	var gain: float = zoom_factor * proximity
+	if gain <= _MIN_GAIN:
+		return
+	play_sfx(stream, pitch_variation, maxf(_MAX_ATTEN_DB, linear_to_db(gain)))
 
 
 func set_music_volume_db(db: float) -> void:

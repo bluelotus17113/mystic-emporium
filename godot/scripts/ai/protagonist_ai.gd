@@ -287,7 +287,7 @@ func _tick_footsteps(delta: float) -> void:
 	_step_accum -= delta
 	if _step_accum <= 0.0:
 		_step_accum = 0.34
-		AudioManager.play_named(&"footstep", 0.22)
+		AudioManager.play_positional(&"footstep", global_position, 0.22)
 		FootDust.spawn(self)
 		FootPrint.maybe(self)
 

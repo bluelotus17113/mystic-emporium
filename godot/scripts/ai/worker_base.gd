@@ -372,7 +372,7 @@ func _physics_process(delta: float) -> void:
 		_step_accum -= delta
 		if _step_accum <= 0.0:
 			_step_accum = 0.42
-			AudioManager.play_named(&"footstep", 0.3)
+			AudioManager.play_positional(&"footstep", global_position, 0.3)
 			FootDust.spawn(self)
 			FootPrint.maybe(self)
 	else:
