@@ -400,7 +400,7 @@ func walk_through_door(door: ZoneDoor) -> void:
 		return
 	_door_node = door
 	var dzr: Rect2 = GridManager.get_zone_rect(_ZONE_BY_NAME.get(door.my_zone, -1))
-	var ap: Vector2 = door.global_position + Vector2(0.0, 34.0)
+	var ap: Vector2 = door.global_position + Vector2(0.0, 8.0)
 	_door_approach = _clamp_to_rect(ap, dzr) if dzr.size != Vector2.ZERO else ap
 	# Si estuviera en otra zona (raro), aparece de una frente a la puerta.
 	if dzr.size != Vector2.ZERO and not dzr.has_point(global_position):

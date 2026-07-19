@@ -153,14 +153,14 @@ func _spawn_zone_doors() -> void:
 		var tzr: ZoneRegion = regions.get(target)
 		if zr == null or tzr == null:
 			continue
-		# Lado hacia el vecino: si el destino está a la izquierda, puerta a la izquierda.
+		# Lado hacia el vecino: si el destino está a la izquierda, portal a la izquierda.
 		var dir: float = -1.0 if tzr.global_position.x < zr.global_position.x else 1.0
-		var edge_x: float = zr.global_position.x + dir * (zr.size.x * 0.5 - 46.0)
-		var top_y: float = zr.global_position.y - zr.size.y * 0.5 + 70.0
+		var edge_x: float = zr.global_position.x + dir * (zr.size.x * 0.5 - 70.0)
+		var floor_y: float = zr.global_position.y + zr.size.y * 0.16
 		var door := ZoneDoor.new()
 		door.setup(mine, target)
 		world.add_child(door)
-		door.global_position = Vector2(edge_x, top_y)
+		door.global_position = Vector2(edge_x, floor_y)
 		var info: Array = _zone_name_group(zr.zone_type)
 		door.add_to_group(info[1])  # *_visual → se oculta/enseña con la zona
 		door.visible = (cur == &"" or cur == mine)
