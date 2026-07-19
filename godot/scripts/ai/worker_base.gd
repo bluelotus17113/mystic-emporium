@@ -294,8 +294,63 @@ func _on_body_clicked(_vp: Node, event: InputEvent, _idx: int) -> void:
 			"text": "✏ Renombrar",
 			"get": Callable(self, "_get_name"),
 			"set": Callable(self, "set_worker_name"),
-		}])
+		}], Callable(self, "_stats_data"))
 		get_viewport().set_input_as_handled()
+
+
+## Stats para el menú contextual: barra de energía/cansancio, XP, rasgo,
+## especialidad y actividad actual. Se refresca solo mientras el menú está abierto.
+func _stats_data() -> Array:
+	var out: Array = []
+	var e: float = clampf(energy, 0.0, 1.0)
+	var ecol: Color = Color(0.45, 0.85, 0.4)
+	if e <= 0.25:
+		ecol = Color(0.9, 0.4, 0.4)
+	elif e <= 0.5:
+		ecol = Color(0.9, 0.8, 0.35)
+	out.append({"label": "Energía", "ratio": e, "color": ecol, "value_text": "%d%%" % int(round(e * 100.0))})
+	if level < MAX_LEVEL:
+		out.append({
+			"label": "XP (Nv %d)" % level,
+			"ratio": float(xp) / float(XP_PER_LEVEL),
+			"color": Color(0.55, 0.7, 1.0),
+			"value_text": "%d/%d" % [xp, XP_PER_LEVEL],
+		})
+	else:
+		out.append({"label": "Nivel", "text": "MÁX (%d)" % level})
+	out.append({"label": "Rasgo", "text": String(TRAIT_NAMES.get(wtrait, "—"))})
+	if _favorite_type >= 0:
+		out.append({"label": "Especialidad", "text": _resource_type_label(_favorite_type)})
+	out.append({"label": "Ahora", "text": _state_label()})
+	return out
+
+
+func _resource_type_label(t: int) -> String:
+	match t:
+		GameEnums.ResourceType.HERB: return "🌿 Hierbas"
+		GameEnums.ResourceType.CRYSTAL: return "🔮 Cristal"
+		GameEnums.ResourceType.IRON_ORE: return "⛏ Mena de hierro"
+		GameEnums.ResourceType.ARCANE_WOOD: return "🪵 Madera arcana"
+		GameEnums.ResourceType.SPIRIT_ESSENCE: return "👻 Esencia"
+		GameEnums.ResourceType.ARCANE_WATER: return "💧 Agua arcana"
+		GameEnums.ResourceType.MOON_DUST: return "🌙 Polvo lunar"
+		GameEnums.ResourceType.AMETHYST_FRAGMENT: return "💎 Amatista"
+		GameEnums.ResourceType.IRON_INGOT: return "🔩 Lingote"
+		_: return "—"
+
+
+func _state_label() -> String:
+	if _sleeping:
+		return "😴 Durmiendo"
+	if _resting:
+		return "☕ Descansando"
+	match state:
+		GameEnums.WorkerState.IDLE: return "😌 Ocioso"
+		GameEnums.WorkerState.FETCHING: return "🏃 Buscando"
+		GameEnums.WorkerState.WORKING: return "🔨 Trabajando"
+		GameEnums.WorkerState.DELIVERING: return "📦 Entregando"
+		GameEnums.WorkerState.MOVING: return "🚶 Moviéndose"
+		_: return "…"
 
 
 func _get_name() -> String:

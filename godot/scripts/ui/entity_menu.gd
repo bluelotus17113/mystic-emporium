@@ -10,6 +10,10 @@ var _panel: PanelContainer
 var _vb: VBoxContainer
 var _title: Label
 var _extra_box: VBoxContainer
+var _stats_box: VBoxContainer
+var _stats_getter: Callable = Callable()
+var _stat_rows: Array = []
+var _stats_cd: float = 0.0
 
 
 func _ready() -> void:
@@ -35,6 +39,10 @@ func _ready() -> void:
 	_title.add_theme_font_size_override(&"font_size", 14)
 	_vb.add_child(_title)
 	_vb.add_child(HSeparator.new())
+	# Bloque de stats (barras vivas): entre el título y las acciones.
+	_stats_box = VBoxContainer.new()
+	_stats_box.add_theme_constant_override(&"separation", 3)
+	_vb.add_child(_stats_box)
 	var follow_btn := Button.new()
 	follow_btn.text = "🔎 Seguir con la cámara"
 	follow_btn.pressed.connect(_on_follow)
@@ -45,19 +53,98 @@ func _ready() -> void:
 	hide()
 
 
-func open_for(node: Node2D, title: String, actions: Array = []) -> void:
+func open_for(node: Node2D, title: String, actions: Array = [], stats_getter: Callable = Callable()) -> void:
 	if node == null:
 		return
 	_target = node
 	_title.text = title
+	_stats_getter = stats_getter
+	_build_stats()
 	_rebuild_extra(actions)
 	show()
 	_panel.reset_size()
 	await get_tree().process_frame
+	_update_stats()  # ahora que las barras tienen tamaño real
 	var mp: Vector2 = get_viewport().get_mouse_position()
 	var vp: Vector2 = get_viewport_rect().size
 	var sz: Vector2 = _panel.size
 	_panel.position = Vector2(min(mp.x, vp.x - sz.x - 8), min(mp.y, vp.y - sz.y - 8))
+
+
+## Refresca las barras mientras el menú esté abierto (la energía cambia sola).
+func _process(delta: float) -> void:
+	if not visible or not _stats_getter.is_valid():
+		return
+	_stats_cd -= delta
+	if _stats_cd > 0.0:
+		return
+	_stats_cd = 0.2
+	if _target == null or not is_instance_valid(_target):
+		close()
+		return
+	_update_stats()
+
+
+const _BAR_H: float = 9.0
+
+func _build_stats() -> void:
+	for c in _stats_box.get_children():
+		c.queue_free()
+	_stat_rows.clear()
+	if not _stats_getter.is_valid():
+		_stats_box.hide()
+		return
+	_stats_box.show()
+	var data: Array = _stats_getter.call()
+	for st in data:
+		if not (st is Dictionary):
+			continue
+		if st.has("ratio"):
+			var row := VBoxContainer.new()
+			row.add_theme_constant_override(&"separation", 1)
+			var head := HBoxContainer.new()
+			var name_lbl := Label.new()
+			name_lbl.text = String(st.get("label", ""))
+			name_lbl.add_theme_font_size_override(&"font_size", 12)
+			name_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			var val_lbl := Label.new()
+			val_lbl.add_theme_font_size_override(&"font_size", 12)
+			head.add_child(name_lbl)
+			head.add_child(val_lbl)
+			row.add_child(head)
+			var bg := ColorRect.new()
+			bg.color = Color(0, 0, 0, 0.38)
+			bg.custom_minimum_size = Vector2(0, _BAR_H)
+			var fill := ColorRect.new()
+			fill.position = Vector2.ZERO
+			bg.add_child(fill)
+			row.add_child(bg)
+			_stats_box.add_child(row)
+			_stat_rows.append({"type": "bar", "bg": bg, "fill": fill, "val": val_lbl})
+		else:
+			var lbl := Label.new()
+			lbl.text = "%s: %s" % [String(st.get("label", "")), String(st.get("text", ""))]
+			lbl.add_theme_font_size_override(&"font_size", 12)
+			_stats_box.add_child(lbl)
+			_stat_rows.append({"type": "text", "lbl": lbl})
+
+
+func _update_stats() -> void:
+	if not _stats_getter.is_valid() or _target == null or not is_instance_valid(_target):
+		return
+	var data: Array = _stats_getter.call()
+	for i in mini(data.size(), _stat_rows.size()):
+		var st: Dictionary = data[i]
+		var row: Dictionary = _stat_rows[i]
+		if row["type"] == "bar":
+			var bg: ColorRect = row["bg"]
+			var fill: ColorRect = row["fill"]
+			var ratio: float = clampf(float(st.get("ratio", 0.0)), 0.0, 1.0)
+			fill.color = st.get("color", Color(0.5, 0.8, 0.4))
+			fill.size = Vector2(bg.size.x * ratio, _BAR_H)
+			(row["val"] as Label).text = String(st.get("value_text", ""))
+		else:
+			(row["lbl"] as Label).text = "%s: %s" % [String(st.get("label", "")), String(st.get("text", ""))]
 
 
 func _rebuild_extra(actions: Array) -> void:
@@ -108,6 +195,7 @@ func _add_rename_row(a: Dictionary) -> void:
 
 func close() -> void:
 	_target = null
+	_stats_getter = Callable()
 	hide()
 
 
