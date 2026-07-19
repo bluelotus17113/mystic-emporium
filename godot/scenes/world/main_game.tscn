@@ -110,10 +110,10 @@ label_text = "Zona Taller"
 
 [node name="ZoneReception" type="Node2D" parent="Zones" unique_id=909242934 groups=["recepcion_visual"]]
 visible = false
-position = Vector2(-300, 0)
+position = Vector2(-300, 34)
 script = ExtResource("16_zone")
 zone_type = 3
-size = Vector2(700, 350)
+size = Vector2(904, 324)
 fill_color = Color(0.45, 0.3, 0.55, 0.04)
 border_color = Color(0.8, 0.55, 0.95, 0.55)
 label_text = "Recepción"
