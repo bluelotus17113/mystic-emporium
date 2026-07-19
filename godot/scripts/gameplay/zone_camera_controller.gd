@@ -168,16 +168,13 @@ func _goto_index(i: int) -> void:
 	zone_changed.emit(z.name)
 
 
-func _apply_zone_visibility(zone_name: StringName) -> void:
-	# Taller y Recepción son un mismo edificio (dos secciones contiguas): se ven
-	# juntas. El Patio Natural es exterior y es la única zona que se oculta.
-	var indoor: bool = zone_name != &"natural"
-	for n in get_tree().get_nodes_in_group("taller_visual"):
-		n.visible = indoor
-	for n in get_tree().get_nodes_in_group("recepcion_visual"):
-		n.visible = indoor
-	for n in get_tree().get_nodes_in_group("natural_visual"):
-		n.visible = zone_name == &"natural"
+func _apply_zone_visibility(_zone_name: StringName) -> void:
+	# Las tres áreas (Taller, Recepción, Patio Natural) permanecen SIEMPRE visibles:
+	# es un solo mundo continuo, sin pop-in/out al cambiar de zona. Lo que está
+	# fuera del encuadre lo descarta el propio render (culling), así que no cuesta.
+	for grp in ["taller_visual", "recepcion_visual", "natural_visual"]:
+		for n in get_tree().get_nodes_in_group(grp):
+			n.visible = true
 
 
 func _get_zone_half_size(zone_name: StringName) -> Vector2:
