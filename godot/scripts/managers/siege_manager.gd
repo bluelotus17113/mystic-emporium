@@ -13,8 +13,8 @@ enum State { IDLE, ACTIVE }
 const BASE_MAX_HP: float = 220.0
 const WAVE_SIZE: int = 8
 ## Cuánto a la izquierda (fuera de la pradera usable) aparecen los ogros, para
-## verlos venir desde lejos. Limitado al borde del mapa de biomas.
-const APPROACH_MARGIN: float = 780.0
+## verlos venir desde lejos con un trayecto largo. Limitado al borde del mapa.
+const APPROACH_MARGIN: float = 1200.0
 
 var state: int = State.IDLE
 var base_position: Vector2 = Vector2.ZERO
@@ -83,7 +83,7 @@ func _spawn_ogre() -> void:
 	e.global_position = Vector2(
 		spawn_x,
 		randf_range(rect.position.y + 40.0, rect.end.y - 40.0))
-	e.setup(base_position, 60.0, randf_range(40.0, 54.0), 8.0, 12)
+	e.setup(base_position, 60.0, randf_range(26.0, 36.0), 8.0, 12)
 	e.visible = _in_natural()
 	_alive += 1
 	_to_spawn -= 1
