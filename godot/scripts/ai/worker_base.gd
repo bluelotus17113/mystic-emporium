@@ -98,8 +98,11 @@ const COMBAT_AGGRO: float = 220.0   ## distancia a la que un worker engancha a u
 const MELEE_RANGE: float = 38.0
 const MELEE_DAMAGE: float = 10.0
 const MELEE_INTERVAL: float = 0.8
+const DOWN_RECOVER_TIME: float = 16.0  ## seg. derribado en la base antes de reincorporarse
+const DOWN_RECOVER_HP: float = 0.6     ## fracción de vida al volver a la lucha
 var _combat_hb: HealthBar = null
 var _downed: bool = false
+var _downed_timer: float = 0.0
 var _melee_cd: float = 0.0
 
 signal state_changed(new_state: GameEnums.WorkerState)
@@ -146,13 +149,33 @@ func _enter_downed() -> void:
 	if _downed:
 		return
 	_downed = true
-	NotificationManager.post("%s fue derribado y huye a la base." % worker_name, NotificationManager.Kind.INFO)
+	_downed_timer = DOWN_RECOVER_TIME
+	NotificationManager.post("%s fue derribado y se repliega a la base." % worker_name, NotificationManager.Kind.INFO)
+
+
+## Se reincorpora tras recuperarse en la base: vuelve con parte de la vida y
+## regresa a defender/trabajar (no se queda plantado).
+func _recover_from_downed() -> void:
+	if not _downed:
+		return
+	_downed = false
+	_downed_timer = 0.0
+	if _combat_hb != null:
+		_combat_hb.heal(_combat_hb.max_hp * DOWN_RECOVER_HP)
+	_puff_mood("💪")
+	_release_target()
+	_change_state(GameEnums.WorkerState.IDLE)
 
 
 func _on_siege_ended(_won: bool) -> void:
+	# Reset completo: cura, deja de estar derribado y vuelve a la rutina normal
+	# de inmediato (antes se quedaban plantados en la base sin volver a trabajar).
 	_downed = false
+	_downed_timer = 0.0
 	if _combat_hb != null:
-		_combat_hb.hp = _combat_hb.max_hp
+		_combat_hb.heal(_combat_hb.max_hp)
+	_release_target()
+	_change_state(GameEnums.WorkerState.IDLE)
 
 
 ## Combate durante el asedio. Devuelve true si tomó el control este frame (para
@@ -162,9 +185,13 @@ func _siege_combat(delta: float) -> bool:
 	if _downed:
 		var safe: Vector2 = SiegeManager.base_position
 		if global_position.distance_to(safe) > 34.0:
-			_drive_to(safe, move_speed * 1.2, delta)  # huye esquivando obstáculos
+			_drive_to(safe, move_speed * 1.2, delta)  # se repliega esquivando obstáculos
 		else:
+			# A salvo en la base: se recupera y al cabo de un rato vuelve a la lucha.
 			velocity = Vector2.ZERO
+			_downed_timer -= delta
+			if _downed_timer <= 0.0:
+				_recover_from_downed()
 		return true
 	var ogre: Node2D = _nearest_ogre(COMBAT_AGGRO)
 	if ogre == null:
@@ -472,16 +499,22 @@ func _capture_home() -> void:
 
 
 func _physics_process(delta: float) -> void:
-	# Charlando con otro worker: se para un momento y se orienta a él.
+	# --- Sistema de prioridades del ayudante (de mayor a menor) ---
+	# 1) ASEDIO — defender (o replegarse si está derribado) manda sobre todo lo
+	#    demás. Corta incluso una charla en curso: no se quedan parados ante un ogro.
+	if SiegeManager.is_active() and _siege_combat(delta):
+		_update_anim(delta)
+		return
+	# 2) SOCIAL — al cruzarse con otro worker se paran un momento a charlar (solo
+	#    en tiempos de paz, ya cubierto por el punto 1).
 	if _chat_pause > 0.0:
 		_chat_pause -= delta
 		velocity = Vector2.ZERO
 		_update_anim(delta)
 		return
-	# Durante un asedio, defender manda sobre el trabajo normal.
-	if SiegeManager.is_active() and _siege_combat(delta):
-		_update_anim(delta)
-		return
+	# 3) DESCANSO / TRABAJO — FSM normal. El cansancio fuerza el descanso desde
+	#    _update_energy (pone _resting) y _on_idle prioriza descansar antes que
+	#    recolectar. Orden efectivo: cansado → descansar; libre → recolectar.
 	match state:
 		GameEnums.WorkerState.IDLE:
 			_on_idle(delta)
