@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3 uid="uid://c0siege0frost01"]
+
+[ext_resource type="Script" path="res://scripts/gameplay/siege_turret.gd" id="1_t"]
+
+[node name="SiegeFrostTurret" type="Node2D"]
+script = ExtResource("1_t")
+tex_path = "res://art/sprites/environment/siege_frost_turret.png"
+fire_range = 185.0
+fire_interval = 1.0
+damage = 8.0
+slow_factor = 0.5
+slow_dur = 2.0
+proj_color = Color(0.6, 0.85, 1.0, 1)

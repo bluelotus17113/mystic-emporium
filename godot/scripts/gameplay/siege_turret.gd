@@ -1,14 +1,19 @@
 extends Node2D
 ## Torreta de defensa (buildable): durante un asedio apunta al ogro más cercano en
-## rango y dispara proyectiles arcanos. Fuera del asedio está tranquila (cozy).
+## rango y dispara proyectiles. Parametrizable por escena (torreta normal / de
+## escarcha que ralentiza). Fuera del asedio está tranquila (cozy).
 
 const PROJECTILE := preload("res://scripts/gameplay/siege_projectile.gd")
-const TEX := "res://art/sprites/environment/siege_turret.png"
 
-var fire_range: float = 200.0
-var fire_interval: float = 0.9
-var damage: float = 14.0
-var max_hp: float = 90.0
+@export var tex_path: String = "res://art/sprites/environment/siege_turret.png"
+@export var fire_range: float = 200.0
+@export var fire_interval: float = 0.9
+@export var damage: float = 14.0
+@export var slow_factor: float = 1.0   ## <1.0 = ralentiza al impactar (torreta de escarcha)
+@export var slow_dur: float = 1.6
+@export var proj_color: Color = Color(0.7, 0.9, 1.0)
+@export var max_hp: float = 90.0
+
 var _cd: float = 0.0
 var _spr: Sprite2D = null
 var _hb: HealthBar = null
@@ -17,7 +22,7 @@ var _hb: HealthBar = null
 func _ready() -> void:
 	add_to_group("siege_turrets")
 	_spr = Sprite2D.new()
-	_spr.texture = load(TEX)
+	_spr.texture = load(tex_path)
 	_spr.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	_spr.offset = Vector2(0, -16)
 	add_child(_spr)
@@ -40,7 +45,6 @@ func hit(amount: float) -> void:
 func _destroyed() -> void:
 	VFXManager.play(VFXManager.FX.BUILD, global_position)
 	AudioManager.play_beep(160.0, 0.16, -8.0)
-	# liberar la celda del grid si estaba registrada
 	if GridManager.has_method("remove_area"):
 		GridManager.remove_area(self)
 	queue_free()
@@ -80,7 +84,7 @@ func _fire(target: Node2D) -> void:
 		return
 	parent.add_child(p)
 	p.global_position = global_position + Vector2(0, -22)
-	p.setup(target, damage)
+	p.setup(target, damage, slow_factor, slow_dur, proj_color)
 	AudioManager.play_beep(720.0, 0.06, -16.0)
 	if _spr != null:
 		var tw := create_tween()

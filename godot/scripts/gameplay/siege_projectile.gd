@@ -7,11 +7,17 @@ var _damage: float = 10.0
 var _speed: float = 260.0
 var _last_dir: Vector2 = Vector2.RIGHT
 var _life: float = 2.5
+var _slow_factor: float = 1.0
+var _slow_dur: float = 0.0
+var _color: Color = Color(0.7, 0.9, 1.0)
 
 
-func setup(target: Node2D, damage: float) -> void:
+func setup(target: Node2D, damage: float, slow_factor: float = 1.0, slow_dur: float = 0.0, color: Color = Color(0.7, 0.9, 1.0)) -> void:
 	_target = target
 	_damage = damage
+	_slow_factor = slow_factor
+	_slow_dur = slow_dur
+	_color = color
 	if target != null and is_instance_valid(target):
 		_last_dir = (target.global_position - global_position).normalized()
 
@@ -39,12 +45,15 @@ func _process(delta: float) -> void:
 
 
 func _impact() -> void:
-	if _target != null and is_instance_valid(_target) and _target.has_method("hit"):
-		_target.hit(_damage)
+	if _target != null and is_instance_valid(_target):
+		if _target.has_method("hit"):
+			_target.hit(_damage)
+		if _slow_factor < 1.0 and _target.has_method("apply_slow"):
+			_target.apply_slow(_slow_factor, _slow_dur)
 	VFXManager.play(VFXManager.FX.BUILD, global_position)
 	queue_free()
 
 
 func _draw() -> void:
-	draw_circle(Vector2.ZERO, 5.0, Color(0.7, 0.9, 1.0, 0.9))
+	draw_circle(Vector2.ZERO, 5.0, Color(_color.r, _color.g, _color.b, 0.9))
 	draw_circle(Vector2.ZERO, 2.5, Color(1, 1, 1, 1))

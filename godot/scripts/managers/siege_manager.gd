@@ -15,6 +15,14 @@ signal prep_tick(seconds_left: int)
 
 const PREP_SECONDS: float = 8.0  ## aviso previo para colocar defensas de última hora
 const BASE_MAX_HP: float = 260.0
+const BOSS_WALK := "res://art/sprites/characters/ogre_boss_walk.png"
+
+## Tipos de ogro. hp/dmg/reward son multiplicadores sobre el valor de la oleada.
+const VARIANTS: Array = [
+	{"name": "Explorador", "hp": 0.55, "smin": 46.0, "smax": 60.0, "dmg": 0.6, "reward": 0.7, "scale": 0.8, "tint": Color(0.8, 1.0, 0.85)},
+	{"name": "Bruto", "hp": 1.0, "smin": 26.0, "smax": 36.0, "dmg": 1.0, "reward": 1.0, "scale": 1.0, "tint": Color(1, 1, 1)},
+	{"name": "Coloso", "hp": 2.1, "smin": 17.0, "smax": 24.0, "dmg": 1.8, "reward": 1.7, "scale": 1.35, "tint": Color(1.0, 0.82, 0.78)},
+]
 const WAVE_SIZE: int = 6
 const TOTAL_WAVES: int = 3
 const BREAK_SECONDS: float = 6.0
@@ -113,6 +121,8 @@ func _next_wave() -> void:
 	wave_changed.emit(_wave, _total_waves)
 	AudioManager.play_named(&"wave_alarm")
 	NotificationManager.post("🌊 Oleada %d/%d — ¡%d ogros!" % [_wave, _total_waves, _to_spawn], NotificationManager.Kind.ALERT)
+	if _wave >= _total_waves:
+		_spawn_boss()
 
 
 func _process(delta: float) -> void:
@@ -153,16 +163,56 @@ func _spawn_ogre() -> void:
 	# Aparecen lejos, a la izquierda (hacia el borde del mapa), y se ven venir.
 	var map: Rect2 = ZoneExpansionManager.map_rect()
 	var spawn_x: float = maxf(map.position.x + 30.0, rect.position.x - APPROACH_MARGIN) - randf_range(0.0, 160.0)
+	var v: Dictionary = _pick_variant()
 	var e := SiegeEnemy.new()
 	e.add_to_group("natural_visual")
 	world.add_child(e)
 	e.global_position = Vector2(
 		spawn_x,
 		randf_range(rect.position.y + 40.0, rect.end.y - 40.0))
-	e.setup(base_position, _wave_hp, randf_range(26.0, 36.0), _wave_dmg, _wave_reward)
+	e.setup(base_position,
+		_wave_hp * float(v["hp"]),
+		randf_range(float(v["smin"]), float(v["smax"])),
+		_wave_dmg * float(v["dmg"]),
+		int(float(_wave_reward) * float(v["reward"])))
+	e.set_variant(float(v["scale"]), v["tint"], false, String(v["name"]))
 	e.visible = _in_natural()
 	_alive += 1
 	_to_spawn -= 1
+
+
+## Elige un tipo de ogro; los Colosos son más probables en oleadas avanzadas.
+func _pick_variant() -> Dictionary:
+	var wf: float = float(_wave) / float(maxi(1, _total_waves))
+	var r: float = randf()
+	if r < 0.30:
+		return VARIANTS[0]  # Explorador
+	if r < 0.30 + wf * 0.40:
+		return VARIANTS[2]  # Coloso
+	return VARIANTS[1]  # Bruto
+
+
+## Jefe de la última oleada: el Ogro Rey (enorme, mucho HP, HP bar con nombre).
+func _spawn_boss() -> void:
+	var world: Node = get_tree().get_first_node_in_group("world_container")
+	if world == null:
+		return
+	var rect: Rect2 = _natural_rect()
+	var map: Rect2 = ZoneExpansionManager.map_rect()
+	var e := SiegeEnemy.new()
+	e.add_to_group("natural_visual")
+	world.add_child(e)
+	e.global_position = Vector2(
+		maxf(map.position.x + 30.0, rect.position.x - APPROACH_MARGIN),
+		rect.get_center().y)
+	var boss_hp: float = (320.0 + _wave_hp * 3.0) * _diff
+	e.setup(base_position, boss_hp, 21.0, _wave_dmg * 2.2, _wave_reward * 8)
+	var walk: String = BOSS_WALK if ResourceLoader.exists(BOSS_WALK) else ""
+	e.set_variant(1.85, Color(1.0, 0.55, 0.5), true, "Ogro Rey", walk)
+	e.visible = _in_natural()
+	_alive += 1
+	AudioManager.play_named(&"siege_horn")
+	NotificationManager.post("👑 ¡El OGRO REY encabeza la última oleada!", NotificationManager.Kind.ALERT)
 
 
 func damage_base(amount: float) -> void:

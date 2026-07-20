@@ -23,6 +23,10 @@ var _atk_target: Node2D = null  ## worker/torreta que ataca (null = avanza a la 
 var _retarget_cd: float = 0.0
 var _avoid_dir: Vector2 = Vector2.ZERO
 var _avoid_time: float = 0.0
+var _slow_factor: float = 1.0
+var _slow_time: float = 0.0
+var is_boss: bool = false
+var _walk_tex: String = WALK_TEX
 
 
 func setup(target_pos: Vector2, hp: float, spd: float, dmg: float, reward: int) -> void:
@@ -32,6 +36,35 @@ func setup(target_pos: Vector2, hp: float, spd: float, dmg: float, reward: int) 
 	coin_reward = reward
 	if _hb != null:
 		_hb.setup(hp, -48.0, false)
+
+
+## Aspecto/rol del ogro: escala, tinte, si es jefe (HP siempre visible + nombre)
+## y sprite de caminar alternativo (para el jefe).
+func set_variant(scale_mult: float, tint: Color, boss: bool, vname: String, walk_tex: String = "") -> void:
+	is_boss = boss
+	if _spr != null:
+		_spr.scale = Vector2(scale_mult, scale_mult)
+		_spr.self_modulate = tint
+		_spr.offset = Vector2(0, -30.0 * scale_mult)
+		if walk_tex != "":
+			_walk_tex = walk_tex
+			_spr.sprite_frames = _make_frames()
+			_spr.play(&"walk")
+	if boss and _hb != null:
+		_hb.always_visible = true
+		_hb.bar_y = -58.0 * scale_mult
+		var lbl := Label.new()
+		lbl.text = "👑 " + vname
+		lbl.add_theme_font_size_override(&"font_size", 13)
+		lbl.modulate = Color(1.0, 0.55, 0.45)
+		lbl.position = Vector2(-44, -74.0 * scale_mult)
+		add_child(lbl)
+
+
+## Ralentización temporal (la aplica la Torreta de Escarcha).
+func apply_slow(factor: float, dur: float) -> void:
+	_slow_factor = minf(_slow_factor, factor)
+	_slow_time = maxf(_slow_time, dur)
 
 
 func _ready() -> void:
@@ -60,7 +93,7 @@ func _ready() -> void:
 
 func _make_frames() -> SpriteFrames:
 	var sf := SpriteFrames.new()
-	_add_anim(sf, &"walk", WALK_TEX, 4, 7.0, true)
+	_add_anim(sf, &"walk", _walk_tex, 4, 7.0, true)
 	return sf
 
 
@@ -90,6 +123,10 @@ func hit(damage: float) -> void:
 func _physics_process(delta: float) -> void:
 	if _hb != null and not _hb.is_alive():
 		return
+	if _slow_time > 0.0:
+		_slow_time -= delta
+		if _slow_time <= 0.0:
+			_slow_factor = 1.0
 	_retarget_cd -= delta
 	if _atk_target != null and not _is_valid_target(_atk_target):
 		_atk_target = null
@@ -124,7 +161,7 @@ func _drive(goal: Vector2, delta: float) -> void:
 	if _avoid_time > 0.0:
 		_avoid_time -= delta
 		move_dir = (_avoid_dir * 0.85 + desired * 0.35).normalized()
-	velocity = move_dir * speed
+	velocity = move_dir * speed * _slow_factor
 	move_and_slide()
 	var col := get_last_slide_collision()
 	if col != null:

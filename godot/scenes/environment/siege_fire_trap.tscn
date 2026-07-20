@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://c0siege0firetr1"]
+
+[ext_resource type="Script" path="res://scripts/gameplay/siege_trap.gd" id="1_ft"]
+
+[node name="SiegeFireTrap" type="Node2D"]
+script = ExtResource("1_ft")
+tex_path = "res://art/sprites/environment/siege_fire_trap.png"
+radius = 70.0
+damage = 16.0
+interval = 0.7
+glow_tint = Color(1.25, 0.7, 0.4, 1)
