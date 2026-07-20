@@ -24,6 +24,7 @@ var _connections_node: Node2D = null  # custom-draw node
 
 func _ready() -> void:
 	UIManager.register_panel(PANEL_NAME, self)
+	_add_background()
 	close_button.pressed.connect(UIManager.close_active)
 	ResearchManager.station_clicked.connect(_on_station_clicked)
 	ResearchManager.research_started.connect(_on_research_started)
@@ -33,6 +34,42 @@ func _ready() -> void:
 	_connections_node.draw.connect(_draw_connections)
 	tree_view.add_child(_connections_node)
 	_connections_node.z_index = -1
+	_setup_legend()
+
+
+## Fondo decorativo de biblioteca arcana (PixelLab) detrás de las cards, atenuado
+## para que el árbol siga legible.
+func _add_background() -> void:
+	var tex: Texture2D = load("res://art/sprites/ui/research_bg.png")
+	if tex == null:
+		return
+	var bg := TextureRect.new()
+	bg.name = "LibraryBackground"
+	bg.texture = tex
+	bg.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	bg.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	bg.modulate = Color(1, 1, 1, 0.8)
+	add_child(bg)
+	move_child(bg, 0)  # detrás de todo el contenido
+
+
+func _setup_legend() -> void:
+	var legend: Node = get_node_or_null("Margin/VBox/Legend")
+	if legend == null or legend.get_child_count() < 4:
+		return
+	var specs: Array = [
+		["🟢 Completada", Color(0.5, 1, 0.6)],
+		["🟡 Disponible", Color(1, 0.9, 0.45)],
+		["🟣 En curso", Color(1, 0.7, 1)],
+		["🔒 Bloqueada", Color(0.72, 0.66, 0.86)],
+	]
+	for i in 4:
+		var lbl: Label = legend.get_child(i) as Label
+		if lbl != null:
+			lbl.text = specs[i][0]
+			lbl.modulate = specs[i][1]
+			lbl.add_theme_font_size_override(&"font_size", 12)
 
 
 func _on_station_clicked(station) -> void:
@@ -101,38 +138,65 @@ func _gather_all_for_station() -> Array:
 
 
 func _build_card(r: ResearchData) -> Control:
+	var state: StringName = _state_of(r)
 	var card := PanelContainer.new()
 	card.custom_minimum_size = Vector2(CARD_W, CARD_H)
 	card.mouse_filter = Control.MOUSE_FILTER_PASS
-	card.tooltip_text = "%s\n\nCosto: %d ⚜ · %ds\n%s" % [r.description, r.coin_cost, int(r.research_time), r.display_name]
+	card.tooltip_text = "%s\n\nCosto: %d ⚜ · %ds" % [r.description, r.coin_cost, int(r.research_time)]
+	card.add_theme_stylebox_override(&"panel", _card_style(state))
+	if state == &"locked" or state == &"tier_locked":
+		card.modulate = Color(1, 1, 1, 0.82)
 
 	var margin := MarginContainer.new()
-	margin.add_theme_constant_override(&"margin_left", 8)
-	margin.add_theme_constant_override(&"margin_top", 6)
-	margin.add_theme_constant_override(&"margin_right", 8)
-	margin.add_theme_constant_override(&"margin_bottom", 6)
+	margin.add_theme_constant_override(&"margin_left", 10)
+	margin.add_theme_constant_override(&"margin_top", 8)
+	margin.add_theme_constant_override(&"margin_right", 10)
+	margin.add_theme_constant_override(&"margin_bottom", 8)
 	card.add_child(margin)
 
 	var v := VBoxContainer.new()
-	v.add_theme_constant_override(&"separation", 2)
+	v.add_theme_constant_override(&"separation", 3)
 	margin.add_child(v)
 
+	# Cabecera: chip de estado + nombre + tier.
 	var hdr := HBoxContainer.new()
+	hdr.add_theme_constant_override(&"separation", 6)
 	v.add_child(hdr)
+	var chip := Label.new()
+	chip.text = _state_icon(state)
+	chip.add_theme_font_size_override(&"font_size", 16)
+	hdr.add_child(chip)
+	var name_l := Label.new()
+	name_l.text = r.display_name
+	name_l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	name_l.clip_text = true  # que un nombre largo no ensanche la card
+	name_l.add_theme_font_size_override(&"font_size", 14)
+	hdr.add_child(name_l)
 	var tier_label := Label.new()
 	tier_label.text = "T%d" % r.tier
 	tier_label.add_theme_font_size_override(&"font_size", 11)
 	tier_label.modulate = Color(0.95, 0.78, 0.35, 1)
-	tier_label.custom_minimum_size = Vector2(28, 0)
 	hdr.add_child(tier_label)
-	var name_l := Label.new()
-	name_l.text = r.display_name
-	name_l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	name_l.add_theme_font_size_override(&"font_size", 13)
-	hdr.add_child(name_l)
+
+	# 🔓 Desbloquea: icono + nombre de lo que abre este nodo (el "flujo").
+	var unlock: Dictionary = _unlock_info(r)
+	if not unlock.is_empty():
+		var ub := HBoxContainer.new()
+		ub.add_theme_constant_override(&"separation", 5)
+		v.add_child(ub)
+		if unlock.get("icon") != null:
+			ub.add_child(_icon_rect(unlock.icon))
+		var ul := Label.new()
+		var extra: int = r.extra_recipes_to_unlock.size()
+		ul.text = "🔓 %s%s" % [String(unlock.name), (" +%d" % extra) if extra > 0 else ""]
+		ul.add_theme_font_size_override(&"font_size", 12)
+		ul.modulate = Color(0.75, 0.95, 1.0, 1)
+		ul.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		ul.clip_text = true  # no ensanchar la card con nombres largos
+		ub.add_child(ul)
 
 	var meta := Label.new()
-	meta.text = "%d ⚜  ·  %ds" % [r.coin_cost, int(r.research_time)]
+	meta.text = "%d ⚜    ⏱ %ds" % [r.coin_cost, int(r.research_time)]
 	meta.add_theme_font_size_override(&"font_size", 11)
 	meta.modulate = Color(0.85, 0.85, 0.95, 1)
 	v.add_child(meta)
@@ -142,56 +206,102 @@ func _build_card(r: ResearchData) -> Control:
 	for req in reqs:
 		var rl := Label.new()
 		var item_name: String = req.item.display_name if req.item != null else String(req.get("id", "?"))
-		var mark: String = "✓" if req.ok else "✗"
-		rl.text = "  %s %d/%d %s" % [mark, req.have, req.qty, item_name]
+		rl.text = "  %s %d/%d %s" % ["✓" if req.ok else "✗", req.have, req.qty, item_name]
 		rl.add_theme_font_size_override(&"font_size", 10)
+		rl.clip_text = true
 		rl.modulate = Color(0.62, 1.0, 0.65, 1) if req.ok else Color(1.0, 0.75, 0.75, 1)
 		v.add_child(rl)
 
-	var state: StringName = _state_of(r)
-	var state_label := Label.new()
-	v.add_child(state_label)
+	var spacer := Control.new()
+	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	v.add_child(spacer)
 
+	# Botón de acción / estado.
 	var btn := Button.new()
 	btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	btn.add_theme_font_size_override(&"font_size", 12)
-	btn.custom_minimum_size = Vector2(0, 30)
+	btn.custom_minimum_size = Vector2(0, 28)
 	v.add_child(btn)
-
 	match state:
 		&"completed":
-			card.modulate = Color(0.5, 1, 0.6, 1)
-			state_label.text = "✓ Completada"
-			state_label.modulate = Color(0.5, 1, 0.6, 1)
-			btn.text = "Completada"
+			btn.text = "✓ Completada"
 			btn.disabled = true
 		&"active":
-			card.modulate = Color(1, 0.7, 1, 1)
-			state_label.text = "⌛ %d%%" % int(ResearchManager.get_active_progress_percent() * 100)
-			state_label.modulate = Color(1, 0.7, 1, 1)
-			btn.text = "En curso"
+			btn.text = "⌛ %d%%" % int(ResearchManager.get_active_progress_percent() * 100)
 			btn.disabled = true
 		&"available":
-			card.modulate = Color(1, 0.95, 0.7, 1)
-			state_label.text = "⚡ Lista"
-			state_label.modulate = Color(1, 0.92, 0.45, 1)
-			btn.text = "Investigar"
+			btn.text = "⚡ Investigar"
 			var has_active: bool = ResearchManager.get_active() != null
 			btn.disabled = has_active or not ResearchManager.can_afford(r)
 			btn.pressed.connect(_on_start_pressed.bind(r))
 		&"tier_locked":
-			card.modulate = Color(0.6, 0.55, 0.7, 1)
-			state_label.text = "🔒 Requiere 1 research T%d completado" % (r.tier - 1)
-			state_label.modulate = Color(0.7, 0.65, 0.85, 1)
-			btn.text = "Tier bloqueado"
+			btn.text = "🔒 Tier T%d requerido" % (r.tier - 1)
 			btn.disabled = true
 		_:
-			card.modulate = Color(0.65, 0.6, 0.75, 1)
-			state_label.text = "🔒 Bloqueada"
-			state_label.modulate = Color(0.55, 0.5, 0.65, 1)
-			btn.text = "Falta prereq"
+			btn.text = "🔒 Falta prerrequisito"
 			btn.disabled = true
 	return card
+
+
+func _state_icon(state: StringName) -> String:
+	match state:
+		&"completed": return "🟢"
+		&"active": return "🟣"
+		&"available": return "🟡"
+		_: return "🔒"
+
+
+func _card_style(state: StringName) -> StyleBoxFlat:
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color(0.15, 0.12, 0.20, 0.97)
+	sb.set_corner_radius_all(10)
+	sb.set_border_width_all(2)
+	match state:
+		&"completed":
+			sb.border_color = Color(0.45, 0.9, 0.55)
+			sb.bg_color = Color(0.13, 0.20, 0.15, 0.97)
+		&"active":
+			sb.border_color = Color(1, 0.6, 1)
+			sb.bg_color = Color(0.20, 0.13, 0.22, 0.97)
+		&"available":
+			sb.border_color = Color(1, 0.85, 0.4)
+			sb.set_border_width_all(3)
+			sb.bg_color = Color(0.20, 0.17, 0.12, 0.97)
+		&"tier_locked":
+			sb.border_color = Color(0.5, 0.45, 0.62)
+		_:
+			sb.border_color = Color(0.4, 0.37, 0.5)
+	return sb
+
+
+## TextureRect de 22×22 con tamaño FIJO (EXPAND_IGNORE_SIZE), recortando el
+## primer frame cuadrado si el icono resulta ser un spritesheet horizontal (si no,
+## el TextureRect tomaría el tamaño natural de la tira y ensancharía la card).
+func _icon_rect(tex: Texture2D) -> TextureRect:
+	var ico := TextureRect.new()
+	var w: int = tex.get_width()
+	var h: int = tex.get_height()
+	if w > int(h * 1.5):
+		var at := AtlasTexture.new()
+		at.atlas = tex
+		at.region = Rect2(0, 0, h, h)
+		ico.texture = at
+	else:
+		ico.texture = tex
+	ico.custom_minimum_size = Vector2(22, 22)
+	ico.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	ico.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	ico.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	return ico
+
+
+func _unlock_info(r: ResearchData) -> Dictionary:
+	if r.recipe_to_unlock != null and r.recipe_to_unlock.output_item != null:
+		var it: ItemData = r.recipe_to_unlock.output_item
+		return {"name": it.display_name, "icon": it.icon}
+	if r.buildable_to_unlock != null:
+		return {"name": r.buildable_to_unlock.display_name, "icon": r.buildable_to_unlock.icon}
+	return {}
 
 
 func _state_of(r: ResearchData) -> StringName:
@@ -222,13 +332,30 @@ func _draw_connections() -> void:
 				continue
 			var from: Vector2 = pdata.pos + Vector2(CARD_W, CARD_H * 0.5)
 			var to: Vector2 = data.pos + Vector2(0, CARD_H * 0.5)
-			var mid_x: float = (from.x + to.x) * 0.5
-			# Polyline con codo central — estilo de árbol clásico.
-			var pts: PackedVector2Array = [
-				from, Vector2(mid_x, from.y), Vector2(mid_x, to.y), to
-			]
-			var color: Color = Color(0.95, 0.78, 0.35, 0.9) if ResearchManager.is_completed(prereq) else Color(0.5, 0.4, 0.7, 0.6)
-			_connections_node.draw_polyline(pts, color, 3.0, false)
+			var done: bool = ResearchManager.is_completed(prereq)
+			var color: Color = Color(1.0, 0.82, 0.35, 0.95) if done else Color(0.55, 0.45, 0.75, 0.5)
+			_draw_curve(from, to, color, done)
+
+
+## Curva bezier suave prereq→research con flecha en el destino (y glow si el
+## prerrequisito ya está completado: resalta la ruta desbloqueada).
+func _draw_curve(a: Vector2, b: Vector2, col: Color, glow: bool) -> void:
+	var dx: float = maxf(40.0, (b.x - a.x) * 0.5)
+	var c1: Vector2 = a + Vector2(dx, 0)
+	var c2: Vector2 = b - Vector2(dx, 0)
+	var pts: PackedVector2Array = PackedVector2Array()
+	var steps: int = 18
+	for i in steps + 1:
+		var t: float = float(i) / float(steps)
+		pts.append(a.bezier_interpolate(c1, c2, b, t))
+	if glow:
+		_connections_node.draw_polyline(pts, Color(col.r, col.g, col.b, 0.22), 8.0, true)
+	_connections_node.draw_polyline(pts, col, 3.0, true)
+	# Flecha en el destino (apunta hacia la card, +x).
+	var tip: Vector2 = b + Vector2(1, 0)
+	var back: Vector2 = tip - Vector2(10, 0)
+	var arrow: PackedVector2Array = [tip, back + Vector2(0, -5), back + Vector2(0, 5)]
+	_connections_node.draw_colored_polygon(arrow, col)
 
 
 func _find_by_id(id: StringName) -> ResearchData:
