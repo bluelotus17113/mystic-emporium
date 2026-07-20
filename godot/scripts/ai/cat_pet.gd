@@ -32,6 +32,7 @@ var _bob_t: float = 0.0
 var _chase_target: Node2D = null
 var _beg_cd: float = 0.0  ## pedir mimos cuando la protagonista pasa cerca
 var _portal: Node2D = null  ## portal al que va para viajar de zona
+var _follow_after_portal: bool = false  ## true: tras cruzar, retomar el seguimiento
 var _affection: float = 0.6  ## cariño 0..1: sube al acariciar, baja despacio
 var _react_cd: float = 0.0  ## cooldown para reaccionar a eventos del local
 
@@ -209,13 +210,15 @@ func _physics_process(delta: float) -> void:
 			var proto: Node2D = get_tree().get_first_node_in_group("protagonist")
 			if proto == null:
 				_go_sleep()
+			elif _follow_cross_zone(proto):
+				pass  # la maga cambió de zona: gestionar el cruce por el portal
 			else:
 				var pd: Vector2 = proto.global_position + Vector2(24, 12) - global_position
 				velocity = pd.normalized() * FOLLOW_SPEED if pd.length() > 26.0 else Vector2.ZERO
 				if pd.length() > 26.0:
 					move_and_slide()
-			if _timer <= 0.0:
-				_go_sleep()
+				if _timer <= 0.0:
+					_go_sleep()
 		State.CHASE:
 			if _chase_target == null or not is_instance_valid(_chase_target):
 				_next_activity()
@@ -307,6 +310,74 @@ func _pick_chase_worker() -> bool:
 	return true
 
 
+## Zona concreta (natural/taller/recepcion) en una posición del mundo.
+func _zone_name_at(pos: Vector2) -> StringName:
+	match GridManager.get_zone_type(GridManager.world_to_grid(pos)):
+		GameEnums.ZoneType.NATURE: return &"natural"
+		GameEnums.ZoneType.WORKSHOP: return &"taller"
+		GameEnums.ZoneType.RECEPTION: return &"recepcion"
+	return &""
+
+
+## Región visible: el taller y la recepción son un mismo edificio contiguo
+## ("indoor"); el Patio Natural es exterior y está separado por el vacío. Solo se
+## cruza por portal entre regiones distintas, no entre taller↔recepción.
+func _visual_region_at(pos: Vector2) -> StringName:
+	return &"natural" if _zone_name_at(pos) == &"natural" else &"indoor"
+
+
+## Si la protagonista quedó en otra región (tras cruzar su portal), el gato la
+## sigue por el portal en vez de atravesar el fondo negro. Devuelve true si tomó
+## el control del seguimiento este frame.
+func _follow_cross_zone(proto: Node2D) -> bool:
+	var my_region: StringName = _visual_region_at(global_position)
+	var proto_region: StringName = _visual_region_at(proto.global_position)
+	if my_region == proto_region:
+		return false
+	_follow_after_portal = true
+	if _pick_portal_to_region(proto_region):
+		state = State.PORTAL
+		_timer = randf_range(6.0, 10.0)  # margen para alcanzar y cruzar el portal
+		_puff(_emote, "🌀")
+	else:
+		# Sin portal que enlace ambas regiones: teleporte de cortesía junto a ella.
+		_snap_to_zone(proto)
+	return true
+
+
+## Portal en la región actual del gato que lleva a `target_region`, el más cercano.
+func _pick_portal_to_region(target_region: StringName) -> bool:
+	var my_region: StringName = _visual_region_at(global_position)
+	var best: Node2D = null
+	var best_d: float = INF
+	for d in get_tree().get_nodes_in_group("zone_doors"):
+		var zd := d as ZoneDoor
+		if zd == null or not is_instance_valid(zd):
+			continue
+		var src_region: StringName = _visual_region_at(zd.global_position)
+		var dest: StringName = zd.dest_zone_name()
+		var dest_region: StringName = &"natural" if dest == &"natural" else &"indoor"
+		if src_region != my_region or dest_region != target_region:
+			continue
+		var dist: float = global_position.distance_to(zd.global_position)
+		if dist < best_d:
+			best_d = dist
+			best = zd
+	if best == null:
+		return false
+	_portal = best
+	return true
+
+
+## Reubica al gato junto a la protagonista y ajusta su zona/visibilidad (fallback
+## cuando no hay un portal que enlace ambas regiones).
+func _snap_to_zone(proto: Node2D) -> void:
+	global_position = proto.global_position + Vector2(-22.0, 10.0)
+	home_position = global_position
+	_set_zone_visual(_zone_name_at(proto.global_position))
+	_puff(_emote, "🌀")
+
+
 ## Elige un portal cercano de la misma zona para viajar (como la maga).
 func _pick_portal() -> bool:
 	var rect: Rect2 = GridManager.get_zone_rect_at(global_position)
@@ -333,11 +404,11 @@ func _use_portal() -> void:
 	var portal: Node2D = _portal
 	_portal = null
 	if portal == null or not is_instance_valid(portal) or not portal.has_method("linked_portal"):
-		_next_activity()
+		_after_portal_activity()
 		return
 	var lp: Node2D = portal.call("linked_portal")
 	if lp == null or not is_instance_valid(lp):
-		_next_activity()
+		_after_portal_activity()
 		return
 	portal.call("open_flash")
 	var zn: StringName = portal.call("dest_zone_name")
@@ -345,6 +416,18 @@ func _use_portal() -> void:
 	home_position = global_position
 	_puff(_emote, "🌀")
 	_set_zone_visual(zn)
+	_after_portal_activity()
+
+
+## Tras cruzar: si estaba siguiendo a la maga, retoma el seguimiento (ya en su
+## misma zona); si no, elige una actividad nueva como siempre.
+func _after_portal_activity() -> void:
+	if _follow_after_portal and get_tree().get_first_node_in_group("protagonist") != null:
+		_follow_after_portal = false
+		state = State.FOLLOW
+		_timer = randf_range(AWAKE_MIN, AWAKE_MAX)
+		return
+	_follow_after_portal = false
 	_next_activity()
 
 
