@@ -139,6 +139,12 @@ func upgrade() -> void:
 		NotificationManager.post("Faltan monedas para mejorar.", NotificationManager.Kind.INFO)
 		return
 	_level += 1
+	_apply_level_bonus()
+	VFXManager.play(VFXManager.FX.UPGRADE, global_position)
+	AudioManager.play_named(&"level_up")
+
+
+func _apply_level_bonus() -> void:
 	damage *= 1.4
 	fire_range *= 1.08
 	if aoe_radius > 0.0:
@@ -146,8 +152,18 @@ func upgrade() -> void:
 	if _hb != null:
 		_hb.max_hp *= 1.25
 		_hb.hp = _hb.max_hp
-	VFXManager.play(VFXManager.FX.UPGRADE, global_position)
-	AudioManager.play_named(&"level_up")
+
+
+func get_upgrade_level() -> int:
+	return _level
+
+
+## Reaplica las mejoras al cargar el save (sin cobrar).
+func set_upgrade_level(lvl: int) -> void:
+	lvl = clampi(lvl, 1, MAX_LEVEL)
+	while _level < lvl:
+		_level += 1
+		_apply_level_bonus()
 
 
 func _stats_data() -> Array:

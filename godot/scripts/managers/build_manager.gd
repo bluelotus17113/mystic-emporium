@@ -776,14 +776,19 @@ func reset_for_prestige() -> void:
 func get_save_state() -> Dictionary:
 	var placed: Array = []
 	for grid_pos in _grid_buildable_lookup.keys():
-		placed.append({
+		var entry: Dictionary = {
 			"id": String(_grid_buildable_lookup[grid_pos]),
 			"x": grid_pos.x,
 			"y": grid_pos.y,
 			"cost": _grid_cost_lookup.get(grid_pos, 0),
 			"rot": _grid_rotation_lookup.get(grid_pos, 0.0),
 			"pair": _grid_portal_pair.get(grid_pos, -1),
-		})
+		}
+		# Nivel de mejora de defensas del asedio (torretas/trampas).
+		var node: Node = GridManager._occupied.get(grid_pos)
+		if node != null and is_instance_valid(node) and node.has_method("get_upgrade_level"):
+			entry["level"] = node.get_upgrade_level()
+		placed.append(entry)
 	var unlocked_ids: Array = []
 	for b in _unlocked_buildables:
 		if b != null:
@@ -830,3 +835,7 @@ func load_save_state(data: Dictionary) -> void:
 		else:
 			_assign_zone_visual_group(instance, b.allowed_zone)
 			_attach_deco_solid(instance, b)
+		# Restaura el nivel de mejora de defensas del asedio (sin cobrar).
+		var lvl: int = int(entry.get("level", 1))
+		if lvl > 1 and instance.has_method("set_upgrade_level"):
+			instance.set_upgrade_level(lvl)
