@@ -73,6 +73,9 @@ func _ready() -> void:
 		var up_panel: Control = preload("res://scripts/ui/emporium_upgrade_panel.gd").new()
 		up_panel.name = "EmporiumUpgradePanel"
 		ui_canvas.add_child(up_panel)
+		var siege_hud: Control = preload("res://scripts/ui/siege_hud.gd").new()
+		siege_hud.name = "SiegeHUD"
+		ui_canvas.add_child(siege_hud)
 	call_deferred("_spawn_cat")
 	# Vida del patio natural: scatter de props + maleza que crece sola.
 	var nlife := NaturalLife.new()

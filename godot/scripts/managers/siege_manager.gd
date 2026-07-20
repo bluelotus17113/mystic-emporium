@@ -31,8 +31,37 @@ var _break_cd: float = 0.0
 var _wave_hp: float = 60.0
 var _wave_dmg: float = 8.0
 var _wave_reward: int = 12
+var _diff: float = 1.0        ## multiplicador de dificultad (rep + nivel natural)
+var _total_waves: int = TOTAL_WAVES
+var _base_hp_max: float = BASE_MAX_HP
 var _base_node: Node2D = null
 var _base_bar: HealthBar = null
+
+
+## Escala la dificultad con la progresión: reputación y nivel del Patio Natural.
+func _compute_difficulty() -> void:
+	var rep_tier: float = float(InventoryManager.reputation) / 20.0
+	var lvl: int = ZoneExpansionManager.natural_level
+	_diff = 1.0 + rep_tier * 0.15 + float(lvl) * 0.10
+	_total_waves = clampi(TOTAL_WAVES + int((rep_tier + float(lvl)) / 3.0), TOTAL_WAVES, 6)
+	_base_hp_max = BASE_MAX_HP * (1.0 + float(lvl) * 0.10)
+
+
+func get_difficulty() -> float:
+	return _diff
+
+
+func current_wave() -> int:
+	return _wave
+
+
+func total_waves() -> int:
+	return _total_waves
+
+
+## Ogros que faltan por aparecer + los que siguen vivos.
+func enemies_left() -> int:
+	return _to_spawn + _alive
 
 
 func is_active() -> bool:
@@ -55,6 +84,7 @@ func request_start() -> bool:
 
 
 func _start() -> void:
+	_compute_difficulty()
 	var rect: Rect2 = _natural_rect()
 	base_position = Vector2(rect.end.x - 90.0, rect.get_center().y)
 	_wave = 0
@@ -63,7 +93,7 @@ func _start() -> void:
 	state = State.ACTIVE
 	_spawn_base()
 	siege_started.emit()
-	base_hp_changed.emit(BASE_MAX_HP, BASE_MAX_HP)
+	base_hp_changed.emit(_base_hp_max, _base_hp_max)
 	NotificationManager.post("🏰 ¡ASEDIO! Defiende el cultivo de los ogros.", NotificationManager.Kind.ALERT)
 	_next_wave()
 
@@ -71,13 +101,13 @@ func _start() -> void:
 ## Prepara la siguiente oleada: más grande y más dura que la anterior.
 func _next_wave() -> void:
 	_wave += 1
-	_to_spawn = WAVE_SIZE + (_wave - 1) * 2
+	_to_spawn = WAVE_SIZE + (_wave - 1) * 2 + int((_diff - 1.0) * 4.0)
 	_spawn_cd = 0.6
-	_wave_hp = 50.0 + float(_wave - 1) * 22.0
-	_wave_dmg = 7.0 + float(_wave - 1) * 2.0
-	_wave_reward = 10 + _wave * 4
-	wave_changed.emit(_wave, TOTAL_WAVES)
-	NotificationManager.post("🌊 Oleada %d/%d — ¡%d ogros!" % [_wave, TOTAL_WAVES, _to_spawn], NotificationManager.Kind.ALERT)
+	_wave_hp = (50.0 + float(_wave - 1) * 22.0) * _diff
+	_wave_dmg = (7.0 + float(_wave - 1) * 2.0) * _diff
+	_wave_reward = int(float(10 + _wave * 4) * _diff)
+	wave_changed.emit(_wave, _total_waves)
+	NotificationManager.post("🌊 Oleada %d/%d — ¡%d ogros!" % [_wave, _total_waves, _to_spawn], NotificationManager.Kind.ALERT)
 
 
 func _process(delta: float) -> void:
@@ -96,7 +126,7 @@ func _process(delta: float) -> void:
 			_spawn_ogre()
 	elif _alive <= 0:
 		# Oleada despejada: ¿siguiente o victoria?
-		if _wave >= TOTAL_WAVES:
+		if _wave >= _total_waves:
 			_end(true)
 		else:
 			_in_break = true
@@ -152,7 +182,7 @@ func _spawn_base() -> void:
 	_base_node.add_child(lbl)
 	_base_bar = HealthBar.new()
 	_base_node.add_child(_base_bar)
-	_base_bar.setup(BASE_MAX_HP, -66.0, true)
+	_base_bar.setup(_base_hp_max, -66.0, true)
 	_base_bar.died.connect(func(): _end(false))
 
 
@@ -168,7 +198,7 @@ func _end(won: bool) -> void:
 	_base_node = null
 	_base_bar = null
 	if won:
-		var reward: int = 250 + TOTAL_WAVES * 60
+		var reward: int = int(float(200 + _total_waves * 60) * _diff)
 		InventoryManager.add_coins(reward)
 		InventoryManager.add_reputation(8)
 		NotificationManager.post("🏆 ¡Asedio repelido! +%d ⚜ y +8 reputación." % reward, NotificationManager.Kind.INFO)

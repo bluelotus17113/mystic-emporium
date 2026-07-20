@@ -62,6 +62,9 @@ func _ready() -> void:
 	wardrobe_button.pressed.connect(func(): UIManager.toggle(&"wardrobe"))
 	upgrades_button.pressed.connect(func(): UIManager.toggle(&"upgrades"))
 	siege_button.pressed.connect(func(): SiegeManager.request_start())
+	SiegeManager.siege_started.connect(_refresh_siege_button)
+	SiegeManager.siege_ended.connect(func(_won: bool): _refresh_siege_button())
+	_refresh_siege_button()
 	demolish_button.pressed.connect(_on_demolish_pressed)
 	companion_button.pressed.connect(WindowController.toggle_compact_mode)
 
@@ -136,6 +139,25 @@ func _on_zone_changed(zone_name: StringName) -> void:
 		_: zone_label.text = String(zone_name)
 	expand_natural_button.visible = (zone_name == &"natural")
 	_refresh_expand_button()
+	_refresh_siege_button()
+
+
+## El botón de asedio solo se puede usar en el Patio Natural y sin asedio activo.
+func _refresh_siege_button() -> void:
+	if siege_button == null:
+		return
+	var cam: Node = get_tree().get_first_node_in_group("zone_camera")
+	var in_natural: bool = cam != null and cam.has_method("get_current_zone") \
+		and cam.get_current_zone().name == &"natural"
+	var active: bool = SiegeManager.is_active()
+	siege_button.disabled = active or not in_natural
+	siege_button.modulate = Color(1, 1, 1, 1) if not siege_button.disabled else Color(1, 1, 1, 0.5)
+	if active:
+		siege_button.tooltip_text = "Asedio en curso…"
+	elif in_natural:
+		siege_button.tooltip_text = "Iniciar Asedio de Ogros (defiende el cultivo)"
+	else:
+		siege_button.tooltip_text = "Ve al Patio Natural para iniciar el Asedio"
 
 
 func _refresh_expand_button() -> void:
