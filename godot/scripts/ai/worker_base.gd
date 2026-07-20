@@ -92,6 +92,15 @@ var _last_pos: Vector2 = Vector2.ZERO
 var _avoid_dir: Vector2 = Vector2.ZERO
 var _avoid_time: float = 0.0
 const AVOID_COMMIT: float = 0.55  ## segundos que mantiene el rodeo antes de recalcular
+# --- combate de asedio ---
+const WORKER_MAX_HP: float = 70.0
+const COMBAT_AGGRO: float = 220.0   ## distancia a la que un worker engancha a un ogro
+const MELEE_RANGE: float = 38.0
+const MELEE_DAMAGE: float = 10.0
+const MELEE_INTERVAL: float = 0.8
+var _combat_hb: HealthBar = null
+var _downed: bool = false
+var _melee_cd: float = 0.0
 
 signal state_changed(new_state: GameEnums.WorkerState)
 
@@ -110,8 +119,85 @@ func _ready() -> void:
 	_mood = _make_mood_bubble()
 	_mood_accum = randf_range(MOOD_MIN, MOOD_MAX)
 	_anim_sprite = get_node_or_null("AnimatedSprite2D") as AnimatedSprite2D
+	# Combate de asedio: vida + recuperación al terminar.
+	_combat_hb = HealthBar.new()
+	add_child(_combat_hb)
+	_combat_hb.setup(WORKER_MAX_HP, -52.0, false)
+	_combat_hb.died.connect(_enter_downed)
+	SiegeManager.siege_ended.connect(_on_siege_ended)
 	# call_deferred porque al spawnear, global_position aún no está finalizado.
 	call_deferred("_capture_home")
+
+
+## Recibe daño de un ogro. Al caer, queda "derribado" (huye, no muere).
+func hit(amount: float) -> void:
+	if _downed or _combat_hb == null:
+		return
+	_combat_hb.take_damage(amount)
+	modulate = Color(1.6, 1.2, 1.2)
+	create_tween().tween_property(self, "modulate", Color.WHITE, 0.18)
+
+
+func is_downed() -> bool:
+	return _downed
+
+
+func _enter_downed() -> void:
+	if _downed:
+		return
+	_downed = true
+	NotificationManager.post("%s fue derribado y huye a la base." % worker_name, NotificationManager.Kind.INFO)
+
+
+func _on_siege_ended(_won: bool) -> void:
+	_downed = false
+	if _combat_hb != null:
+		_combat_hb.hp = _combat_hb.max_hp
+
+
+## Combate durante el asedio. Devuelve true si tomó el control este frame (para
+## saltar la FSM normal). Derribado → huye a la base; si hay un ogro cerca, lo
+## ataca cuerpo a cuerpo; si no, deja seguir con el trabajo normal.
+func _siege_combat(delta: float) -> bool:
+	if _downed:
+		var safe: Vector2 = SiegeManager.base_position
+		var fd: Vector2 = safe - global_position
+		if fd.length() > 34.0:
+			velocity = fd.normalized() * move_speed * 1.2
+			move_and_slide()
+		else:
+			velocity = Vector2.ZERO
+		return true
+	var ogre: Node2D = _nearest_ogre(COMBAT_AGGRO)
+	if ogre == null:
+		return false
+	var d: Vector2 = ogre.global_position - global_position
+	if d.length() <= MELEE_RANGE:
+		velocity = Vector2.ZERO
+		_melee_cd -= delta
+		if _melee_cd <= 0.0:
+			_melee_cd = MELEE_INTERVAL
+			if ogre.has_method("hit"):
+				ogre.hit(MELEE_DAMAGE)
+			_face_toward(ogre.global_position)
+	else:
+		velocity = d.normalized() * move_speed
+		move_and_slide()
+	return true
+
+
+func _nearest_ogre(radius: float) -> Node2D:
+	var best: Node2D = null
+	var best_d: float = radius
+	for e in get_tree().get_nodes_in_group("siege_enemies"):
+		var n: Node2D = e as Node2D
+		if n == null or not is_instance_valid(n):
+			continue
+		var dist: float = global_position.distance_to(n.global_position)
+		if dist < best_d:
+			best_d = dist
+			best = n
+	return best
 
 
 func _random_name() -> String:
@@ -393,6 +479,10 @@ func _physics_process(delta: float) -> void:
 	if _chat_pause > 0.0:
 		_chat_pause -= delta
 		velocity = Vector2.ZERO
+		_update_anim(delta)
+		return
+	# Durante un asedio, defender manda sobre el trabajo normal.
+	if SiegeManager.is_active() and _siege_combat(delta):
 		_update_anim(delta)
 		return
 	match state:

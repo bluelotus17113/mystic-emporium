@@ -49,6 +49,17 @@ var _curiosity_point: Vector2 = Vector2.ZERO
 var _has_curiosity: bool = false    ## acaban de construir algo → va a fisgonear
 var _look_scan: float = 0.0
 var _cat_react_cd: float = 0.0
+# --- combate de asedio ---
+const PROTA_MAX_HP: float = 120.0
+const P_COMBAT_AGGRO: float = 250.0
+const P_MELEE_RANGE: float = 42.0
+const P_MELEE_DAMAGE: float = 22.0
+const P_MELEE_INTERVAL: float = 0.6
+const DOWN_COOLDOWN: float = 300.0  ## 5 min derribada (no muere)
+var _combat_hb: HealthBar = null
+var _downed: bool = false
+var _down_cd: float = 0.0
+var _pmelee_cd: float = 0.0
 ## Estado de ánimo 0..1: sube con cosas buenas (ventas, mimos), baja poco a poco.
 var mood: float = 0.6
 const MOOD_BASELINE: float = 0.55
@@ -74,6 +85,11 @@ func _ready() -> void:
 	_anim_sprite = get_node_or_null("AnimatedSprite2D") as AnimatedSprite2D
 	if _anim_sprite != null:
 		_sprite_base_scale = _anim_sprite.scale
+	# Combate de asedio: vida y derribo (no muere, cooldown de 5 min).
+	_combat_hb = HealthBar.new()
+	add_child(_combat_hb)
+	_combat_hb.setup(PROTA_MAX_HP, -62.0, false)
+	_combat_hb.died.connect(_enter_downed)
 	_create_bubble()
 	_wander_idle_delay = randf_range(WANDER_IDLE_DELAY_MIN, WANDER_IDLE_DELAY_MAX)
 	call_deferred("_wire_zone_switch")
@@ -220,6 +236,17 @@ func _physics_process(_delta: float) -> void:
 			_breath_cd = randf_range(3.5, 6.5)
 			BreathPuff.spawn(self, Vector2(_facing_x * 5.0, -44.0))
 	_tick_mood(_delta)
+	# Derribada: inactiva mientras se recupera (cooldown 5 min).
+	if _downed:
+		_down_cd -= _delta
+		velocity = Vector2.ZERO
+		if _down_cd <= 0.0:
+			_recover()
+		return
+	# Durante un asedio, defender manda (salvo si la estás arrastrando/entregando).
+	if SiegeManager.is_active() and state != State.DRAGGING and state != State.DELIVERING and _siege_combat(_delta):
+		_update_anim()
+		return
 	# Cliente toma prioridad. No interrumpe drag ni delivering (a medio teleport).
 	if state != State.DRAGGING and state != State.DELIVERING:
 		_try_pickup_task()
@@ -734,6 +761,78 @@ func _flash_teleport() -> void:
 	tw.tween_property(_anim_sprite, "modulate", Color.WHITE, 0.45)
 	tw.tween_property(_anim_sprite, "scale", _sprite_base_scale * 1.15, 0.08).set_trans(Tween.TRANS_QUAD)
 	tw.chain().tween_property(_anim_sprite, "scale", _sprite_base_scale, 0.22).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+
+
+## Recibe daño de un ogro. Al caer se teletransporta a la base y queda en
+## cooldown (no muere) para no colgar el juego si no hay workers.
+func hit(amount: float) -> void:
+	if _downed or _combat_hb == null:
+		return
+	_combat_hb.take_damage(amount)
+	modulate = Color(1.7, 1.2, 1.2)
+	create_tween().tween_property(self, "modulate", Color.WHITE, 0.18)
+
+
+func is_downed() -> bool:
+	return _downed
+
+
+func _enter_downed() -> void:
+	if _downed:
+		return
+	_downed = true
+	_down_cd = DOWN_COOLDOWN
+	velocity = Vector2.ZERO
+	state = State.IDLE_HOME
+	if SiegeManager.is_active():
+		global_position = SiegeManager.base_position + Vector2(30, 0)
+	else:
+		global_position = home_position
+	modulate = Color(0.72, 0.72, 0.88, 0.85)
+	VFXManager.play(VFXManager.FX.BUILD, global_position)
+	NotificationManager.post("¡La maga fue derribada! Se recupera en 5 min.", NotificationManager.Kind.ALERT)
+
+
+func _recover() -> void:
+	_downed = false
+	modulate = Color.WHITE
+	if _combat_hb != null:
+		_combat_hb.hp = _combat_hb.max_hp
+	VFXManager.play(VFXManager.FX.UPGRADE, global_position)
+	NotificationManager.post("La maga se recuperó. ✨", NotificationManager.Kind.INFO)
+
+
+## Ataca al ogro más cercano en rango. Devuelve true si tomó el control.
+func _siege_combat(delta: float) -> bool:
+	var ogre: Node2D = _nearest_ogre(P_COMBAT_AGGRO)
+	if ogre == null:
+		return false
+	var d: Vector2 = ogre.global_position - global_position
+	if d.length() <= P_MELEE_RANGE:
+		velocity = Vector2.ZERO
+		_pmelee_cd -= delta
+		if _pmelee_cd <= 0.0:
+			_pmelee_cd = P_MELEE_INTERVAL
+			if ogre.has_method("hit"):
+				ogre.hit(P_MELEE_DAMAGE)
+	else:
+		velocity = d.normalized() * move_speed
+		move_and_slide()
+	return true
+
+
+func _nearest_ogre(radius: float) -> Node2D:
+	var best: Node2D = null
+	var best_d: float = radius
+	for e in get_tree().get_nodes_in_group("siege_enemies"):
+		var n: Node2D = e as Node2D
+		if n == null or not is_instance_valid(n):
+			continue
+		var dist: float = global_position.distance_to(n.global_position)
+		if dist < best_d:
+			best_d = dist
+			best = n
+	return best
 
 
 func _update_anim() -> void:

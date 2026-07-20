@@ -12,10 +12,14 @@ var attack_damage: float = 8.0
 var attack_interval: float = 1.1
 var coin_reward: int = 12
 
+const DIVERT_RADIUS: float = 130.0  ## se desvía a atacar defensores dentro de este radio
+
 var _target_pos: Vector2 = Vector2.ZERO
 var _atk_cd: float = 0.0
 var _spr: AnimatedSprite2D = null
 var _hb: HealthBar = null
+var _atk_target: Node2D = null  ## worker/torreta que ataca (null = avanza a la base)
+var _retarget_cd: float = 0.0
 
 
 func setup(target_pos: Vector2, hp: float, spd: float, dmg: float, reward: int) -> void:
@@ -82,19 +86,54 @@ func hit(damage: float) -> void:
 func _physics_process(delta: float) -> void:
 	if _hb != null and not _hb.is_alive():
 		return
-	var d: Vector2 = _target_pos - global_position
+	_retarget_cd -= delta
+	if _atk_target != null and not _is_valid_target(_atk_target):
+		_atk_target = null
+	if _retarget_cd <= 0.0:
+		_retarget_cd = 0.3
+		_pick_attack_target()
+	# Objetivo de movimiento: un defensor cercano si lo hay, si no la base.
+	var goal: Vector2 = _atk_target.global_position if _atk_target != null else _target_pos
+	var d: Vector2 = goal - global_position
 	if d.length() <= attack_range:
 		velocity = Vector2.ZERO
 		_atk_cd -= delta
 		if _atk_cd <= 0.0:
 			_atk_cd = attack_interval
-			SiegeManager.damage_base(attack_damage)
+			if _atk_target != null and _atk_target.has_method("hit"):
+				_atk_target.hit(attack_damage)
+			elif _atk_target == null:
+				SiegeManager.damage_base(attack_damage)
 			_lunge(d.normalized())
 	else:
 		velocity = d.normalized() * speed
 		move_and_slide()
 	if _spr != null and absf(velocity.x) > 1.0:
 		_spr.flip_h = velocity.x < 0.0
+
+
+## Busca el defensor (worker/torreta) más cercano dentro de DIVERT_RADIUS.
+func _pick_attack_target() -> void:
+	var best: Node2D = null
+	var best_d: float = DIVERT_RADIUS
+	for grp in ["workers", "siege_turrets", "protagonist"]:
+		for n in get_tree().get_nodes_in_group(grp):
+			var n2: Node2D = n as Node2D
+			if not _is_valid_target(n2):
+				continue
+			var dist: float = global_position.distance_to(n2.global_position)
+			if dist < best_d:
+				best_d = dist
+				best = n2
+	_atk_target = best
+
+
+func _is_valid_target(n: Node2D) -> bool:
+	if n == null or not is_instance_valid(n) or not n.has_method("hit"):
+		return false
+	if n.has_method("is_downed") and n.is_downed():
+		return false
+	return true
 
 
 ## Golpe: como el frame de ataque salió feo, hacemos un embiste procedural

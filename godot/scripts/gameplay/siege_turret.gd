@@ -8,8 +8,10 @@ const TEX := "res://art/sprites/environment/siege_turret.png"
 var fire_range: float = 200.0
 var fire_interval: float = 0.9
 var damage: float = 14.0
+var max_hp: float = 90.0
 var _cd: float = 0.0
 var _spr: Sprite2D = null
+var _hb: HealthBar = null
 
 
 func _ready() -> void:
@@ -19,6 +21,29 @@ func _ready() -> void:
 	_spr.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	_spr.offset = Vector2(0, -16)
 	add_child(_spr)
+	_hb = HealthBar.new()
+	add_child(_hb)
+	_hb.setup(max_hp, -44.0, false)
+	_hb.died.connect(_destroyed)
+
+
+## Recibe daño de un ogro (la torreta puede ser destruida durante el asedio).
+func hit(amount: float) -> void:
+	if _hb == null:
+		return
+	_hb.take_damage(amount)
+	if _spr != null:
+		_spr.modulate = Color(1.6, 1.2, 1.2)
+		create_tween().tween_property(_spr, "modulate", Color.WHITE, 0.18)
+
+
+func _destroyed() -> void:
+	VFXManager.play(VFXManager.FX.BUILD, global_position)
+	AudioManager.play_beep(160.0, 0.16, -8.0)
+	# liberar la celda del grid si estaba registrada
+	if GridManager.has_method("remove_area"):
+		GridManager.remove_area(self)
+	queue_free()
 
 
 func _process(delta: float) -> void:
