@@ -48,6 +48,7 @@ WardrobeManager="*res://scripts/managers/wardrobe_manager.gd"
 TutorialManager="*res://scripts/managers/tutorial_manager.gd"
 WindowController="*res://scripts/window/window_controller.gd"
 EndingManager="*res://scripts/managers/ending_manager.gd"
+SiegeManager="*res://scripts/managers/siege_manager.gd"
 
 [display]
 

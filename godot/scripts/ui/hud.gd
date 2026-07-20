@@ -30,6 +30,7 @@ extends CanvasLayer
 @onready var album_button: Button = $Root/ActionBar/AlbumButton
 @onready var wardrobe_button: Button = $Root/ActionBar/WardrobeButton
 @onready var upgrades_button: Button = $Root/ActionBar/UpgradesButton
+@onready var siege_button: Button = $Root/ActionBar/SiegeButton
 @onready var companion_button: Button = $Root/ActionBar/CompanionButton
 
 @onready var research_label: Label = $Root/ResearchBox/ResearchMargin/ResearchVBox/ResearchLabel
@@ -60,6 +61,7 @@ func _ready() -> void:
 	album_button.pressed.connect(func(): UIManager.toggle(&"album"))
 	wardrobe_button.pressed.connect(func(): UIManager.toggle(&"wardrobe"))
 	upgrades_button.pressed.connect(func(): UIManager.toggle(&"upgrades"))
+	siege_button.pressed.connect(func(): SiegeManager.request_start())
 	demolish_button.pressed.connect(_on_demolish_pressed)
 	companion_button.pressed.connect(WindowController.toggle_compact_mode)
 
