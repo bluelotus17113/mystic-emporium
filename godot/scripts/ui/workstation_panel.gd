@@ -84,7 +84,10 @@ func _on_mode_changed(is_compact: bool) -> void:
 func _on_workstation_clicked(station: Workstation) -> void:
 	active_station = station
 	_rebuild()
-	UIManager.open(PANEL_NAME)
+	# Si el panel ya está abierto (cambiando de una estación a otra), refrescamos
+	# en el sitio: nada de cerrar/reabrir con animación (evita el parpadeo).
+	if not UIManager.is_open(PANEL_NAME):
+		UIManager.open(PANEL_NAME)
 	# Listen to this station's craft progress so we can refresh status
 	if not station.craft_started.is_connected(_on_craft_started):
 		station.craft_started.connect(_on_craft_started)
@@ -137,6 +140,9 @@ func _rebuild() -> void:
 	_auto_button.text = "🤖 Auto: ON" if active_station.auto_craft_enabled else "⏸ Auto: OFF"
 	_auto_button.modulate = Color(0.85, 1, 0.85, 1) if active_station.auto_craft_enabled else Color(1, 0.85, 0.85, 1)
 	status_label.text = ""
+	# Recetas de ESTA estación: sin esto la lista se quedaba con las de la estación
+	# anterior hasta el siguiente evento de crafteo (el "flash" del menú viejo).
+	_populate_recipes()
 
 
 func _on_auto_toggled() -> void:
@@ -149,7 +155,10 @@ func _on_auto_toggled() -> void:
 
 
 func _populate_recipes() -> void:
+	# remove_child inmediato (no solo queue_free) para que las filas viejas no se
+	# vean un frame junto a las nuevas al cambiar de estación.
 	for child in recipe_list.get_children():
+		recipe_list.remove_child(child)
 		child.queue_free()
 	var recipes: Array[RecipeData] = active_station.get_filtered_recipes()
 	if recipes.is_empty():
