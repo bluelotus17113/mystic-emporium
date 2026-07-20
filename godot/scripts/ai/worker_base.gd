@@ -87,6 +87,11 @@ var _target_search_cd: float = 0.0
 var _step_accum: float = 0.0
 var _stuck_time: float = 0.0
 var _last_pos: Vector2 = Vector2.ZERO
+# Evasión de obstáculos: al chocar, seguimos la tangente de la pared un instante
+# para rodear en vez de quedarnos pegados caminando recto.
+var _avoid_dir: Vector2 = Vector2.ZERO
+var _avoid_time: float = 0.0
+const AVOID_COMMIT: float = 0.55  ## segundos que mantiene el rodeo antes de recalcular
 
 signal state_changed(new_state: GameEnums.WorkerState)
 
@@ -586,9 +591,34 @@ func _exit_house() -> void:
 	visible = true
 
 
-func _move_to_point(pos: Vector2, _delta: float) -> void:
-	velocity = (pos - global_position).normalized() * move_speed
+func _move_to_point(pos: Vector2, delta: float) -> void:
+	_drive_to(pos, move_speed, delta)
+
+
+## Se dirige a `pos` esquivando obstáculos: si choca de frente, sigue la tangente
+## de la pared hacia el lado que lo acerca al objetivo (con compromiso temporal
+## para rodear sin oscilar). Es una evasión ligera, sin navmesh.
+func _drive_to(pos: Vector2, speed: float, delta: float) -> void:
+	var desired: Vector2 = (pos - global_position).normalized()
+	var move_dir: Vector2 = desired
+	if _avoid_time > 0.0:
+		_avoid_time -= delta
+		# Sigue la tangente pero sesgada hacia el objetivo (así "sale" del rodeo).
+		move_dir = (_avoid_dir * 0.85 + desired * 0.35).normalized()
+	velocity = move_dir * speed
 	move_and_slide()
+	var col := get_last_slide_collision()
+	if col != null:
+		var n: Vector2 = col.get_normal()
+		# ¿El obstáculo está delante (bloquea el avance hacia el objetivo)?
+		if desired.dot(-n) > 0.2:
+			var t1 := Vector2(-n.y, n.x)
+			var t2 := -t1
+			# Tangente de la pared que más nos acerca al objetivo → rodear por ahí.
+			_avoid_dir = t1 if t1.dot(desired) > t2.dot(desired) else t2
+			_avoid_time = AVOID_COMMIT
+	elif _avoid_time <= 0.0:
+		_avoid_dir = Vector2.ZERO
 
 
 ## Sitio cálido (farol/vela/chimenea) más cercano y visible, para descansar.
@@ -677,12 +707,10 @@ func _wander(delta: float) -> void:
 	_wander_timer -= delta
 	if _wander_timer <= 0.0 or global_position.distance_to(_wander_target) <= arrival_distance:
 		_pick_wander_target()
-	var dir: Vector2 = (_wander_target - global_position)
-	if dir.length() < 1.0:
+	if global_position.distance_to(_wander_target) < 1.0:
 		velocity = Vector2.ZERO
 		return
-	velocity = dir.normalized() * move_speed * WANDER_SPEED_FACTOR
-	move_and_slide()
+	_drive_to(_wander_target, move_speed * WANDER_SPEED_FACTOR, delta)
 
 
 func _pick_wander_target() -> void:
@@ -710,9 +738,7 @@ func _move_to(t: Node2D, delta: float) -> void:
 	if t == null or not is_instance_valid(t):
 		velocity = Vector2.ZERO
 		return
-	var dir: Vector2 = (t.global_position - global_position).normalized()
-	velocity = dir * move_speed
-	move_and_slide()
+	_drive_to(t.global_position, move_speed, delta)
 
 
 func _has_arrived(t: Node2D) -> bool:
