@@ -338,16 +338,36 @@ func expire_order(entry: ActiveOrder) -> void:
 
 
 func _is_orderable(item: ItemData) -> bool:
-	# Un item se puede pedir si:
-	#  - es PRIMARY (raw material, el jugador construye un generador), o
-	#  - hay receta unlocked que lo produce.
-	# Así evitamos pedidos imposibles de cumplir.
+	return _can_craft_now(item)
+
+
+## ¿El jugador puede PRODUCIR este item AHORA con lo que tiene? No basta con que
+## exista la receta: también debe tener construida la estación que la crea y ser
+## capaz de producir toda la cadena de ingredientes. Así los clientes solo piden
+## cosas que realmente se pueden entregar. Recursivo con tope de profundidad para
+## no colgarse con cadenas/ciclos.
+func _can_craft_now(item: ItemData, depth: int = 0) -> bool:
 	if item == null:
 		return false
+	# Material bruto: se consigue con generadores (siempre "producible").
 	if item.category == GameEnums.ItemCategory.PRIMARY:
 		return true
+	if depth > 6:
+		return false
 	for r in RecipeManager.get_unlocked_recipes():
-		if r != null and r.output_item != null and r.output_item.id == item.id:
+		if r == null or r.output_item == null or r.output_item.id != item.id:
+			continue
+		# La estación que hace esta receta debe existir en la tienda.
+		if r.required_station_type != GameEnums.StationType.NONE \
+				and WorkstationManager.get_by_type(r.required_station_type).is_empty():
+			continue
+		# Y cada ingrediente debe ser producible a su vez.
+		var all_ok: bool = true
+		for pair in r.get_ingredient_pairs():
+			if pair.item == null or not _can_craft_now(pair.item, depth + 1):
+				all_ok = false
+				break
+		if all_ok:
 			return true
 	return false
 
@@ -359,6 +379,9 @@ func _make_procedural_order() -> OrderData:
 	var pool: Array = []
 	for r in recipes:
 		if r == null or r.output_item == null:
+			continue
+		# Solo items que el jugador puede producir de verdad ahora mismo.
+		if not _can_craft_now(r.output_item):
 			continue
 		pool.append(r.output_item)
 	if pool.is_empty():
