@@ -364,6 +364,9 @@ func _wire_managers() -> void:
 		world = get_node_or_null("World")
 	ShopManager.spawn_container = world
 	ShopManager.spawn_position_provider = Callable(self, "_spawn_position_for_worker")
+	# Los ayudantes comprados se invocan en el Patio Natural (ahí recolectan).
+	if not ShopManager.worker_purchased.is_connected(_on_worker_purchased):
+		ShopManager.worker_purchased.connect(_on_worker_purchased)
 
 	# Wire WindowController main/companion (for compact mode)
 	if hud_canvas_path != NodePath(""):
@@ -428,11 +431,30 @@ func _wire_scene_objects() -> void:
 
 
 func _spawn_position_for_worker() -> Vector2:
-	# Spawn near the protagonist or the world center as fallback
+	# Invocar dentro del Patio Natural (ahí recolectan recursos). Punto al azar
+	# dentro del rect de la zona, con margen para no pegarse a los bordes.
+	var rect: Rect2 = GridManager.get_zone_rect(GameEnums.ZoneType.NATURE)
+	if rect.size != Vector2.ZERO:
+		return Vector2(
+			randf_range(rect.position.x + 60.0, rect.end.x - 60.0),
+			randf_range(rect.position.y + 80.0, rect.end.y - 60.0))
+	# Fallback: cerca del protagonista o el centro del mundo.
 	var proto: Node2D = get_tree().get_first_node_in_group("protagonist")
 	if proto != null:
 		return proto.global_position + Vector2(randf_range(-30, 30), randf_range(-30, 30))
 	return Vector2.ZERO
+
+
+## Ayudante recién comprado: pertenece al Patio Natural (grupo visual + visible
+## solo si la cámara está en esa zona). Su home_position (deferido en _ready) ya
+## queda en el patio porque lo posicionamos antes de emitir worker_purchased.
+func _on_worker_purchased(_worker_type: int, instance: Node2D) -> void:
+	if instance == null or not is_instance_valid(instance):
+		return
+	instance.add_to_group("natural_visual")
+	var cam: Node = get_tree().get_first_node_in_group("zone_camera")
+	if cam != null and cam.has_method("get_current_zone"):
+		instance.visible = cam.get_current_zone().name == &"natural"
 
 
 func _find_item_by_id(id: StringName) -> ItemData:
@@ -440,4 +462,5 @@ func _find_item_by_id(id: StringName) -> ItemData:
 		if i.id == id:
 			return i
 	return null
+
 
