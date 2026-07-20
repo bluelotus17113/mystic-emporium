@@ -4,3 +4,4 @@
 
 [node name="SiegeTrap" type="Node2D"]
 script = ExtResource("1_trap")
+display_name = "Trampa de Púas"

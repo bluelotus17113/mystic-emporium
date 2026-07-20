@@ -4,3 +4,4 @@
 
 [node name="SiegeTurret" type="Node2D"]
 script = ExtResource("1_turret")
+display_name = "Torreta Arcana"

@@ -10,14 +10,16 @@ var _life: float = 2.5
 var _slow_factor: float = 1.0
 var _slow_dur: float = 0.0
 var _color: Color = Color(0.7, 0.9, 1.0)
+var _aoe_radius: float = 0.0
 
 
-func setup(target: Node2D, damage: float, slow_factor: float = 1.0, slow_dur: float = 0.0, color: Color = Color(0.7, 0.9, 1.0)) -> void:
+func setup(target: Node2D, damage: float, slow_factor: float = 1.0, slow_dur: float = 0.0, color: Color = Color(0.7, 0.9, 1.0), aoe_radius: float = 0.0) -> void:
 	_target = target
 	_damage = damage
 	_slow_factor = slow_factor
 	_slow_dur = slow_dur
 	_color = color
+	_aoe_radius = aoe_radius
 	if target != null and is_instance_valid(target):
 		_last_dir = (target.global_position - global_position).normalized()
 
@@ -45,7 +47,18 @@ func _process(delta: float) -> void:
 
 
 func _impact() -> void:
-	if _target != null and is_instance_valid(_target):
+	if _aoe_radius > 0.0:
+		# Explosión en área: daña a todos los ogros dentro del radio.
+		for e in get_tree().get_nodes_in_group("siege_enemies"):
+			var n: Node2D = e as Node2D
+			if n == null or not is_instance_valid(n):
+				continue
+			if global_position.distance_to(n.global_position) <= _aoe_radius:
+				if n.has_method("hit"):
+					n.hit(_damage)
+				if _slow_factor < 1.0 and n.has_method("apply_slow"):
+					n.apply_slow(_slow_factor, _slow_dur)
+	elif _target != null and is_instance_valid(_target):
 		if _target.has_method("hit"):
 			_target.hit(_damage)
 		if _slow_factor < 1.0 and _target.has_method("apply_slow"):

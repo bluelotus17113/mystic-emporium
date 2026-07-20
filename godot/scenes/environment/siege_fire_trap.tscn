@@ -9,3 +9,4 @@ radius = 70.0
 damage = 16.0
 interval = 0.7
 glow_tint = Color(1.25, 0.7, 0.4, 1)
+display_name = "Trampa de Fuego"

@@ -7,7 +7,10 @@ extends Node2D
 @export var damage: float = 9.0
 @export var interval: float = 0.85
 @export var glow_tint: Color = Color(1.0, 0.75, 1.1, 1.0)
+@export var display_name: String = "Trampa"
 
+const MAX_LEVEL: int = 3
+var _level: int = 1
 var _cd: float = 0.0
 var _pulse: float = 0.0
 var _spr: Sprite2D = null
@@ -20,6 +23,60 @@ func _ready() -> void:
 	_spr.texture = load(tex_path)
 	_spr.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	add_child(_spr)
+	_setup_click()
+
+
+func _setup_click() -> void:
+	var area := Area2D.new()
+	area.input_pickable = true
+	var cs := CollisionShape2D.new()
+	var circ := CircleShape2D.new()
+	circ.radius = 20.0
+	cs.shape = circ
+	area.add_child(cs)
+	add_child(area)
+	area.input_event.connect(func(_vp, ev, _idx):
+		if ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT:
+			if BuildManager.is_active() or BuildManager.is_move_active() \
+					or BuildManager.is_demolish_active() or BuildManager.is_copy_active():
+				return
+			_open_menu()
+			get_viewport().set_input_as_handled())
+
+
+func _open_menu() -> void:
+	var menu: Node = get_tree().get_first_node_in_group("entity_menu")
+	if menu == null or not menu.has_method("open_for"):
+		return
+	var actions: Array = []
+	if _level < MAX_LEVEL:
+		actions.append({"text": "⬆ Mejorar (%d ⚜)" % _upgrade_cost(), "cb": Callable(self, "upgrade")})
+	menu.open_for(self, "%s · Nv %d" % [display_name, _level], actions, Callable(self, "_stats_data"), _spr.texture if _spr != null else null)
+
+
+func _upgrade_cost() -> int:
+	return 55 * _level
+
+
+func upgrade() -> void:
+	if _level >= MAX_LEVEL:
+		return
+	if not InventoryManager.spend_coins(_upgrade_cost()):
+		NotificationManager.post("Faltan monedas para mejorar.", NotificationManager.Kind.INFO)
+		return
+	_level += 1
+	damage *= 1.45
+	radius *= 1.1
+	VFXManager.play(VFXManager.FX.UPGRADE, global_position)
+	AudioManager.play_named(&"level_up")
+
+
+func _stats_data() -> Array:
+	return [
+		{"label": "Nivel", "text": "%d/%d" % [_level, MAX_LEVEL]},
+		{"label": "Daño", "text": "%d" % int(round(damage))},
+		{"label": "Radio", "text": "%d" % int(round(radius))},
+	]
 
 
 func _process(delta: float) -> void:

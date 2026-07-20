@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3 uid="uid://c0siege0mortar1"]
+
+[ext_resource type="Script" path="res://scripts/gameplay/siege_turret.gd" id="1_m"]
+
+[node name="SiegeMortar" type="Node2D"]
+script = ExtResource("1_m")
+tex_path = "res://art/sprites/environment/siege_mortar.png"
+fire_range = 250.0
+fire_interval = 1.7
+damage = 20.0
+proj_color = Color(0.85, 0.6, 1.0, 1)
+aoe_radius = 62.0
+max_hp = 110.0
+display_name = "Mortero Arcano"
