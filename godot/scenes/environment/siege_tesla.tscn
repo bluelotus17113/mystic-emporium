@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3 uid="uid://c0siege0tesla01"]
+
+[ext_resource type="Script" path="res://scripts/gameplay/siege_turret.gd" id="1_t"]
+
+[node name="SiegeTesla" type="Node2D"]
+script = ExtResource("1_t")
+tex_path = "res://art/sprites/environment/siege_tesla.png"
+fire_range = 175.0
+fire_interval = 1.1
+damage = 11.0
+proj_color = Color(1, 1, 0.6, 1)
+chain_count = 3
+chain_jump = 100.0
+max_hp = 85.0
+display_name = "Torreta de Rayo"

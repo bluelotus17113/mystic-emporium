@@ -45,8 +45,21 @@ var _wave_reward: int = 12
 var _diff: float = 1.0        ## multiplicador de dificultad (rep + nivel natural)
 var _total_waves: int = TOTAL_WAVES
 var _base_hp_max: float = BASE_MAX_HP
+var _win_streak: int = 0  ## victorias consecutivas (persistido)
 var _base_node: Node2D = null
 var _base_bar: HealthBar = null
+
+
+func win_streak() -> int:
+	return _win_streak
+
+
+func get_save_state() -> Dictionary:
+	return {"streak": _win_streak}
+
+
+func load_save_state(data: Dictionary) -> void:
+	_win_streak = int(data.get("streak", 0))
 
 
 ## Escala la dificultad con la progresión: reputación y nivel del Patio Natural.
@@ -259,16 +272,22 @@ func _end(won: bool) -> void:
 	_base_node = null
 	_base_bar = null
 	if won:
-		var reward: int = int(float(200 + _total_waves * 60) * _diff)
+		_win_streak += 1
+		var streak_mult: float = 1.0 + float(_win_streak - 1) * 0.15  # +15% por racha
+		var reward: int = int(float(200 + _total_waves * 60) * _diff * streak_mult)
 		InventoryManager.add_coins(reward)
-		InventoryManager.add_reputation(8)
-		NotificationManager.post("🏆 ¡Asedio repelido! +%d ⚜ y +8 reputación." % reward, NotificationManager.Kind.INFO)
+		InventoryManager.add_reputation(8 + _win_streak)
+		var msg: String = "🏆 ¡Asedio repelido! +%d ⚜" % reward
+		if _win_streak >= 2:
+			msg += "  ·  🔥 Racha x%d" % _win_streak
+		NotificationManager.post(msg, NotificationManager.Kind.INFO)
 		AudioManager.play_named(&"siege_victory")
 		_maybe_unlock_trophy()
 	else:
+		_win_streak = 0
 		var loss: int = mini(InventoryManager.arcane_coins, 80)
 		InventoryManager.spend_coins(loss)
-		NotificationManager.post("💥 Los ogros arrasaron el cultivo… -%d ⚜." % loss, NotificationManager.Kind.ALERT)
+		NotificationManager.post("💥 Los ogros arrasaron el cultivo… -%d ⚜. Racha perdida." % loss, NotificationManager.Kind.ALERT)
 		AudioManager.play_named(&"siege_defeat")
 	siege_ended.emit(won)
 

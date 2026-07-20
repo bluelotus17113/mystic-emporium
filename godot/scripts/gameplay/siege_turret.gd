@@ -4,6 +4,7 @@ extends Node2D
 ## escarcha que ralentiza). Fuera del asedio está tranquila (cozy).
 
 const PROJECTILE := preload("res://scripts/gameplay/siege_projectile.gd")
+const CHAIN_FX := preload("res://scripts/gameplay/siege_chain_fx.gd")
 
 @export var tex_path: String = "res://art/sprites/environment/siege_turret.png"
 @export var fire_range: float = 200.0
@@ -13,6 +14,8 @@ const PROJECTILE := preload("res://scripts/gameplay/siege_projectile.gd")
 @export var slow_dur: float = 1.6
 @export var proj_color: Color = Color(0.7, 0.9, 1.0)
 @export var aoe_radius: float = 0.0   ## >0 = daño en área (mortero)
+@export var chain_count: int = 0      ## >0 = rayo en cadena que salta a N enemigos
+@export var chain_jump: float = 95.0  ## distancia máxima de salto entre enemigos
 @export var max_hp: float = 90.0
 @export var display_name: String = "Torreta"
 
@@ -83,6 +86,9 @@ func _nearest_enemy() -> Node2D:
 
 
 func _fire(target: Node2D) -> void:
+	if chain_count > 0:
+		_fire_chain(target)
+		return
 	var p := PROJECTILE.new()
 	var parent: Node = get_parent()
 	if parent == null:
@@ -95,6 +101,46 @@ func _fire(target: Node2D) -> void:
 		var tw := create_tween()
 		tw.tween_property(_spr, "scale", Vector2(1.15, 0.9), 0.05)
 		tw.tween_property(_spr, "scale", Vector2.ONE, 0.12)
+
+
+## Rayo en cadena: golpea al objetivo y salta a enemigos cercanos (daño decreciente),
+## dibujando arcos eléctricos entre ellos.
+func _fire_chain(first: Node2D) -> void:
+	var parent: Node = get_parent()
+	if parent == null:
+		return
+	var hit: Array = []
+	var pts := PackedVector2Array([global_position + Vector2(0, -18)])
+	var current: Node2D = first
+	var dmg: float = damage
+	var hops: int = chain_count
+	while current != null and is_instance_valid(current) and hops > 0:
+		hit.append(current)
+		if current.has_method("hit"):
+			current.hit(dmg)
+		pts.append(current.global_position + Vector2(0, -18))
+		current = _next_chain_target(current, hit)
+		dmg *= 0.72
+		hops -= 1
+	var fx := CHAIN_FX.new()
+	parent.add_child(fx)
+	fx.global_position = Vector2.ZERO
+	fx.setup(pts)
+	AudioManager.play_beep(1100.0, 0.05, -14.0)
+
+
+func _next_chain_target(from: Node2D, exclude: Array) -> Node2D:
+	var best: Node2D = null
+	var best_d: float = chain_jump
+	for e in get_tree().get_nodes_in_group("siege_enemies"):
+		var n: Node2D = e as Node2D
+		if n == null or not is_instance_valid(n) or n in exclude:
+			continue
+		var d: float = from.global_position.distance_to(n.global_position)
+		if d < best_d:
+			best_d = d
+			best = n
+	return best
 
 
 # ---------- Mejora al hacer clic ----------
@@ -149,6 +195,8 @@ func _apply_level_bonus() -> void:
 	fire_range *= 1.08
 	if aoe_radius > 0.0:
 		aoe_radius *= 1.12
+	if chain_count > 0:
+		chain_count += 1  # cada nivel salta a un enemigo más
 	if _hb != null:
 		_hb.max_hp *= 1.25
 		_hb.hp = _hb.max_hp
@@ -174,6 +222,8 @@ func _stats_data() -> Array:
 	]
 	if aoe_radius > 0.0:
 		out.append({"label": "Área", "text": "%d" % int(round(aoe_radius))})
+	if chain_count > 0:
+		out.append({"label": "Saltos", "text": "%d" % chain_count})
 	if slow_factor < 1.0:
 		out.append({"label": "Ralentiza", "text": "%d%%" % int(round((1.0 - slow_factor) * 100.0))})
 	return out
