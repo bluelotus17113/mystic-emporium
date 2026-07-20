@@ -161,10 +161,8 @@ func _on_siege_ended(_won: bool) -> void:
 func _siege_combat(delta: float) -> bool:
 	if _downed:
 		var safe: Vector2 = SiegeManager.base_position
-		var fd: Vector2 = safe - global_position
-		if fd.length() > 34.0:
-			velocity = fd.normalized() * move_speed * 1.2
-			move_and_slide()
+		if global_position.distance_to(safe) > 34.0:
+			_drive_to(safe, move_speed * 1.2, delta)  # huye esquivando obstáculos
 		else:
 			velocity = Vector2.ZERO
 		return true
@@ -181,8 +179,7 @@ func _siege_combat(delta: float) -> bool:
 				ogre.hit(MELEE_DAMAGE)
 			_face_toward(ogre.global_position)
 	else:
-		velocity = d.normalized() * move_speed
-		move_and_slide()
+		_drive_to(ogre.global_position, move_speed, delta)  # se acerca rodeando obstáculos
 	return true
 
 

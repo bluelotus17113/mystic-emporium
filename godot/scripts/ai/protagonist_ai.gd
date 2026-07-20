@@ -60,6 +60,8 @@ var _combat_hb: HealthBar = null
 var _downed: bool = false
 var _down_cd: float = 0.0
 var _pmelee_cd: float = 0.0
+var _pavoid_dir: Vector2 = Vector2.ZERO
+var _pavoid_time: float = 0.0
 ## Estado de ánimo 0..1: sube con cosas buenas (ventas, mimos), baja poco a poco.
 var mood: float = 0.6
 const MOOD_BASELINE: float = 0.55
@@ -816,9 +818,29 @@ func _siege_combat(delta: float) -> bool:
 			if ogre.has_method("hit"):
 				ogre.hit(P_MELEE_DAMAGE)
 	else:
-		velocity = d.normalized() * move_speed
-		move_and_slide()
+		_combat_drive(ogre.global_position, delta)  # se acerca rodeando obstáculos
 	return true
+
+
+## Avanza hacia `goal` esquivando obstáculos (mismo steering ligero que workers/ogros).
+func _combat_drive(goal: Vector2, delta: float) -> void:
+	var desired: Vector2 = (goal - global_position).normalized()
+	var move_dir: Vector2 = desired
+	if _pavoid_time > 0.0:
+		_pavoid_time -= delta
+		move_dir = (_pavoid_dir * 0.85 + desired * 0.35).normalized()
+	velocity = move_dir * move_speed
+	move_and_slide()
+	var col := get_last_slide_collision()
+	if col != null:
+		var n: Vector2 = col.get_normal()
+		if desired.dot(-n) > 0.2:
+			var t1 := Vector2(-n.y, n.x)
+			var t2 := -t1
+			_pavoid_dir = t1 if t1.dot(desired) > t2.dot(desired) else t2
+			_pavoid_time = 0.5
+	elif _pavoid_time <= 0.0:
+		_pavoid_dir = Vector2.ZERO
 
 
 func _nearest_ogre(radius: float) -> Node2D:

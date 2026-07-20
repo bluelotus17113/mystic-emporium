@@ -13,6 +13,7 @@ var attack_interval: float = 1.1
 var coin_reward: int = 12
 
 const DIVERT_RADIUS: float = 130.0  ## se desvía a atacar defensores dentro de este radio
+const AVOID_COMMIT: float = 0.5     ## rodea obstáculos siguiendo la pared un instante
 
 var _target_pos: Vector2 = Vector2.ZERO
 var _atk_cd: float = 0.0
@@ -20,6 +21,8 @@ var _spr: AnimatedSprite2D = null
 var _hb: HealthBar = null
 var _atk_target: Node2D = null  ## worker/torreta que ataca (null = avanza a la base)
 var _retarget_cd: float = 0.0
+var _avoid_dir: Vector2 = Vector2.ZERO
+var _avoid_time: float = 0.0
 
 
 func setup(target_pos: Vector2, hp: float, spd: float, dmg: float, reward: int) -> void:
@@ -106,10 +109,32 @@ func _physics_process(delta: float) -> void:
 				SiegeManager.damage_base(attack_damage)
 			_lunge(d.normalized())
 	else:
-		velocity = d.normalized() * speed
-		move_and_slide()
+		_drive(goal, delta)
 	if _spr != null and absf(velocity.x) > 1.0:
 		_spr.flip_h = velocity.x < 0.0
+
+
+## Avanza hacia `goal` esquivando obstáculos: al chocar, sigue la tangente de la
+## pared hacia el lado que acerca al objetivo (rodea piedras/árboles en vez de
+## quedarse recto). Mismo steering ligero que los workers.
+func _drive(goal: Vector2, delta: float) -> void:
+	var desired: Vector2 = (goal - global_position).normalized()
+	var move_dir: Vector2 = desired
+	if _avoid_time > 0.0:
+		_avoid_time -= delta
+		move_dir = (_avoid_dir * 0.85 + desired * 0.35).normalized()
+	velocity = move_dir * speed
+	move_and_slide()
+	var col := get_last_slide_collision()
+	if col != null:
+		var n: Vector2 = col.get_normal()
+		if desired.dot(-n) > 0.2:
+			var t1 := Vector2(-n.y, n.x)
+			var t2 := -t1
+			_avoid_dir = t1 if t1.dot(desired) > t2.dot(desired) else t2
+			_avoid_time = AVOID_COMMIT
+	elif _avoid_time <= 0.0:
+		_avoid_dir = Vector2.ZERO
 
 
 ## Busca el defensor (worker/torreta) más cercano dentro de DIVERT_RADIUS.
