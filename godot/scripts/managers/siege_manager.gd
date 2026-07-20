@@ -11,7 +11,9 @@ signal base_hp_changed(hp: float, max_hp: float)
 enum State { IDLE, ACTIVE }
 
 signal wave_changed(wave: int, total: int)
+signal prep_tick(seconds_left: int)
 
+const PREP_SECONDS: float = 8.0  ## aviso previo para colocar defensas de última hora
 const BASE_MAX_HP: float = 260.0
 const WAVE_SIZE: int = 6
 const TOTAL_WAVES: int = 3
@@ -26,6 +28,7 @@ var _to_spawn: int = 0
 var _spawn_cd: float = 0.0
 var _alive: int = 0
 var _wave: int = 0
+var _prep_cd: float = 0.0
 var _in_break: bool = false
 var _break_cd: float = 0.0
 var _wave_hp: float = 60.0
@@ -90,12 +93,13 @@ func _start() -> void:
 	_wave = 0
 	_alive = 0
 	_in_break = false
+	_prep_cd = PREP_SECONDS
 	state = State.ACTIVE
 	_spawn_base()
 	siege_started.emit()
 	base_hp_changed.emit(_base_hp_max, _base_hp_max)
-	NotificationManager.post("🏰 ¡ASEDIO! Defiende el cultivo de los ogros.", NotificationManager.Kind.ALERT)
-	_next_wave()
+	AudioManager.play_named(&"siege_horn")
+	NotificationManager.post("🏰 ¡ASEDIO! Prepara tus defensas… los ogros se acercan.", NotificationManager.Kind.ALERT)
 
 
 ## Prepara la siguiente oleada: más grande y más dura que la anterior.
@@ -107,11 +111,18 @@ func _next_wave() -> void:
 	_wave_dmg = (7.0 + float(_wave - 1) * 2.0) * _diff
 	_wave_reward = int(float(10 + _wave * 4) * _diff)
 	wave_changed.emit(_wave, _total_waves)
+	AudioManager.play_named(&"wave_alarm")
 	NotificationManager.post("🌊 Oleada %d/%d — ¡%d ogros!" % [_wave, _total_waves, _to_spawn], NotificationManager.Kind.ALERT)
 
 
 func _process(delta: float) -> void:
 	if state != State.ACTIVE:
+		return
+	if _prep_cd > 0.0:
+		_prep_cd -= delta
+		prep_tick.emit(int(ceil(_prep_cd)))
+		if _prep_cd <= 0.0:
+			_next_wave()
 		return
 	if _in_break:
 		_break_cd -= delta
@@ -202,12 +213,25 @@ func _end(won: bool) -> void:
 		InventoryManager.add_coins(reward)
 		InventoryManager.add_reputation(8)
 		NotificationManager.post("🏆 ¡Asedio repelido! +%d ⚜ y +8 reputación." % reward, NotificationManager.Kind.INFO)
-		AudioManager.play_beep(900.0, 0.18, -8.0)
+		AudioManager.play_named(&"siege_victory")
+		_maybe_unlock_trophy()
 	else:
 		var loss: int = mini(InventoryManager.arcane_coins, 80)
 		InventoryManager.spend_coins(loss)
 		NotificationManager.post("💥 Los ogros arrasaron el cultivo… -%d ⚜." % loss, NotificationManager.Kind.ALERT)
+		AudioManager.play_named(&"siege_defeat")
 	siege_ended.emit(won)
+
+
+## Recompensa especial: la primera victoria desbloquea el Trofeo de Asedio.
+func _maybe_unlock_trophy() -> void:
+	var bd: BuildableData = BuildManager._find_buildable_by_id(&"build_siege_trophy")
+	if bd == null:
+		return
+	if bd in BuildManager.get_unlocked_buildables():
+		return
+	BuildManager.unlock_buildable(bd)
+	NotificationManager.post("🏆 ¡Nuevo! Desbloqueaste el Trofeo de Asedio. Constrúyelo donde quieras.", NotificationManager.Kind.INFO)
 
 
 func _natural_rect() -> Rect2:

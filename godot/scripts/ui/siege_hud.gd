@@ -59,6 +59,7 @@ func _ready() -> void:
 	_enemies_lbl = _mklabel(vb, "", 12)
 	hide()
 	SiegeManager.siege_started.connect(_on_started)
+	SiegeManager.prep_tick.connect(_on_prep)
 	SiegeManager.wave_changed.connect(_on_wave)
 	SiegeManager.base_hp_changed.connect(_on_base_hp)
 	SiegeManager.siege_ended.connect(_on_ended)
@@ -78,7 +79,16 @@ func _on_started() -> void:
 	show()
 
 
+func _on_prep(sec: int) -> void:
+	if not visible:
+		show()
+	_title.text = "🏰 ¡Prepárate!"
+	_wave_lbl.text = "Los ogros llegan en %ds…" % sec
+	_enemies_lbl.text = "Coloca torretas y trampas"
+
+
 func _on_wave(w: int, total: int) -> void:
+	_title.text = "🏰 ¡ASEDIO!"
 	_wave_lbl.text = "🌊 Oleada %d / %d" % [w, total]
 
 

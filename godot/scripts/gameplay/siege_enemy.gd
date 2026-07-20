@@ -84,6 +84,7 @@ func hit(damage: float) -> void:
 		_hb.take_damage(damage)
 		modulate = Color(1.6, 1.2, 1.2)
 		create_tween().tween_property(self, "modulate", Color.WHITE, 0.18)
+		AudioManager.play_positional(&"ogre_hit", global_position, 0.18)
 
 
 func _physics_process(delta: float) -> void:
@@ -174,6 +175,6 @@ func _lunge(dir: Vector2) -> void:
 func _die() -> void:
 	InventoryManager.add_coins(coin_reward)
 	VFXManager.play(VFXManager.FX.BUILD, global_position)
-	AudioManager.play_beep(180.0, 0.14, -10.0)
+	AudioManager.play_positional(&"ogre_die", global_position, 0.12)
 	SiegeManager.on_enemy_died(self)
 	queue_free()

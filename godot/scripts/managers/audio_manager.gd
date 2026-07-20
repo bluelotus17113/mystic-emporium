@@ -51,6 +51,12 @@ const SFX_PATHS: Dictionary = {
 	&"research_complete": "res://audio/sfx/research_complete.wav",
 	&"notification": "res://audio/sfx/notification.wav",
 	&"customer_bell": "res://audio/sfx/customer_bell.wav",
+	&"siege_horn": "res://audio/sfx/siege_horn.wav",
+	&"wave_alarm": "res://audio/sfx/wave_alarm.wav",
+	&"ogre_hit": "res://audio/sfx/ogre_hit.wav",
+	&"ogre_die": "res://audio/sfx/ogre_die.wav",
+	&"siege_victory": "res://audio/sfx/siege_victory.wav",
+	&"siege_defeat": "res://audio/sfx/siege_defeat.wav",
 	# Ambient loops (para usar con loop_mode forward, no como one-shot)
 	&"ambient_birds": "res://audio/sfx/ambient_birds.wav",
 	&"ambient_wind": "res://audio/sfx/ambient_wind.wav",
