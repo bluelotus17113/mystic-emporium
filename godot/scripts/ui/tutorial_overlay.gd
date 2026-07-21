@@ -20,7 +20,11 @@ func _ready() -> void:
 	skip_button.pressed.connect(TutorialManager.skip)
 	start_button.pressed.connect(TutorialManager.advance_welcome)
 	progress.max_value = TutorialManager.TOTAL_STEPS
-	if not TutorialManager.active:
+	if TutorialManager.active:
+		# El tutorial pudo arrancar (call_deferred) antes de conectar la señal:
+		# pintamos el paso actual ahora para no quedarnos con el texto de plantilla.
+		TutorialManager.emit_current_step()
+	else:
 		hide()
 
 

@@ -146,37 +146,9 @@ region_enabled = true
 region_rect = Rect2(0, 0, 800, 400)
 script = ExtResource("41_natbg")
 
-[node name="GeneratorHerbsA" parent="World" unique_id=597643415 groups=["natural_visual"] instance=ExtResource("2_gen")]
-visible = false
-position = Vector2(-6200, 0)
-
-[node name="GeneratorCrystalA" parent="World" unique_id=1841393458 groups=["natural_visual"] instance=ExtResource("10_gencry")]
-visible = false
-position = Vector2(-5800, 0)
-
-[node name="WorkstationCauldron" parent="World" unique_id=660767602 groups=["taller_visual"] instance=ExtResource("4_caul")]
-position = Vector2(-1315, 20)
-
-[node name="WorkstationForge" parent="World" unique_id=646045672 groups=["taller_visual"] instance=ExtResource("12_forge")]
-position = Vector2(-1615, -95)
-
-[node name="ResearchStationLibrary" parent="World" unique_id=88846618 groups=["taller_visual"] instance=ExtResource("14_lib")]
-position = Vector2(-1015, -95)
-
 [node name="WorkerDuendeA" parent="World" unique_id=1937209968 groups=["natural_visual"] instance=ExtResource("3_duende")]
 visible = false
 position = Vector2(-6100, 60)
-
-[node name="WorkerDuendeB" parent="World" unique_id=322682284 groups=["natural_visual"] instance=ExtResource("3_duende")]
-visible = false
-position = Vector2(-5900, 60)
-
-[node name="WorkerGolem" parent="World" unique_id=715955840 groups=["natural_visual"] instance=ExtResource("11_golem")]
-visible = false
-position = Vector2(-5700, 60)
-
-[node name="WorkerApprentice" parent="World" unique_id=906591990 groups=["taller_visual"] instance=ExtResource("6_app")]
-position = Vector2(-1150, 80)
 
 [node name="Protagonist" parent="World" unique_id=570927467 instance=ExtResource("13_proto")]
 position = Vector2(-1500, 140)

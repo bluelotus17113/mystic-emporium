@@ -1,42 +1,51 @@
 extends Node
-## Tutorial guiado con pasos. Cada paso espera un evento (señal) para avanzar.
-## tutorial_done se persiste en el save; no vuelve a aparecer una vez completado o saltado.
+## Tutorial guiado build-first: el jugador empieza con una tienda casi vacía y
+## el tutorial le hace COLOCAR sus primeros objetos (caldero, parcela) para
+## enseñar el modo construcción, y luego recolectar → craftear → vender.
+## Cada paso espera un evento (señal) para avanzar. tutorial_done se persiste;
+## no vuelve a aparecer una vez completado o saltado.
 
 signal step_started(step_index: int, title: String, message: String, hint: String)
 signal step_progress(current: int, target: int)  ## avance dentro de un paso de conteo
 signal tutorial_finished
 
+## Estipendio inicial para poder pagar los primeros edificios del tutorial
+## (caldero 80 + parcela 30 = 110). Solo se otorga en partida nueva.
+const START_STIPEND: int = 100
+const CAULDRON_ID: StringName = &"build_caldero"
+const PARCEL_ID: StringName = &"build_generador_hierbas"
+
 enum Step {
-	WELCOME,         # mostrar bienvenida; usuario pulsa "Empezar"
-	COLLECT_HERBS,   # esperar a tener 3+ Hierba Lunar
+	WELCOME,         # bienvenida; usuario pulsa "Empezar"
+	BUILD_CAULDRON,  # colocar el Caldero (enseña el modo construcción)
+	BUILD_PARCEL,    # colocar una Parcela de Hierbas en el Patio Natural
+	COLLECT_HERBS,   # esperar a tener 3+ Hierba Lunar (las recoge el Duende)
 	CRAFT_POWDER,    # esperar a tener 1+ Polvo Lunar
 	DELIVER,         # esperar a completar 1 pedido
-	BUILD,           # esperar a colocar un edificio
-	RESEARCH,        # esperar a iniciar una investigación
 	DONE
 }
 
 const TOTAL_STEPS: int = Step.DONE  # 6
 const STEP_DATA: Array = [
 	# title, message, hint
-	["✨ Bienvenida/o al Emporio Místico", "Eres La Maga del Emporio. Tu objetivo: atender clientes, automatizar producción y prosperar.", "Pulsa Empezar cuando estés lista/o."],
-	["🌿 Recolecta hierbas", "Los Duendes recogen Hierbas Lunares en las parcelas del Patio Natural.", "Espera a tener 3 hierbas."],
-	["⚗ Craftea en el Caldero", "Haz clic en el Caldero del Taller para crear Polvo Lunar con tus hierbas.", "Crea 1 Polvo Lunar."],
+	["✨ Bienvenida/o al Emporio Místico", "Eres La Maga del Emporio. Tu tienda está casi vacía: vas a construirla tú misma/o, atender clientes y prosperar.", "Pulsa Empezar cuando estés lista/o."],
+	["🔨 Construye tu Caldero", "Abre el menú Construir (B), elige el Caldero Alquímico y colócalo en la marca del Taller.", "Coloca 1 Caldero."],
+	["🌿 Planta una Parcela de Hierbas", "Cruza al Patio Natural por el portal, abre Construir (B) y coloca la Parcela de Hierbas en la marca.", "Coloca 1 Parcela."],
+	["🧺 Recolecta hierbas", "Tu Duende recogerá Hierbas Lunares de la parcela. Espera a tener suficientes.", "Consigue 3 Hierbas."],
+	["⚗ Craftea en el Caldero", "Vuelve al Taller y haz clic en el Caldero para crear Polvo Lunar con tus hierbas.", "Crea 1 Polvo Lunar."],
 	["📦 Atiende un cliente", "Cuando llegue un cliente al mostrador con un pedido que puedas cumplir, pulsa Entregar.", "Entrega 1 pedido."],
-	["🔨 Construye algo nuevo", "Abre el menú Construir (B) y coloca una decoración o un edificio.", "Coloca 1 ítem."],
-	["📜 Investiga", "Haz clic en la Biblioteca Arcana e inicia una investigación para desbloquear recetas.", "Inicia 1 investigación."],
 ]
 
 var current_step: int = -1
 var active: bool = false
 var tutorial_done: bool = false
-var _hierba_item: ItemData = null
-var _polvo_item: ItemData = null
 
 
 func start() -> void:
 	if tutorial_done:
 		return
+	# Estipendio para costear los primeros edificios (solo partida nueva).
+	InventoryManager.add_coins(START_STIPEND)
 	active = true
 	current_step = Step.WELCOME
 	_emit_current()
@@ -61,7 +70,6 @@ func _ready() -> void:
 	InventoryManager.item_changed.connect(_on_item_changed)
 	OrderManager.order_completed.connect(_on_order_completed)
 	BuildManager.placement_completed.connect(_on_placement_completed)
-	ResearchManager.research_started.connect(_on_research_started)
 	call_deferred("_auto_start")
 
 
@@ -74,10 +82,6 @@ func _auto_start() -> void:
 func _on_item_changed(item: ItemData, qty: int) -> void:
 	if not active or item == null:
 		return
-	if item.id == &"hierba_lunar":
-		_hierba_item = item
-	elif item.id == &"polvo_lunar":
-		_polvo_item = item
 	if current_step == Step.COLLECT_HERBS and item.id == &"hierba_lunar":
 		step_progress.emit(mini(qty, 3), 3)
 		if qty >= 3:
@@ -93,19 +97,25 @@ func _on_order_completed(_o: OrderData) -> void:
 		_advance()
 
 
-func _on_placement_completed(_b: BuildableData, _pos: Vector2) -> void:
-	if active and current_step == Step.BUILD:
+func _on_placement_completed(b: BuildableData, _pos: Vector2) -> void:
+	if not active or b == null:
+		return
+	if current_step == Step.BUILD_CAULDRON and b.id == CAULDRON_ID:
 		_advance()
-
-
-func _on_research_started(_r: ResearchData) -> void:
-	if active and current_step == Step.RESEARCH:
+	elif current_step == Step.BUILD_PARCEL and b.id == PARCEL_ID:
 		_advance()
 
 
 func advance_welcome() -> void:
 	if active and current_step == Step.WELCOME:
 		_advance()
+
+
+## Re-emite el paso actual. Lo usa el overlay al entrar en escena por si el
+## tutorial ya arrancó (call_deferred) antes de que conectara la señal.
+func emit_current_step() -> void:
+	if active and current_step >= 0 and current_step < Step.DONE:
+		_emit_current()
 
 
 func _advance() -> void:

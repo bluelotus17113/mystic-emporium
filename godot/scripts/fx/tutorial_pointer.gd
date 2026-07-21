@@ -10,7 +10,14 @@ const Y_OFF: float = -52.0        ## altura de la flecha sobre el objetivo
 const C_ARROW: Color = Color(0.55, 0.9, 0.98)   ## turquesa arcano
 const C_GLOW: Color = Color(0.8, 0.65, 1.0)     ## halo lavanda
 
-var _target: Node2D = null
+## Casillas destino de los pasos de construcción (donde ir a colocar el objeto).
+## Coinciden con las posiciones originales del caldero/parcela en la escena.
+const SPOT_CAULDRON: Vector2 = Vector2(-1315, 20)
+const SPOT_PARCEL: Vector2 = Vector2(-6200, 0)
+
+var _target: Node2D = null       ## objetivo móvil (nodo del mundo)
+var _fixed_pos: Vector2 = Vector2.ZERO
+var _has_fixed: bool = false     ## objetivo fijo (casilla de construcción)
 var _t: float = 0.0
 
 
@@ -25,39 +32,50 @@ func _ready() -> void:
 
 
 func _on_step_started(step: int, _title: String, _msg: String, _hint: String) -> void:
-	_target = _target_for_step(step)
-	visible = _target != null
+	_resolve_target(step)
+	visible = _target != null or _has_fixed
 	set_process(true)
 
 
 func _on_finished() -> void:
 	_target = null
+	_has_fixed = false
 	visible = false
 	set_process(false)
 
 
 func _process(delta: float) -> void:
-	if _target == null or not is_instance_valid(_target):
+	var base: Vector2
+	if _has_fixed:
+		base = _fixed_pos
+	elif _target != null and is_instance_valid(_target):
+		base = _target.global_position
+	else:
 		visible = false
 		return
 	_t += delta
-	global_position = _target.global_position + Vector2(0.0, Y_OFF + sin(_t * BOB_SPEED) * BOB)
+	global_position = base + Vector2(0.0, Y_OFF + sin(_t * BOB_SPEED) * BOB)
 	queue_redraw()
 
 
-## Nodo del mundo al que apuntar según el paso. null = sin flecha.
-func _target_for_step(step: int) -> Node2D:
+## Resuelve el objetivo del paso: casilla fija (construir) o nodo del mundo.
+func _resolve_target(step: int) -> void:
+	_target = null
+	_has_fixed = false
 	match step:
+		TutorialManager.Step.BUILD_CAULDRON:
+			_fixed_pos = SPOT_CAULDRON
+			_has_fixed = true
+		TutorialManager.Step.BUILD_PARCEL:
+			_fixed_pos = SPOT_PARCEL
+			_has_fixed = true
 		TutorialManager.Step.COLLECT_HERBS:
-			return get_tree().get_first_node_in_group("resource_nodes") as Node2D
+			_target = get_tree().get_first_node_in_group("resource_nodes") as Node2D
 		TutorialManager.Step.CRAFT_POWDER:
 			var caldrons: Array = WorkstationManager.get_by_type(GameEnums.StationType.CAULDRON)
-			return caldrons[0] as Node2D if not caldrons.is_empty() else null
+			_target = caldrons[0] as Node2D if not caldrons.is_empty() else null
 		TutorialManager.Step.DELIVER:
-			return get_tree().get_first_node_in_group("customer_counter") as Node2D
-		TutorialManager.Step.RESEARCH:
-			return get_tree().get_first_node_in_group("research_stations") as Node2D
-	return null
+			_target = get_tree().get_first_node_in_group("customer_counter") as Node2D
 
 
 func _draw() -> void:
