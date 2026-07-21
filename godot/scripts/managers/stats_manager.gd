@@ -23,6 +23,13 @@ var stats: Dictionary = {
 var _unlocked: Array[StringName] = []
 var _playtime_accum: float = 0.0
 
+## Resumen SEMANAL basado en la hora REAL del PC (no en días de juego). Guardamos
+## el instante del último resumen y la foto de stats de ese momento; al cumplirse
+## una semana real mostramos los deltas acumulados. Persistido con el resto.
+const WEEK_SECONDS: float = 604800.0  ## 7 días reales
+var week_anchor_unix: float = 0.0
+var week_anchor_snapshot: Dictionary = {}
+
 # ponytail: cada logro lleva su recompensa. coins=instantáneo (1 vez), stars=PrestigeManager.
 const ACHIEVEMENTS: Array = [
 	{"id": &"first_collect", "label": "Primera Recolección", "stat": "items_collected_total", "threshold": 1, "coins": 25, "stars": 0},
@@ -160,16 +167,49 @@ func get_unlocked_achievements() -> Array[StringName]:
 	return _unlocked.duplicate()
 
 
+## --- Resumen semanal (hora real) ---
+
+## Fija el ancla la primera vez (partida nueva o save viejo sin ancla).
+func ensure_week_anchor() -> void:
+	if week_anchor_unix <= 0.0:
+		week_anchor_unix = Time.get_unix_time_from_system()
+		week_anchor_snapshot = stats.duplicate()
+
+
+func seconds_until_week() -> float:
+	ensure_week_anchor()
+	return WEEK_SECONDS - (Time.get_unix_time_from_system() - week_anchor_unix)
+
+
+func is_week_due() -> bool:
+	return seconds_until_week() <= 0.0
+
+
+## Devuelve los deltas acumulados desde el ancla y reancla a "ahora".
+func roll_week() -> Dictionary:
+	ensure_week_anchor()
+	var deltas: Dictionary = {}
+	for k in stats:
+		deltas[k] = int(stats[k]) - int(week_anchor_snapshot.get(k, 0))
+	week_anchor_unix = Time.get_unix_time_from_system()
+	week_anchor_snapshot = stats.duplicate()
+	return deltas
+
+
 func get_save_state() -> Dictionary:
 	return {
 		"stats": stats.duplicate(),
 		"unlocked": _unlocked.duplicate(),
+		"week_anchor_unix": week_anchor_unix,
+		"week_anchor_snapshot": week_anchor_snapshot.duplicate(),
 	}
 
 
 func load_save_state(data: Dictionary) -> void:
 	stats = data.get("stats", stats).duplicate()
 	_unlocked.assign(data.get("unlocked", []))
+	week_anchor_unix = float(data.get("week_anchor_unix", 0.0))
+	week_anchor_snapshot = data.get("week_anchor_snapshot", {}).duplicate()
 
 
 func reset_for_prestige() -> void:

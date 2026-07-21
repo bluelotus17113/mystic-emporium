@@ -1,10 +1,11 @@
 extends Control
-## Resumen de jornada: cada SHIFT_SECONDS de juego muestra un panel con lo
-## producido/ganado desde el último resumen (deltas de StatsManager). Es
-## descartable y no pausa el juego. Un "día" real (CalendarManager) también
-## dispara el resumen si ocurre antes.
+## Resumen SEMANAL (hora real del PC). Antes saltaba cada 5 min de juego / cada
+## día y oscurecía la pantalla: molestaba más que ayudaba. Ahora, una vez por
+## semana real, aparece una tarjeta discreta en la esquina con lo acumulado en
+## esos 7 días. No oscurece, no pausa, no bloquea el resto de la pantalla: solo
+## una tarjeta descartable. El ancla temporal la persiste StatsManager.
 
-const SHIFT_SECONDS: float = 300.0  ## 5 minutos de juego = una jornada
+const CHECK_INTERVAL: float = 5.0  ## cada cuánto (s reales) comprobamos si toca
 const TRACK: Array = [
 	{"id": "items_collected_total", "icon": "🌿", "label": "Recolectado"},
 	{"id": "items_crafted_total", "icon": "⚗", "label": "Crafteado"},
@@ -14,10 +15,7 @@ const TRACK: Array = [
 	{"id": "buildings_placed", "icon": "🏗", "label": "Construido"},
 ]
 
-var _t: float = 0.0
-var _shift: int = 1
-var _snapshot: Dictionary = {}
-var _dim: ColorRect
+var _check_t: float = 0.0
 var _panel: PanelContainer
 var _title: Label
 var _rows: VBoxContainer
@@ -25,27 +23,19 @@ var _rows: VBoxContainer
 
 func _ready() -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT)
+	# No bloquea input: es una capa transparente; solo la tarjeta recibe clics.
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	StatsManager.ensure_week_anchor()
 	_build_ui()
-	_snapshot = _capture()
-	if CalendarManager.has_signal("day_changed"):
-		CalendarManager.day_changed.connect(func(_d, _s): _show_summary())
 
 
 func _build_ui() -> void:
-	_dim = ColorRect.new()
-	_dim.color = Color(0, 0, 0, 0.45)
-	_dim.set_anchors_preset(Control.PRESET_FULL_RECT)
-	_dim.mouse_filter = Control.MOUSE_FILTER_STOP
-	_dim.gui_input.connect(func(ev: InputEvent):
-		if ev is InputEventMouseButton and ev.pressed:
-			_dismiss())
-	_dim.hide()
-	add_child(_dim)
-
+	# Tarjeta anclada arriba-derecha, discreta.
 	_panel = PanelContainer.new()
-	_panel.custom_minimum_size = Vector2(320, 0)
-	_panel.set_anchors_and_offsets_preset(Control.PRESET_CENTER, Control.PRESET_MODE_MINSIZE)
+	_panel.custom_minimum_size = Vector2(300, 0)
+	_panel.set_anchors_and_offsets_preset(
+		Control.PRESET_TOP_RIGHT, Control.PRESET_MODE_MINSIZE, 16)
+	_panel.mouse_filter = Control.MOUSE_FILTER_STOP
 	_panel.hide()
 	add_child(_panel)
 
@@ -57,49 +47,45 @@ func _build_ui() -> void:
 	vb.add_theme_constant_override(&"separation", 8)
 	margin.add_child(vb)
 
+	var header := HBoxContainer.new()
+	header.add_theme_constant_override(&"separation", 8)
+	vb.add_child(header)
 	_title = Label.new()
-	_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_title.add_theme_font_size_override(&"font_size", 20)
-	vb.add_child(_title)
+	_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_title.add_theme_font_size_override(&"font_size", 18)
+	header.add_child(_title)
+	var close := Button.new()
+	close.text = "✕"
+	close.pressed.connect(_dismiss)
+	header.add_child(close)
+
 	vb.add_child(HSeparator.new())
 	_rows = VBoxContainer.new()
 	_rows.add_theme_constant_override(&"separation", 6)
 	vb.add_child(_rows)
-	vb.add_child(HSeparator.new())
-	var close := Button.new()
-	close.text = "Continuar ▶"
-	close.pressed.connect(_dismiss)
-	vb.add_child(close)
-
-
-func _capture() -> Dictionary:
-	var d: Dictionary = {}
-	for e in TRACK:
-		d[e.id] = StatsManager.get_stat(e.id)
-	return d
 
 
 func _process(delta: float) -> void:
 	if _panel.visible:
 		return
-	_t += delta
-	if _t >= SHIFT_SECONDS:
+	_check_t += delta
+	if _check_t < CHECK_INTERVAL:
+		return
+	_check_t = 0.0
+	if StatsManager.is_week_due():
 		_show_summary()
 
 
 func _show_summary() -> void:
 	if _panel.visible:
 		return
-	_t = 0.0
+	var deltas: Dictionary = StatsManager.roll_week()  # también reancla la semana
 	for c in _rows.get_children():
 		c.queue_free()
-	var day_txt: String = ""
-	if CalendarManager.has_method("get_clock_string"):
-		day_txt = "  ·  Día %d" % CalendarManager.current_day
-	_title.text = "☕ Fin de jornada %d%s" % [_shift, day_txt]
+	_title.text = "🗓 Resumen semanal"
 	var any: bool = false
 	for e in TRACK:
-		var diff: int = StatsManager.get_stat(e.id) - int(_snapshot.get(e.id, 0))
+		var diff: int = int(deltas.get(e.id, 0))
 		if diff == 0:
 			continue
 		any = true
@@ -109,17 +95,24 @@ func _show_summary() -> void:
 		_rows.add_child(row)
 	if not any:
 		var row := Label.new()
-		row.text = "Una jornada tranquila… nada que reportar."
+		row.text = "Una semana tranquila… nada que reportar."
 		_rows.add_child(row)
-	_dim.show()
+	_slide_in()
+	AudioManager.play_beep(660.0, 0.15, -12.0)
+
+
+func _slide_in() -> void:
 	_panel.show()
 	_panel.reset_size()
-	AudioManager.play_beep(660.0, 0.15, -10.0)
+	_panel.modulate.a = 0.0
+	var off: float = _panel.position.x
+	_panel.position.x = off + 40.0
+	var tw := create_tween().set_parallel(true).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	tw.tween_property(_panel, "modulate:a", 1.0, 0.3)
+	tw.tween_property(_panel, "position:x", off, 0.35)
 
 
 func _dismiss() -> void:
-	_panel.hide()
-	_dim.hide()
-	_shift += 1
-	_snapshot = _capture()
-	_t = 0.0
+	var tw := create_tween().set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
+	tw.tween_property(_panel, "modulate:a", 0.0, 0.25)
+	tw.tween_callback(_panel.hide)
