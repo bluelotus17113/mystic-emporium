@@ -93,6 +93,7 @@ func _on_workstation_clicked(station: Workstation) -> void:
 		station.craft_started.connect(_on_craft_started)
 		station.craft_progress.connect(_on_craft_progress)
 		station.craft_completed.connect(_on_craft_completed)
+		station.queue_changed.connect(_on_queue_changed)
 		station.upgraded.connect(_on_upgraded)
 	_refresh_craft_progress()
 
@@ -102,11 +103,26 @@ func _refresh_craft_progress() -> void:
 	if active_station != null and active_station._is_crafting and active_station._current_recipe != null:
 		var total: float = active_station._current_recipe.crafting_time * active_station.crafting_time_multiplier
 		var pct: float = clamp(active_station._craft_timer / max(0.001, total), 0.0, 1.0)
-		craft_label.text = "⚗ Crafteando %s… %d%%" % [active_station._current_recipe.display_name, int(pct * 100)]
+		craft_label.text = "⚗ Crafteando %s… %d%%%s" % [active_station._current_recipe.display_name, int(pct * 100), _queue_suffix()]
 		craft_bar.value = pct
 		craft_box.show()
 	else:
 		craft_box.hide()
+
+
+## Sufijo con la cola pendiente para las etiquetas de progreso.
+func _queue_suffix() -> String:
+	if active_station == null:
+		return ""
+	var q: int = active_station.get_queue_size()
+	return "  (+%d en cola)" % q if q > 0 else ""
+
+
+func _on_queue_changed(_size: int) -> void:
+	if not visible:
+		return
+	_refresh_craft_progress()
+	_populate_recipes()
 
 
 func _on_craft_progress(recipe: RecipeData, percent: float) -> void:
@@ -114,7 +130,7 @@ func _on_craft_progress(recipe: RecipeData, percent: float) -> void:
 		return
 	craft_box.show()
 	craft_bar.value = percent
-	craft_label.text = "⚗ Crafteando %s… %d%%" % [recipe.display_name, int(percent * 100)]
+	craft_label.text = "⚗ Crafteando %s… %d%%%s" % [recipe.display_name, int(percent * 100), _queue_suffix()]
 
 
 func _rebuild() -> void:
@@ -250,9 +266,18 @@ func _on_craft_pressed(recipe: RecipeData) -> void:
 	if active_station == null:
 		return
 	if not active_station.start_craft(recipe):
-		status_label.text = "Faltan ingredientes."
+		if active_station.get_queue_size() >= Workstation.MAX_QUEUE:
+			status_label.text = "Cola llena (%d)." % Workstation.MAX_QUEUE
+		else:
+			status_label.text = "Faltan ingredientes."
 		return
-	status_label.text = "Crafteando %s…" % recipe.display_name
+	var qs: int = active_station.get_queue_size()
+	if qs > 0:
+		status_label.text = "%s en cola (%d) ⏳" % [recipe.display_name, qs]
+	else:
+		status_label.text = "Crafteando %s…" % recipe.display_name
+	# Los ingredientes ya se descontaron: refrescar disponibilidad de recetas.
+	_populate_recipes()
 
 
 func _on_craft_started(recipe: RecipeData) -> void:

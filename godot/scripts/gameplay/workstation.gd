@@ -4,7 +4,12 @@ extends Node2D
 signal craft_started(recipe: RecipeData)
 signal craft_progress(recipe: RecipeData, percent: float)
 signal craft_completed(recipe: RecipeData)
+signal queue_changed(size: int)
 signal upgraded(new_level: int)
+
+## Cola de crafteo manual: al pulsar "craftear" varias veces se encolan los
+## crafteos (ya pagados) y se encadenan solos, sin esperar a que termine cada uno.
+const MAX_QUEUE: int = 10
 
 @export var station_type: GameEnums.StationType = GameEnums.StationType.CAULDRON
 @export var available_recipes: Array[RecipeData] = []
@@ -20,6 +25,7 @@ const MAX_LEVEL: int = 5
 var _current_recipe: RecipeData = null
 var _is_crafting: bool = false
 var _craft_timer: float = 0.0
+var _queue: Array[RecipeData] = []
 var _steam: GPUParticles2D = null
 ## Override por-estación del auto-craft. Cuando IdleAutomationManager itera
 ## stations, se salta las que tengan esto en false. El toggle global de
@@ -256,18 +262,35 @@ func is_ready_to_work() -> bool:
 
 
 func start_craft(recipe: RecipeData) -> bool:
-	if recipe == null or _is_crafting:
+	if recipe == null:
 		return false
 	if recipe.required_station_type != station_type:
 		return false
-	var pairs: Array = recipe.get_ingredient_pairs()
-	if not InventoryManager.consume_items(pairs):
+	# Cola llena (el crafteo activo + los pendientes): no aceptamos más.
+	if _is_crafting and _queue.size() >= MAX_QUEUE:
 		return false
+	# Pagamos los ingredientes al ENCOLAR: cada clic es un crafteo ya pagado, así
+	# la cola es predecible y no compite por recursos que otro consuma entre medias.
+	if not InventoryManager.consume_items(recipe.get_ingredient_pairs()):
+		return false
+	if _is_crafting:
+		_queue.append(recipe)
+		queue_changed.emit(_queue.size())
+		return true
+	_begin_craft(recipe)
+	return true
+
+
+## Arranca un crafteo cuyos ingredientes YA se consumieron (inmediato o desde cola).
+func _begin_craft(recipe: RecipeData) -> void:
 	_current_recipe = recipe
 	_is_crafting = true
 	_craft_timer = 0.0
 	craft_started.emit(recipe)
-	return true
+
+
+func get_queue_size() -> int:
+	return _queue.size()
 
 
 func _finish_craft() -> void:
@@ -287,6 +310,10 @@ func _finish_craft() -> void:
 		AudioManager.play_named(&"bubble")
 	_play_finish_pop()
 	craft_completed.emit(finished)
+	# Encadenar la cola manual: el siguiente crafteo (ya pagado) arranca solo.
+	if not _queue.is_empty():
+		_begin_craft(_queue.pop_front())
+		queue_changed.emit(_queue.size())
 
 
 func _play_finish_pop() -> void:
@@ -304,6 +331,10 @@ func get_state_dict() -> Dictionary:
 	var recipe_id: String = ""
 	if _is_crafting and _current_recipe != null:
 		recipe_id = String(_current_recipe.id)
+	var queue_ids: Array = []
+	for r in _queue:
+		if r != null:
+			queue_ids.append(String(r.id))
 	return {
 		"level": current_level,
 		"time_mult": crafting_time_multiplier,
@@ -312,6 +343,7 @@ func get_state_dict() -> Dictionary:
 		"recipe_id": recipe_id,
 		"craft_timer": _craft_timer,
 		"auto_craft": auto_craft_enabled,
+		"queue": queue_ids,
 	}
 
 
@@ -329,6 +361,17 @@ func apply_state_dict(d: Dictionary) -> void:
 				_is_crafting = true
 				_craft_timer = float(d.get("craft_timer", 0.0))
 				craft_started.emit(recipe)
+	# Restaurar la cola manual (crafteos ya pagados antes de guardar).
+	_queue.clear()
+	for qid in d.get("queue", []):
+		var qr: RecipeData = RecipeManager.find_recipe_by_id(StringName(qid))
+		if qr != null:
+			_queue.append(qr)
+	# Si quedó cola sin crafteo activo (caso raro), arrancar el primero.
+	if not _is_crafting and not _queue.is_empty():
+		_begin_craft(_queue.pop_front())
+	if not _queue.is_empty():
+		queue_changed.emit(_queue.size())
 
 
 func set_auto_craft(enabled: bool) -> void:

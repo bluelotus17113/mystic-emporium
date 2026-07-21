@@ -89,24 +89,30 @@ func _pick_best_recipe_for(station: Workstation) -> RecipeData:
 	var recipes: Array[RecipeData] = station.get_filtered_recipes()
 	if recipes.is_empty():
 		return null
-	# Score: higher if matches an order or unlocks a chain we need.
+	# CRAFTEO BAJO DEMANDA: solo crafteamos si hay un cliente en recepción que
+	# necesita este output (directo) o un intermedio para cumplir ese pedido. Sin
+	# demanda NO se craftea, para no malgastar recursos produciendo lo que nadie pide.
 	var best: RecipeData = null
 	var best_score: int = 0
 	for r in recipes:
+		if r.output_item == null:
+			continue
 		if not InventoryManager.has_items(r.get_ingredient_pairs()):
 			continue
-		var score: int = 1
-		# Priority 1: item directamente pedido. Peso = qty × (1 + tier×0.5) para que
+		var score: int = 0
+		# Prioridad 1: item pedido directamente. Peso = qty × (1 + tier×0.5) para que
 		# un VIP (tier 5) tenga ~3.5× más prioridad que un cliente común (tier 1).
-		if r.output_item != null and _items_for_orders.has(r.output_item.id):
+		if _items_for_orders.has(r.output_item.id):
 			var need: Dictionary = _items_for_orders[r.output_item.id]
-			score += int(100 * need.qty * (1.0 + need.max_tier * 0.5))
-		# Priority 2: item intermedio que necesitamos
-		if r.output_item != null and _is_intermediate_for_orders(r.output_item):
-			score += 30
-		# Priority 3: valor del output (preferir items caros)
-		if r.output_item != null:
-			score += r.output_item.base_value
+			score = int(100 * need.qty * (1.0 + need.max_tier * 0.5))
+		# Prioridad 2: intermedio necesario para producir un item pedido.
+		elif _is_intermediate_for_orders(r.output_item):
+			score = 30
+		# Sin demanda: saltar (no craftear).
+		if score <= 0:
+			continue
+		# Desempate entre recetas con demanda: preferir el output más valioso.
+		score += r.output_item.base_value
 		if score > best_score:
 			best_score = score
 			best = r
