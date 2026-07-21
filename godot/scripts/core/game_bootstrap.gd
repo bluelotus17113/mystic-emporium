@@ -60,6 +60,10 @@ func _ready() -> void:
 	var celeb := preload("res://scripts/fx/celebration_fx.gd").new()
 	celeb.name = "CelebrationFX"
 	add_child(celeb)
+	# Flecha guía del tutorial: apunta al objetivo del paso actual.
+	var tut_ptr := preload("res://scripts/fx/tutorial_pointer.gd").new()
+	tut_ptr.name = "TutorialPointer"
+	add_child(tut_ptr)
 	# Tráfico de fondo en la recepción (transeúntes) + micro-eventos cozy.
 	var village := VillageLife.new()
 	village.name = "VillageLife"
