@@ -45,6 +45,12 @@ var _hover_label: Label = null
 
 
 func _ready() -> void:
+	# Fantasma de construcción (preview que sigue al cursor): solo visual. NO debe
+	# registrarse como workstation ni tener colisión, o contamina WorkstationManager
+	# y el auto-craft, y deja una forja "fantasma" pegada al cursor.
+	if is_in_group(&"build_ghost"):
+		set_process(false)
+		return
 	add_to_group("workstations")
 	WorkstationManager.register(self)
 	# Colisión de pies: los personajes no atraviesan la estación. El mostrador

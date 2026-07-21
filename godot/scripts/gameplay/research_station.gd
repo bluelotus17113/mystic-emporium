@@ -8,6 +8,9 @@ extends Node2D
 
 
 func _ready() -> void:
+	# Fantasma de construcción: solo visual, no registrar.
+	if is_in_group(&"build_ghost"):
+		return
 	add_to_group("research_stations")
 	add_to_group("workstations")  # también para que WorkstationManager.get_closest_idle pueda usarse
 	WorkstationManager.register(self)

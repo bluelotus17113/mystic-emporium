@@ -127,6 +127,9 @@ func enter_build_mode(buildable: BuildableData) -> void:
 	_ghost.modulate = Color(1, 1, 1, 0.5)
 	_ghost_rotation_deg = 0.0
 	_ghost.rotation_degrees = 0.0
+	# Marca de fantasma: su _ready NO debe registrarlo como objeto real (workstation,
+	# generador, etc.). Debe ir ANTES de add_child para que _ready lo vea.
+	_ghost.add_to_group(&"build_ghost")
 	# disable physics/processing on ghost
 	for child in _ghost.get_children():
 		if child is CollisionObject2D:
@@ -619,6 +622,11 @@ func _try_place() -> void:
 	_spawn_pop(instance)
 	AudioManager.play_beep(540.0, 0.1, -12.0)
 	placement_completed.emit(_current_buildable, instance.global_position)
+	# Si ya no alcanza para otra copia, salimos del modo obra: así no queda un
+	# fantasma translúcido pegado al cursor ni un confuso "Faltan X" al siguiente clic.
+	if InventoryManager.arcane_coins < _current_buildable.cost:
+		exit_build_mode()
+		return
 	# Estilo Sims: seguimos en modo obra para colocar más copias sin reabrir el
 	# menú. Mantenemos la rotación actual. Esc / clic derecho sale del modo.
 	var keep_rot: float = _ghost_rotation_deg
@@ -694,6 +702,7 @@ func _respawn_ghost() -> void:
 	_ghost.modulate = Color(1, 1, 1, 0.5)
 	_ghost_rotation_deg = 0.0
 	_ghost.rotation_degrees = 0.0
+	_ghost.add_to_group(&"build_ghost")  # su _ready no debe registrarlo como objeto real
 	for child in _ghost.get_children():
 		if child is CollisionObject2D:
 			(child as CollisionObject2D).input_pickable = false

@@ -34,6 +34,10 @@ var _marker_t: float = 0.0
 
 
 func _ready() -> void:
+	# Fantasma de construcción: solo visual, no registrar ni generar recursos.
+	if is_in_group(&"build_ghost"):
+		set_process(false)
+		return
 	add_to_group("generators")
 	# Auto-asignar item_data si falta (necesario para generadores construidos en
 	# runtime; el wire inicial del bootstrap solo cubre los que existen al cargar).
@@ -124,6 +128,15 @@ func _refresh_hover_text() -> void:
 		var remaining: float = max(0.0, get_effective_cooldown() - _timer)
 		lines.append("⏱ %.1fs" % remaining)
 	lines.append("📦 %d/cosecha" % yield_per_node)
+	# Ayudante que recolecta este recurso + cuántos hay contratados ahora mismo.
+	var wt: int = GameEnums.worker_for_resource(resource_type)
+	if wt >= 0:
+		var hired: int = 0
+		for w in get_tree().get_nodes_in_group("workers"):
+			if is_instance_valid(w) and "worker_type" in w and int(w.worker_type) == wt:
+				hired += 1
+		var who: String = GameEnums.worker_label(wt)
+		lines.append("%s ×%d" % [who, hired] if hired > 0 else "%s (ninguno)" % who)
 	if current_level < MAX_LEVEL:
 		lines.append("⬆ %d⚜" % upgrade_cost)
 	_hover_label.text = "\n".join(lines)

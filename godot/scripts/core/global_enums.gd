@@ -33,3 +33,34 @@ enum WorkerType { DUENDE, GOLEM, APPRENTICE, PROTAGONIST, CUSTOMER, LENADOR, ESP
 enum WorkerState { IDLE, FETCHING, WORKING, DELIVERING, MOVING, WAITING, LEAVING, ARRIVING }
 
 enum ItemCategory { PRIMARY, PROCESSED, FINAL, CURRENCY }
+
+## Qué ayudante recolecta cada recurso. Fuente de verdad compartida: mantener en
+## sync con las asignaciones de scripts/ai/worker_*.gd (preferred_resource_type(s)).
+const RESOURCE_TO_WORKER: Dictionary = {
+	ResourceType.HERB: WorkerType.DUENDE,
+	ResourceType.CRYSTAL: WorkerType.GOLEM,
+	ResourceType.IRON_ORE: WorkerType.GOLEM,
+	ResourceType.ARCANE_WOOD: WorkerType.LENADOR,
+	ResourceType.SPIRIT_ESSENCE: WorkerType.ESPIRITU,
+	ResourceType.ARCANE_WATER: WorkerType.ESPIRITU,
+	ResourceType.MOON_DUST: WorkerType.ESPIRITU,
+	ResourceType.AMETHYST_FRAGMENT: WorkerType.ESPIRITU,
+	ResourceType.IRON_INGOT: WorkerType.ESPIRITU,
+}
+
+const WORKER_LABEL: Dictionary = {
+	WorkerType.DUENDE: "🧝 Duende",
+	WorkerType.GOLEM: "🗿 Gólem",
+	WorkerType.APPRENTICE: "🧙 Aprendiz",
+	WorkerType.LENADOR: "🪓 Leñador",
+	WorkerType.ESPIRITU: "👻 Espíritu",
+}
+
+
+## Tipo de ayudante que recolecta este recurso (-1 si ninguno).
+func worker_for_resource(resource_type: int) -> int:
+	return RESOURCE_TO_WORKER.get(resource_type, -1)
+
+
+func worker_label(worker_type: int) -> String:
+	return WORKER_LABEL.get(worker_type, "Ayudante")
