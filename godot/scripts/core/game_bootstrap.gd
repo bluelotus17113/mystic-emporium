@@ -452,16 +452,28 @@ func _spawn_position_for_worker() -> Vector2:
 	return Vector2.ZERO
 
 
-## Ayudante recién comprado: pertenece al Patio Natural (grupo visual + visible
-## solo si la cámara está en esa zona). Su home_position (deferido en _ready) ya
-## queda en el patio porque lo posicionamos antes de emitir worker_purchased.
-func _on_worker_purchased(_worker_type: int, instance: Node2D) -> void:
+## Ayudante recién comprado: se ubica en su zona de trabajo (grupo visual + visible
+## solo si la cámara está en esa zona). El Aprendiz investiga en estaciones del
+## Taller, así que se invoca AHÍ; el resto recolecta en el Patio Natural. Su
+## home_position (deferido en _ready) queda en la zona correcta porque lo
+## reposicionamos antes de que corra el _capture_home diferido.
+func _on_worker_purchased(worker_type: int, instance: Node2D) -> void:
 	if instance == null or not is_instance_valid(instance):
 		return
-	instance.add_to_group("natural_visual")
+	var visual_group: StringName = &"natural_visual"
+	var cam_zone: StringName = &"natural"
+	if worker_type == GameEnums.WorkerType.APPRENTICE:
+		visual_group = &"taller_visual"
+		cam_zone = &"taller"
+		var rect: Rect2 = GridManager.get_zone_rect(GameEnums.ZoneType.WORKSHOP)
+		if rect.size != Vector2.ZERO:
+			instance.global_position = Vector2(
+				randf_range(rect.position.x + 60.0, rect.end.x - 60.0),
+				randf_range(rect.position.y + 80.0, rect.end.y - 60.0))
+	instance.add_to_group(visual_group)
 	var cam: Node = get_tree().get_first_node_in_group("zone_camera")
 	if cam != null and cam.has_method("get_current_zone"):
-		instance.visible = cam.get_current_zone().name == &"natural"
+		instance.visible = cam.get_current_zone().name == cam_zone
 
 
 func _find_item_by_id(id: StringName) -> ItemData:

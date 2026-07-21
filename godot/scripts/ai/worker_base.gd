@@ -618,15 +618,17 @@ func _update_anim_directional(is_moving: bool) -> void:
 func _update_energy(delta: float) -> void:
 	var active: bool = velocity.length_squared() > 4.0
 	if _resting:
+		# ¿Ya está descansando EN su sitio (dentro de casa o junto al punto cálido)?
+		# Mientras aún viaja hacia el descanso la energía sube lento; si la dejáramos
+		# cancelar el reposo a mitad de camino, volvería a currar, se cansaría y
+		# quedaría oscilando entre "ir a descansar" y "ir a trabajar". Nos comprometemos:
+		# solo se cancela el descanso una vez que ha llegado a su sitio de reposo.
+		var settled: bool = _inside or _rest_target == null or not is_instance_valid(_rest_target) \
+				or global_position.distance_to(_rest_target.global_position) < 24.0
 		# Dentro de casa recupera muy rápido; en sitio cálido rápido; de camino lento.
-		var rate: float = 0.7
-		if _inside:
-			rate = 3.5
-		elif _rest_target == null or not is_instance_valid(_rest_target) \
-				or global_position.distance_to(_rest_target.global_position) < 24.0:
-			rate = 2.5
+		var rate: float = 3.5 if _inside else (2.5 if settled else 0.7)
 		energy = minf(1.0, energy + ENERGY_REGEN * rate * delta)
-		if energy >= REST_RECOVER_TO and not _sleeping:
+		if settled and energy >= REST_RECOVER_TO and not _sleeping:
 			if _inside:
 				_exit_house()
 			_resting = false

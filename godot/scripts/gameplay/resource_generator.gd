@@ -222,6 +222,10 @@ func _try_generate() -> void:
 	_current_node.item_data = item_data if item_data != null else _current_node.item_data
 	_current_node.resource_type = resource_type
 	_current_node.yield_quantity = yield_per_node
+	# El material cosechable vive SOBRE la parcela: no debe ser un obstáculo sólido
+	# (la escena de madera trae solid_size para árboles sueltos). Si lo dejáramos,
+	# el recolector choca con el tronco, no alcanza el centro y orbita sin recoger.
+	_current_node.solid_size = Vector2.ZERO
 	_current_node.set_generator_owner(self)
 	var parent_node := get_parent()
 	if parent_node == null:

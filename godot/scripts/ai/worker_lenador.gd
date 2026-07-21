@@ -1,5 +1,6 @@
 extends WorkerBase
-## Leñador: especializado en madera arcana y mena de hierro (raws de Patio Natural).
+## Leñador: especializado en madera arcana (raw del Patio Natural).
+## La mena de hierro es tarea del Gólem (minerales).
 
 
 func _ready() -> void:
@@ -7,6 +8,5 @@ func _ready() -> void:
 	worker_type = GameEnums.WorkerType.LENADOR
 	preferred_resource_types = [
 		GameEnums.ResourceType.ARCANE_WOOD,
-		GameEnums.ResourceType.IRON_ORE,
 	]
 	move_speed = 80.0
