@@ -46,12 +46,16 @@ func start() -> void:
 		return
 	# Estipendio para costear los primeros edificios (solo partida nueva).
 	InventoryManager.add_coins(START_STIPEND)
+	# Silenciar clientes hasta el paso de atender: nada de pedidos al azar
+	# (ni imposibles) mientras el jugador aprende a construir/recolectar/craftear.
+	OrderManager.auto_generate = false
 	active = true
 	current_step = Step.WELCOME
 	_emit_current()
 
 
 func skip() -> void:
+	OrderManager.auto_generate = true  # reanudar clientes normales
 	active = false
 	current_step = Step.DONE
 	tutorial_done = true
@@ -123,8 +127,13 @@ func _advance() -> void:
 	if current_step >= Step.DONE:
 		active = false
 		tutorial_done = true
+		OrderManager.auto_generate = true  # reanudar clientes normales al terminar
 		tutorial_finished.emit()
 		return
+	# Al llegar al paso de atender: ahora sí llega UN cliente, y pide justo lo
+	# que acabas de craftear (Polvo Lunar). "Oh, llegó un cliente, atendámoslo."
+	if current_step == Step.DELIVER:
+		OrderManager.generate_tutorial_order(&"polvo_lunar")
 	_emit_current()
 
 

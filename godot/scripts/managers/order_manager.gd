@@ -112,6 +112,44 @@ func generate_new_order() -> OrderData:
 	return order_data
 
 
+## Fuerza un cliente que pide 1 unidad del item indicado. Lo usa el tutorial
+## para que el primer cliente pida justo lo que acabas de craftear (sin azar,
+## sin pedidos imposibles). Ignora auto_generate a propósito.
+func generate_tutorial_order(item_id: StringName) -> OrderData:
+	if _active.size() >= get_capacity():
+		return null
+	var item: ItemData = _find_orderable_item(item_id)
+	if item == null:
+		return null
+	var data := OrderData.new()
+	data.id = StringName("tutorial_%s" % item_id)
+	data.display_name = "Tu primer cliente"
+	data.requested_item = item
+	data.requested_quantity = 1
+	data.tier = maxi(1, item.tier)
+	data.coin_reward = int(item.base_value * (1.0 + data.tier * 0.3))
+	data.reputation_reward = maxi(1, data.tier)
+	data.time_limit = 0.0  # sin límite: es el tutorial
+	data.min_reputation = 0
+	var entry := ActiveOrder.new()
+	entry.data = data
+	entry.counter_slot = _next_free_slot()
+	_active.append(entry)
+	_spawn_customer_for(entry)
+	order_generated.emit(data)
+	queue_changed.emit()
+	print("[Order] Tutorial: 1 x %s (slot %d)" % [item.display_name, entry.counter_slot])
+	return data
+
+
+## Busca el ItemData de una receta unlocked por id de salida (para el pedido guiado).
+func _find_orderable_item(item_id: StringName) -> ItemData:
+	for r in RecipeManager.get_unlocked_recipes():
+		if r != null and r.output_item != null and r.output_item.id == item_id:
+			return r.output_item
+	return null
+
+
 func _next_free_slot() -> int:
 	var used: Array[int] = []
 	for a in _active:
