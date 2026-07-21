@@ -11,7 +11,7 @@ script = ExtResource("1_rs")
 station_type = 6
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-scale = Vector2(2, 2)
+scale = Vector2(1.4, 1.4)
 texture = ExtResource("2_tex")
 
 [node name="Label" type="Label" parent="."]
