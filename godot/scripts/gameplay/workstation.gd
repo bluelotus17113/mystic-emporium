@@ -274,6 +274,8 @@ func _finish_craft() -> void:
 	if _current_recipe != null and _current_recipe.output_item != null:
 		InventoryManager.add_item(_current_recipe.output_item, _current_recipe.output_quantity)
 		StatsManager.bump("items_crafted_total", _current_recipe.output_quantity)
+		# Feedback: se ve QUÉ salió del caldero (cierra el bucle a la vista).
+		FloatingText.spawn(self, "+%d %s" % [_current_recipe.output_quantity, _current_recipe.output_item.display_name], Color(0.82, 0.68, 1.0))
 	var finished: RecipeData = _current_recipe
 	_current_recipe = null
 	_is_crafting = false

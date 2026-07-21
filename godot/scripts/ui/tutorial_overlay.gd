@@ -10,9 +10,12 @@ extends CanvasLayer
 @onready var hint_label: Label = $Panel/Margin/VBox/HintLabel
 @onready var start_button: Button = $Panel/Margin/VBox/ButtonRow/StartButton
 
+var _base_hint: String = ""
+
 
 func _ready() -> void:
 	TutorialManager.step_started.connect(_on_step_started)
+	TutorialManager.step_progress.connect(_on_step_progress)
 	TutorialManager.tutorial_finished.connect(_on_finished)
 	skip_button.pressed.connect(TutorialManager.skip)
 	start_button.pressed.connect(TutorialManager.advance_welcome)
@@ -26,11 +29,17 @@ func _on_step_started(step: int, title: String, message: String, hint: String) -
 	progress.value = step + 1
 	title_label.text = title
 	message_label.text = message
+	_base_hint = hint
 	hint_label.text = "→ " + hint
 	start_button.visible = (step == TutorialManager.Step.WELCOME)
 	panel.show()
 	show()
 	_bounce_in()
+
+
+## Progreso en vivo del paso actual: el hint pasa a "→ pista  (2/3)".
+func _on_step_progress(current: int, target: int) -> void:
+	hint_label.text = "→ %s  (%d/%d)" % [_base_hint, current, target]
 
 
 func _bounce_in() -> void:

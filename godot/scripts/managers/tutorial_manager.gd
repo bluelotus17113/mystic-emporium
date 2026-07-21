@@ -3,6 +3,7 @@ extends Node
 ## tutorial_done se persiste en el save; no vuelve a aparecer una vez completado o saltado.
 
 signal step_started(step_index: int, title: String, message: String, hint: String)
+signal step_progress(current: int, target: int)  ## avance dentro de un paso de conteo
 signal tutorial_finished
 
 enum Step {
@@ -77,10 +78,14 @@ func _on_item_changed(item: ItemData, qty: int) -> void:
 		_hierba_item = item
 	elif item.id == &"polvo_lunar":
 		_polvo_item = item
-	if current_step == Step.COLLECT_HERBS and qty >= 3:
-		_advance()
-	elif current_step == Step.CRAFT_POWDER and qty >= 1 and item.id == &"polvo_lunar":
-		_advance()
+	if current_step == Step.COLLECT_HERBS and item.id == &"hierba_lunar":
+		step_progress.emit(mini(qty, 3), 3)
+		if qty >= 3:
+			_advance()
+	elif current_step == Step.CRAFT_POWDER and item.id == &"polvo_lunar":
+		step_progress.emit(mini(qty, 1), 1)
+		if qty >= 1:
+			_advance()
 
 
 func _on_order_completed(_o: OrderData) -> void:
