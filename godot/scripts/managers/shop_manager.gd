@@ -102,6 +102,8 @@ func get_save_state() -> Dictionary:
 			"type": int(w.worker_type),
 			"x": w.global_position.x,
 			"y": w.global_position.y,
+			# Identidad y progresión (nombre, nivel, XP, rasgo, energía).
+			"state": w.get_save_dict() if w.has_method("get_save_dict") else {},
 		})
 	return {"prices": price_save, "workers": workers}
 
@@ -124,3 +126,7 @@ func load_save_state(data: Dictionary) -> void:
 		var inst = worker_scenes[wt].instantiate()
 		spawn_container.add_child(inst)
 		inst.global_position = Vector2(float(entry.get("x", 0.0)), float(entry.get("y", 0.0)))
+		# Restaura identidad/progresión DESPUÉS de add_child (su _ready ya sorteó
+		# nombre/rasgo aleatorios; aquí los sobreescribimos con los guardados).
+		if inst.has_method("apply_save_dict"):
+			inst.apply_save_dict(entry.get("state", {}))

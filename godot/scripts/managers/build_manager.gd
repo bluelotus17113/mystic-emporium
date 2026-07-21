@@ -797,6 +797,11 @@ func get_save_state() -> Dictionary:
 		var node: Node = GridManager._occupied.get(grid_pos)
 		if node != null and is_instance_valid(node) and node.has_method("get_upgrade_level"):
 			entry["level"] = node.get_upgrade_level()
+		# Estado de parcelas/generadores (nivel de mejora y efectos). Las estaciones
+		# NO se tocan aquí: las restaura WorkstationManager por grid_pos.
+		if node != null and is_instance_valid(node) and node.is_in_group("generators") \
+				and node.has_method("get_state_dict"):
+			entry["gen_state"] = node.get_state_dict()
 		placed.append(entry)
 	var unlocked_ids: Array = []
 	for b in _unlocked_buildables:
@@ -848,3 +853,6 @@ func load_save_state(data: Dictionary) -> void:
 		var lvl: int = int(entry.get("level", 1))
 		if lvl > 1 and instance.has_method("set_upgrade_level"):
 			instance.set_upgrade_level(lvl)
+		# Restaura el estado de las parcelas/generadores (nivel de mejora y efectos).
+		if entry.has("gen_state") and instance.has_method("apply_state_dict"):
+			instance.apply_state_dict(entry["gen_state"])

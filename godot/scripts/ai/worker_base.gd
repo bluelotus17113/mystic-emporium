@@ -234,20 +234,52 @@ func _random_name() -> String:
 ## Sortea rasgo y ajusta parámetros base según personalidad.
 func _apply_trait() -> void:
 	wtrait = randi() % TRAIT_NAMES.size()
-	var speed_mult: float = 1.0
+	var speed_mult: float = 1.12 if wtrait == Trait.ENERGICO else (0.95 if wtrait == Trait.DORMILON else 1.0)
+	_base_move_speed *= speed_mult
+	move_speed = _base_move_speed
+	_apply_trait_behavior()
+
+
+## Multiplicadores de personalidad NO-velocidad (cansancio/deambular). Idempotente,
+## para poder reaplicarlos al restaurar el rasgo desde el save.
+func _apply_trait_behavior() -> void:
+	_drain_mult = 1.0
+	_wander_mult = 1.0
 	match wtrait:
 		Trait.ENERGICO:
-			speed_mult = 1.12
 			_drain_mult = 0.65   # se cansa menos
 		Trait.DORMILON:
-			speed_mult = 0.95
 			_drain_mult = 1.35   # se cansa antes
 		Trait.CURIOSO:
 			_wander_mult = 1.6   # explora más al deambular
 		_:
 			pass
-	_base_move_speed *= speed_mult
-	move_speed = _base_move_speed
+
+
+## --- Persistencia: identidad y progresión del ayudante ---
+func get_save_dict() -> Dictionary:
+	return {
+		"name": worker_name,
+		"level": level,
+		"xp": xp,
+		"trait": wtrait,
+		"energy": energy,
+		"favorite": _favorite_type,
+	}
+
+
+func apply_save_dict(d: Dictionary) -> void:
+	if d.has("name"):
+		set_worker_name(String(d["name"]))
+	level = clampi(int(d.get("level", level)), 1, MAX_LEVEL)
+	xp = int(d.get("xp", xp))
+	energy = clampf(float(d.get("energy", energy)), 0.0, 1.0)
+	_favorite_type = int(d.get("favorite", _favorite_type))
+	if d.has("trait"):
+		wtrait = int(d["trait"])
+		_apply_trait_behavior()
+	# Reaplica la velocidad según el nivel restaurado (cada nivel: +6%).
+	move_speed = _base_move_speed * (1.0 + SPEED_PER_LEVEL * float(level - 1))
 
 
 func set_worker_name(new_name: String) -> void:

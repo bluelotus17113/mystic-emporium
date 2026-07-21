@@ -279,3 +279,21 @@ func on_node_collected(_node: ResourceNode) -> void:
 	# Reinicia el ciclo: parcela de vuelta a tierra vacía.
 	if _anim != null:
 		_anim.frame = 0
+
+
+## Estado mutable de la parcela para el save (nivel de mejora y sus efectos).
+## La identidad (qué parcela y dónde) la resuelve BuildManager por grid_pos.
+func get_state_dict() -> Dictionary:
+	return {
+		"level": current_level,
+		"cooldown_mult": cooldown_multiplier,
+		"yield": yield_per_node,
+		"upgrade_cost": upgrade_cost,
+	}
+
+
+func apply_state_dict(d: Dictionary) -> void:
+	current_level = int(d.get("level", current_level))
+	cooldown_multiplier = float(d.get("cooldown_mult", cooldown_multiplier))
+	yield_per_node = int(d.get("yield", yield_per_node))
+	upgrade_cost = int(d.get("upgrade_cost", upgrade_cost))
