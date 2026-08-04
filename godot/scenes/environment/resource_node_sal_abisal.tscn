@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/gameplay/resource_node.gd" id="1_rn"]
+[ext_resource type="Texture2D" path="res://art/sprites/environment/geoda_amatista_node.png" id="2_tex"]
+
+[node name="ResourceNodeSalAbisal" type="Node2D"]
+script = ExtResource("1_rn")
+resource_type = 10
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+scale = Vector2(2, 2)
+offset = Vector2(0, -12)
+texture = ExtResource("2_tex")

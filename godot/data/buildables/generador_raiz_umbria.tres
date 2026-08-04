@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="BuildableData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/buildable_data.gd" id="1_bd"]
+[ext_resource type="PackedScene" path="res://scenes/environment/resource_generator_raiz_umbria.tscn" id="2_scene"]
+
+[resource]
+script = ExtResource("1_bd")
+id = &"build_generador_raiz_umbria"
+display_name = "Arboleda Umbría"
+description = "Genera materiales de endgame. Requiere Patio Natural Nv 5 (Fronda)."
+scene = ExtResource("2_scene")
+cost = 950
+allowed_zone = 1
+size = Vector2i(1, 1)
+unlocked_by_default = false
+min_natural_level = 5

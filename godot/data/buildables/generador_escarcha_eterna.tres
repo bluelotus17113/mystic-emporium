@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="BuildableData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/buildable_data.gd" id="1_bd"]
+[ext_resource type="PackedScene" path="res://scenes/environment/resource_generator_escarcha_eterna.tscn" id="2_scene"]
+
+[resource]
+script = ExtResource("1_bd")
+id = &"build_generador_escarcha_eterna"
+display_name = "Manantial Helado"
+description = "Genera materiales de endgame. Requiere Patio Natural Nv 7 (Bosque Ancestral)."
+scene = ExtResource("2_scene")
+cost = 3000
+allowed_zone = 1
+size = Vector2i(1, 1)
+unlocked_by_default = false
+min_natural_level = 7

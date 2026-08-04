@@ -56,6 +56,11 @@ func _ready() -> void:
 	var zfade := preload("res://scripts/fx/zone_fade.gd").new()
 	zfade.name = "ZoneFade"
 	add_child(zfade)
+	# Telón de nubes para ir al Patio Natural y volver. Va después del fundido
+	# para quedar por encima de él en el árbol además de en `layer`.
+	var nubes := preload("res://scripts/fx/zone_clouds.gd").new()
+	nubes.name = "ZoneClouds"
+	add_child(nubes)
 	# Confeti + corazón al completar pedidos.
 	var celeb := preload("res://scripts/fx/celebration_fx.gd").new()
 	celeb.name = "CelebrationFX"
@@ -80,13 +85,52 @@ func _ready() -> void:
 		var siege_hud: Control = preload("res://scripts/ui/siege_hud.gd").new()
 		siege_hud.name = "SiegeHUD"
 		ui_canvas.add_child(siege_hud)
+		# Tira de pestañas de los paneles agrupados. Va la ÚLTIMA del UICanvas
+		# para dibujarse por encima de todos ellos: `upgrades` ocupa el viewport
+		# entero y si no, se comería los clics de las pestañas.
+		var tabs: Control = preload("res://scripts/ui/panel_tabs.gd").new()
+		tabs.name = "PanelTabs"
+		ui_canvas.add_child(tabs)
 	call_deferred("_spawn_cat")
 	# Vida del patio natural: scatter de props + maleza que crece sola.
 	var nlife := NaturalLife.new()
 	nlife.name = "NaturalLife"
 	add_child(nlife)
+	# Directo, no diferido: el save reinstancia lo construido al final de este
+	# mismo _ready(), y si las sombras aún no existen esas torretas y estaciones
+	# nacen sin sombra hasta reiniciar.
+	if not OS.get_cmdline_user_args().has("--sinsombras"):
+		_spawn_sun_shadows()
 	call_deferred("_spawn_default_lanterns")
 	call_deferred("_spawn_zone_doors")
+	if OS.get_cmdline_user_args().has("--escaparate"):
+		call_deferred("_spawn_escaparate")
+	var tn := preload("res://scripts/tools/test_notif.gd").new()
+	tn.name = "TestNotif"
+	add_child(tn)
+	var ta := preload("res://scripts/tools/test_arboles.gd").new()
+	ta.name = "TestArboles"
+	add_child(ta)
+	var cap := preload("res://scripts/tools/captura_zona.gd").new()
+	cap.name = "CapturaZona"
+	add_child(cap)
+	var dh := preload("res://scripts/tools/diag_hud.gd").new()
+	dh.name = "DiagHUD"
+	add_child(dh)
+	var cp := preload("res://scripts/tools/captura_paneles.gd").new()
+	cp.name = "CapturaPaneles"
+	add_child(cp)
+	var cv := preload("res://scripts/tools/captura_viaje.gd").new()
+	cv.name = "CapturaViaje"
+	add_child(cv)
+	if OS.get_cmdline_user_args().has("--spikes"):
+		var caza := preload("res://scripts/tools/spike_catcher.gd").new()
+		caza.name = "SpikeCatcher"
+		add_child(caza)
+	if OS.get_cmdline_user_args().has("--perfprobe"):
+		var sonda := preload("res://scripts/tools/perf_probe.gd").new()
+		sonda.name = "PerfProbe"
+		add_child(sonda)
 	print("[Bootstrap] Items: %d | Recipes: %d | Orders: %d | Research: %d | Buildables: %d" % [
 		_items_catalog.size(),
 		_recipes_catalog.size(),
@@ -94,12 +138,17 @@ func _ready() -> void:
 		_research_catalog.size(),
 		_buildables_catalog.size(),
 	])
-	# Consumir pending load (Continuar desde main_menu). Hacer aquí garantiza
-	# que current_scene = main_game y todos los managers están cableados.
+	# Cargar la partida. Hacerlo aquí garantiza que current_scene = main_game y
+	# todos los managers están cableados. Si venimos de "Continuar" en el menú se
+	# usa ese slot; si no, AUTO-CARGAMOS el save actual si existe (así el juego
+	# recupera la partida al arrancar directo, sin depender del menú). Sin save,
+	# se arranca limpio y el TutorialManager inicia el tutorial.
 	if SaveManager.pending_load_slot >= 0:
 		var slot: int = SaveManager.pending_load_slot
 		SaveManager.pending_load_slot = -1
 		SaveManager.load_game(slot)
+	elif SaveManager.has_save():
+		SaveManager.load_game(SaveManager.current_slot)
 
 
 ## Faroles por defecto: dos por zona (se encienden solos de noche).
@@ -131,6 +180,72 @@ func _spawn_default_lanterns() -> void:
 			# Registrar en el grid → se puede mover/demoler/copiar como cualquier objeto.
 			# cost 0: al ser gratis, no da reembolso al demolerlos.
 			BuildManager.register_prebuilt(lan, lan.global_position, &"deco_lantern", 0)
+
+
+## Sombras del patio que siguen al sol. Va dentro del world_container para
+## compartir sus coordenadas, y se auto-apunta al grupo natural_visual para
+## ocultarse cuando la cámara está en otra zona.
+func _spawn_sun_shadows() -> void:
+	var world: Node = get_tree().get_first_node_in_group("world_container")
+	if world == null:
+		return
+	var sombras := SunShadows.new()
+	world.add_child(sombras)
+	sombras.global_position = Vector2.ZERO
+	var cam: Node = get_tree().get_first_node_in_group("zone_camera")
+	if cam != null and cam.has_method("get_current_zone"):
+		sombras.visible = cam.get_current_zone().name == &"natural"
+
+
+## Escaparate de revisión (solo con `-- --escaparate`): pone en fila las
+## decoraciones rehechas con PixelLab, en la zona donde arranca la cámara, para
+## verlas al tamaño real del juego y junto a la maga. No toca el grid de
+## construcción ni el save: es una fila de nodos sueltos para mirar.
+const ESCAPARATE: Array = [
+	"apple_tree", "garden_arch", "scarecrow", "signpost",
+	"lantern", "torch_stake", "palm_plant", "flower_vase",
+]
+
+
+func _spawn_escaparate() -> void:
+	var world: Node = get_tree().get_first_node_in_group("world_container")
+	if world == null:
+		return
+	var cam: Node = get_tree().get_first_node_in_group("zone_camera")
+	var cur: StringName = &""
+	if cam != null and cam.has_method("get_current_zone"):
+		cur = cam.get_current_zone().name
+	var zona: ZoneRegion = null
+	for zr in _find_zone_regions(get_tree().current_scene):
+		var info: Array = _zone_name_group(zr.zone_type)
+		if info.is_empty():
+			continue
+		if zona == null or info[0] == cur:
+			zona = zr
+	if zona == null:
+		return
+	var paso: float = 84.0
+	var izq: Vector2 = zona.global_position - Vector2(paso * (ESCAPARATE.size() - 1) * 0.5, 40.0)
+	for i in ESCAPARATE.size():
+		var nombre: String = ESCAPARATE[i]
+		var esc: PackedScene = load("res://scenes/environment/decorations/decoration_%s.tscn" % nombre)
+		if esc == null:
+			continue
+		var nodo: Node2D = esc.instantiate()
+		world.add_child(nodo)
+		nodo.global_position = izq + Vector2(paso * i, 0.0)
+		nodo.z_index = 1
+		var etiqueta := Label.new()
+		etiqueta.text = nombre.replace("_", " ")
+		etiqueta.add_theme_font_size_override("font_size", 11)
+		etiqueta.add_theme_color_override("font_color", Color(1, 1, 1))
+		etiqueta.add_theme_color_override("font_outline_color", Color(0.17, 0.11, 0.21))
+		etiqueta.add_theme_constant_override("outline_size", 4)
+		etiqueta.position = Vector2(-paso * 0.5, 14.0)
+		etiqueta.size = Vector2(paso, 16.0)
+		etiqueta.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		nodo.add_child(etiqueta)
+	print("[Escaparate] %d decoraciones en fila en la zona %s" % [ESCAPARATE.size(), cur])
 
 
 ## Puertas entre zonas contiguas (recepción↔taller, taller↔patio). La maga las
@@ -418,6 +533,16 @@ func _wire_scene_objects() -> void:
 		GameEnums.ResourceType.MOON_DUST: _find_item_by_id(&"polvo_lunar"),
 		GameEnums.ResourceType.AMETHYST_FRAGMENT: _find_item_by_id(&"fragmento_amatista"),
 		GameEnums.ResourceType.IRON_INGOT: _find_item_by_id(&"lingote_hierro"),
+		GameEnums.ResourceType.ABYSSAL_SALT: _find_item_by_id(&"sal_abisal"),
+		GameEnums.ResourceType.UMBRAL_ROOT: _find_item_by_id(&"raiz_umbria"),
+		GameEnums.ResourceType.STAR_ASH: _find_item_by_id(&"ceniza_estelar"),
+		GameEnums.ResourceType.OBSIDIAN_CORE: _find_item_by_id(&"nucleo_obsidiana"),
+		GameEnums.ResourceType.SPECTRE_DUST: _find_item_by_id(&"polvo_espectro"),
+		GameEnums.ResourceType.ANCIENT_SAP: _find_item_by_id(&"savia_ancestral"),
+		GameEnums.ResourceType.CELESTIAL_SHARD: _find_item_by_id(&"fragmento_celestial"),
+		GameEnums.ResourceType.MAGMA_HEART: _find_item_by_id(&"corazon_magmatico"),
+		GameEnums.ResourceType.ETERNAL_FROST: _find_item_by_id(&"escarcha_eterna"),
+		GameEnums.ResourceType.CRYSTAL_BOLT: _find_item_by_id(&"rayo_cristalizado"),
 	}
 	# Registrar el mapeo en ResourceManager para que generadores construidos
 	# en runtime puedan auto-asignar su item_data via assign_item_to_generator.

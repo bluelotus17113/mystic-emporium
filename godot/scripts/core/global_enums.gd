@@ -26,6 +26,16 @@ enum ResourceType {
 	MOON_DUST,          # Altar Lunar → polvo_lunar
 	AMETHYST_FRAGMENT,  # Geoda Amatista → fragmento_amatista
 	IRON_INGOT,         # Veta Fundida → lingote_hierro
+	ABYSSAL_SALT,       # Salina Abisal → sal_abisal
+	UMBRAL_ROOT,        # Arboleda Umbría → raiz_umbria
+	STAR_ASH,           # Brasero Estelar → ceniza_estelar
+	OBSIDIAN_CORE,      # Vena de Obsidiana → nucleo_obsidiana
+	SPECTRE_DUST,       # Cripta Espectral → polvo_espectro
+	ANCIENT_SAP,        # Tocón Ancestral → savia_ancestral
+	CELESTIAL_SHARD,    # Cráter Celeste → fragmento_celestial
+	MAGMA_HEART,        # Caldera Magmática → corazon_magmatico
+	ETERNAL_FROST,      # Manantial Helado → escarcha_eterna
+	CRYSTAL_BOLT,       # Pararrayos Arcano → rayo_cristalizado
 }
 
 enum WorkerType { DUENDE, GOLEM, APPRENTICE, PROTAGONIST, CUSTOMER, LENADOR, ESPIRITU }
@@ -46,6 +56,18 @@ const RESOURCE_TO_WORKER: Dictionary = {
 	ResourceType.MOON_DUST: WorkerType.ESPIRITU,
 	ResourceType.AMETHYST_FRAGMENT: WorkerType.ESPIRITU,
 	ResourceType.IRON_INGOT: WorkerType.ESPIRITU,
+	# Recolectables de endgame. Repartidos a propósito entre tres oficios: si
+	# todos cayesen en el Espíritu, el tramo T4-T5 se jugaría con un solo ayudante.
+	ResourceType.ABYSSAL_SALT: WorkerType.GOLEM,
+	ResourceType.UMBRAL_ROOT: WorkerType.LENADOR,
+	ResourceType.STAR_ASH: WorkerType.ESPIRITU,
+	ResourceType.OBSIDIAN_CORE: WorkerType.GOLEM,
+	ResourceType.SPECTRE_DUST: WorkerType.ESPIRITU,
+	ResourceType.ANCIENT_SAP: WorkerType.LENADOR,
+	ResourceType.CELESTIAL_SHARD: WorkerType.ESPIRITU,
+	ResourceType.MAGMA_HEART: WorkerType.GOLEM,
+	ResourceType.ETERNAL_FROST: WorkerType.ESPIRITU,
+	ResourceType.CRYSTAL_BOLT: WorkerType.GOLEM,
 }
 
 const WORKER_LABEL: Dictionary = {
