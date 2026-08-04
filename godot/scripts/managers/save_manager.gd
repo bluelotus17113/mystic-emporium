@@ -20,9 +20,28 @@ var pending_load_slot: int = -1
 const AUTOSAVE_INTERVAL: float = 120.0  ## autosave cada 2 min + al cambiar de día
 var _autosave_accum: float = 0.0
 var _world_ready: bool = false  ## no autosavear en el menú principal
+## Modo SOLO LECTURA para los arranques de diagnóstico (--testnotif, --spikes,
+## --captura, --escaparate...). Sin esto, un arranque de herramienta escribe en
+## la partida del jugador: el 2026-08-01 uno con el bootstrap roto guardó un
+## mundo vacío encima de un save de 341 construcciones y 292k monedas. Se pudo
+## recuperar del .bak, pero no debe poder repetirse.
+var _solo_lectura: bool = false
+const BANDERAS_DIAGNOSTICO: Array[String] = [
+	"--testnotif", "--testarboles", "--spikes", "--perfprobe", "--escaparate",
+	"--sinsombras", "--hora", "--captura", "--mueveprop",
+	"--diaghud", "--capturapaneles", "--capturaviaje", "--sintelon",
+	"--caprecolectable",
+]
 
 
 func _ready() -> void:
+	for a in OS.get_cmdline_user_args():
+		for b in BANDERAS_DIAGNOSTICO:
+			if a == b or a.begins_with(b + "="):
+				_solo_lectura = true
+				break
+	if _solo_lectura:
+		print("[Save] SOLO LECTURA: arranque de diagnóstico, no se guardará nada.")
 	get_tree().auto_accept_quit = false
 	_migrate_legacy()
 	# Autosave al terminar cada día del juego (solo con partida activa).
@@ -46,7 +65,10 @@ func _process(delta: float) -> void:
 
 
 func _notification(what: int) -> void:
-	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+	# OJO al guardia _world_ready: sin él, cerrar una ventana cuyo mundo no llegó
+	# a cargar (bootstrap con error de parseo, por ejemplo) guarda el estado por
+	# defecto ENCIMA de la partida buena.
+	if what == NOTIFICATION_WM_CLOSE_REQUEST and _world_ready:
 		save_game()
 		get_tree().quit()
 
@@ -83,6 +105,8 @@ func select_slot(slot: int) -> void:
 
 
 func save_game(slot: int = -1) -> void:
+	if _solo_lectura:
+		return
 	if slot < 0:
 		slot = current_slot
 	var data := {

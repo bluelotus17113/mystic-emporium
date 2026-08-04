@@ -123,6 +123,9 @@ func _ready() -> void:
 	var cv := preload("res://scripts/tools/captura_viaje.gd").new()
 	cv.name = "CapturaViaje"
 	add_child(cv)
+	var cr := preload("res://scripts/tools/captura_recolectable.gd").new()
+	cr.name = "CapturaRecolectable"
+	add_child(cr)
 	if OS.get_cmdline_user_args().has("--spikes"):
 		var caza := preload("res://scripts/tools/spike_catcher.gd").new()
 		caza.name = "SpikeCatcher"

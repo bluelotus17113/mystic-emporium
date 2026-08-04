@@ -515,6 +515,19 @@ func _resource_type_label(t: int) -> String:
 		GameEnums.ResourceType.MOON_DUST: return "🌙 Polvo lunar"
 		GameEnums.ResourceType.AMETHYST_FRAGMENT: return "💎 Amatista"
 		GameEnums.ResourceType.IRON_INGOT: return "🔩 Lingote"
+		# Los diez de endgame. Si se añade un ResourceType hay que añadirlo aquí
+		# también: sin etiqueta, el selector de especialidad y la ficha del
+		# ayudante muestran "—" y el jugador no sabe en qué se ha especializado.
+		GameEnums.ResourceType.ABYSSAL_SALT: return "🧂 Sal abisal"
+		GameEnums.ResourceType.UMBRAL_ROOT: return "🌑 Raíz umbría"
+		GameEnums.ResourceType.STAR_ASH: return "✨ Ceniza estelar"
+		GameEnums.ResourceType.OBSIDIAN_CORE: return "🌋 Obsidiana"
+		GameEnums.ResourceType.SPECTRE_DUST: return "💀 Polvo de espectro"
+		GameEnums.ResourceType.ANCIENT_SAP: return "🍯 Savia ancestral"
+		GameEnums.ResourceType.CELESTIAL_SHARD: return "☄ Fragmento celestial"
+		GameEnums.ResourceType.MAGMA_HEART: return "🔥 Corazón magmático"
+		GameEnums.ResourceType.ETERNAL_FROST: return "❄ Escarcha eterna"
+		GameEnums.ResourceType.CRYSTAL_BOLT: return "⚡ Rayo cristalizado"
 		_: return "—"
 
 
