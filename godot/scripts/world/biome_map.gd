@@ -30,6 +30,10 @@ const BAJIO: int = 3
 ## último nivel, y el telón de nubes lo abre otro 26%), así que la vista llega
 ## mucho más lejos de lo que parece. Cuesta un quad y una textura de 16×16.
 const MAR_EXTRA: float = 4096.0
+const SHADER_BAJIO: String = "res://art/shaders/bajio.gdshader"
+
+## Celdas de bajío marcadas durante _compose, para que el shader sepa cuáles animar.
+var _mascara_bajio: Image = null
 
 
 func _ready() -> void:
@@ -42,6 +46,7 @@ func _ready() -> void:
 	# compensarlo, la pradera se desplazaría respecto a la rejilla del juego.
 	position = ZoneExpansionManager.map_rect().position - Vector2(MARGEN, MARGEN) * WCELL
 	texture = _compose()
+	_animar_bajio()
 	_crear_mar()
 
 
@@ -146,6 +151,9 @@ func _compose() -> ImageTexture:
 	var ancho: int = COLS + 2 * MARGEN
 	var alto: int = ROWS + 2 * MARGEN
 	var out := Image.create(ancho * T, alto * T, false, Image.FORMAT_RGBA8)
+	# Un texel por celda: le dice al shader qué celdas son bajío. A esta resolución
+	# ocupa unos 14 KB, frente a los ~57 MB de componer el mapa cuatro veces.
+	_mascara_bajio = Image.create(ancho, alto, false, Image.FORMAT_RGBA8)
 	for cy in alto:
 		for cx in ancho:
 			var nombre: String
@@ -155,13 +163,43 @@ func _compose() -> ImageTexture:
 					nombre = _tile_at(cx - MARGEN, cy - MARGEN)
 			elif _dist_a_tierra(cx, cy) <= BAJIO:
 				# Bajío: dos tonos claros mezclados, para que no sea una plancha lisa.
+				# Es lo que anima el shader; esto queda de reserva si no compila.
 				nombre = "water_1" if _h(cx, cy, 41) < 45 else "water_0"
+				_mascara_bajio.set_pixel(cx, cy, Color.WHITE)
 			else:
 				nombre = "water_deep"
 			var img: Image = cache.get(nombre, fallback)
 			if img != null:
 				out.blit_rect(img, Rect2i(0, 0, T, T), Vector2i(cx * T, cy * T))
 	return ImageTexture.create_from_image(out)
+
+
+## Pone en marcha el oleaje del bajío. El mapa se compone UNA vez y el shader
+## sustituye solo las celdas de la máscara, sacando el píxel de un atlas con los
+## cuatro fotogramas de agua. El mar profundo se queda quieto a propósito: rompe
+## en la orilla y se calma al fondo, que es como se ve el agua de verdad.
+func _animar_bajio() -> void:
+	if _mascara_bajio == null:
+		return
+	var sh: Shader = load(SHADER_BAJIO)
+	if sh == null:
+		return  # sin shader se queda el bajío estático, que ya está compuesto
+	# Atlas 64×16 con water_0..3 en fila.
+	var atlas := Image.create(T * 4, T, false, Image.FORMAT_RGBA8)
+	for i in 4:
+		var tex: Texture2D = load(DIR + "water_%d.png" % i)
+		if tex == null:
+			return
+		var img: Image = tex.get_image()
+		img.convert(Image.FORMAT_RGBA8)
+		atlas.blit_rect(img, Rect2i(0, 0, T, T), Vector2i(i * T, 0))
+	var mat := ShaderMaterial.new()
+	mat.shader = sh
+	mat.set_shader_parameter("mascara", ImageTexture.create_from_image(_mascara_bajio))
+	mat.set_shader_parameter("fotogramas", ImageTexture.create_from_image(atlas))
+	mat.set_shader_parameter("celdas", Vector2(COLS + 2 * MARGEN, ROWS + 2 * MARGEN))
+	material = mat
+	_mascara_bajio = null  # ya vive en la textura; soltamos la copia de CPU
 
 
 ## Mar abierto detrás de todo: una sola textura de agua profunda repetida. Cubre
