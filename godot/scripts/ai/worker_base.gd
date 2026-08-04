@@ -44,6 +44,11 @@ var level: int = 1
 var xp: int = 0
 var wtrait: int = Trait.DILIGENTE
 var _favorite_type: int = -1  ## especialización: recurso preferido de entre sus tipos
+var _favorite_manual: bool = false  ## true si la eligió el jugador, false si salió al azar
+## Cuánto pesa el favorito al elegir destino. Se multiplica por la distancia AL
+## CUADRADO, así que 0.45 equivale a tratarlo como si estuviese un ~33% más cerca:
+## se nota la especialidad, pero un nodo a los pies gana a un favorito lejano.
+const FAVORITE_BIAS: float = 0.45
 var energy: float = 1.0
 var _resting: bool = false
 var _rest_target: Node2D = null
@@ -265,6 +270,7 @@ func get_save_dict() -> Dictionary:
 		"trait": wtrait,
 		"energy": energy,
 		"favorite": _favorite_type,
+		"favorite_manual": _favorite_manual,
 	}
 
 
@@ -275,6 +281,7 @@ func apply_save_dict(d: Dictionary) -> void:
 	xp = int(d.get("xp", xp))
 	energy = clampf(float(d.get("energy", energy)), 0.0, 1.0)
 	_favorite_type = int(d.get("favorite", _favorite_type))
+	_favorite_manual = bool(d.get("favorite_manual", false))
 	if d.has("trait"):
 		wtrait = int(d["trait"])
 		_apply_trait_behavior()
@@ -436,13 +443,29 @@ func _on_body_clicked(_vp: Node, event: InputEvent, _idx: int) -> void:
 		return
 	var menu: Node = get_tree().get_first_node_in_group("entity_menu")
 	if menu != null and menu.has_method("open_for"):
-		menu.open_for(self, _worker_title(), [{
+		var acciones: Array = [{
 			"rename": true,
 			"text": "✏ Renombrar",
 			"get": Callable(self, "_get_name"),
 			"set": Callable(self, "set_worker_name"),
-		}], Callable(self, "_stats_data"), _portrait_texture())
+		}]
+		if preferred_resource_types.size() > 1:
+			acciones.append({
+				"cycle": true,
+				"label": "Especialidad",
+				"get": Callable(self, "especialidad_texto"),
+				"next": Callable(self, "ciclar_especialidad"),
+			})
+		acciones.append_array(_acciones_de_oficio())
+		menu.open_for(self, _worker_title(), acciones,
+				Callable(self, "_stats_data"), _portrait_texture())
 		get_viewport().set_input_as_handled()
+
+
+## Órdenes propias de cada oficio, para su menú. Vacío en el trabajador genérico;
+## el Leñador añade la de talar.
+func _acciones_de_oficio() -> Array:
+	return []
 
 
 ## Frame actual del sprite como mini-retrato para el menú (o null).
@@ -475,8 +498,8 @@ func _stats_data() -> Array:
 	else:
 		out.append({"label": "Nivel", "text": "MÁX (%d)" % level})
 	out.append({"label": "Rasgo", "text": String(TRAIT_NAMES.get(wtrait, "—"))})
-	if _favorite_type >= 0:
-		out.append({"label": "Especialidad", "text": _resource_type_label(_favorite_type)})
+	if preferred_resource_types.size() > 1:
+		out.append({"label": "Especialidad", "text": especialidad_texto()})
 	out.append({"label": "Ahora", "text": _state_label()})
 	return out
 
@@ -493,6 +516,31 @@ func _resource_type_label(t: int) -> String:
 		GameEnums.ResourceType.AMETHYST_FRAGMENT: return "💎 Amatista"
 		GameEnums.ResourceType.IRON_INGOT: return "🔩 Lingote"
 		_: return "—"
+
+
+func especialidad_texto() -> String:
+	if _favorite_manual:
+		return _resource_type_label(_favorite_type)
+	return "🎲 Aleatorio"
+
+
+func ciclar_especialidad() -> void:
+	if preferred_resource_types.is_empty():
+		return
+	if not _favorite_manual:
+		# Aleatorio → primer tipo
+		_favorite_type = preferred_resource_types[0]
+		_favorite_manual = true
+	else:
+		var idx: int = preferred_resource_types.find(_favorite_type)
+		if idx < 0 or idx >= preferred_resource_types.size() - 1:
+			# Último tipo (o no encontrado) → vuelve a Aleatorio
+			_favorite_type = preferred_resource_types[randi() % preferred_resource_types.size()]
+			_favorite_manual = false
+		else:
+			# Siguiente tipo en la lista
+			_favorite_type = preferred_resource_types[idx + 1]
+			_favorite_manual = true
 
 
 func _state_label() -> String:
@@ -526,8 +574,32 @@ func _worker_title() -> String:
 
 
 func _capture_home() -> void:
+	# Una partida guardada ANTES de que el wander tuviera límites puede traer al
+	# worker ya fuera de la sala. Si su casa cae fuera de toda zona, el recorte
+	# de `_pick_wander_target` no tendría contra qué recortar y se quedaría
+	# paseando por encima del muro para siempre. Se le devuelve a la zona más
+	# cercana, que es de donde nunca debio salir.
 	_home_position = global_position
-	_wander_target = global_position
+	if GridManager.get_zone_rect_at(_home_position).size == Vector2.ZERO:
+		var destino: Rect2 = _zona_mas_cercana(_home_position)
+		if destino.size != Vector2.ZERO:
+			_home_position = _recortar(_home_position, destino, WANDER_MARGEN)
+			global_position = _home_position
+	_wander_target = _home_position
+
+
+static func _zona_mas_cercana(p: Vector2) -> Rect2:
+	var mejor := Rect2()
+	var mejor_d: float = INF
+	for z in [GameEnums.ZoneType.NATURE, GameEnums.ZoneType.WORKSHOP, GameEnums.ZoneType.RECEPTION]:
+		var r: Rect2 = GridManager.get_zone_rect(z)
+		if r.size == Vector2.ZERO:
+			continue
+		var d: float = p.distance_to(_recortar(p, r, 0.0))
+		if d < mejor_d:
+			mejor_d = d
+			mejor = r
+	return mejor
 
 
 func _physics_process(delta: float) -> void:
@@ -839,20 +911,24 @@ func _find_best_target():
 	# (compat workers viejos), usamos el tipo singular.
 	if preferred_resource_types.is_empty():
 		return ResourceManager.get_closest_available_node(global_position, preferred_resource_type, self)
-	# Especialización individual: primero intenta su recurso favorito.
-	if _favorite_type >= 0:
-		var fav = ResourceManager.get_closest_available_node(global_position, _favorite_type, self)
-		if fav != null:
-			return fav
+	# Especialización individual: el favorito PESA, pero no manda.
+	#
+	# Antes se cogía el favorito siempre que hubiese un nodo suyo libre, y solo se
+	# miraba el resto si no lo había. Con listas de dos tipos daba igual; al subir el
+	# Espíritu a nueve tipos y el Gólem a seis dejó de dar igual: como las parcelas
+	# regeneran, el favorito casi nunca falta, así que un ayudante se quedaba pegado a
+	# un único recurso y no volvía a tocar los otros ocho en toda la partida.
 	var best = null
-	var best_dist_sq: float = INF
+	var best_score: float = INF
 	for t in preferred_resource_types:
 		var cand = ResourceManager.get_closest_available_node(global_position, t, self)
 		if cand == null:
 			continue
 		var d: float = cand.global_position.distance_squared_to(global_position)
-		if d < best_dist_sq:
-			best_dist_sq = d
+		if t == _favorite_type:
+			d *= FAVORITE_BIAS
+		if d < best_score:
+			best_score = d
 			best = cand
 	return best
 
@@ -867,11 +943,30 @@ func _wander(delta: float) -> void:
 	_drive_to(_wander_target, move_speed * WANDER_SPEED_FACTOR, delta)
 
 
+## Margen para que el sprite no quede medio metido en el muro: el worker se para
+## por su base, pero mide ~48 px de alto y el borde de la zona es el suelo.
+const WANDER_MARGEN: float = 12.0
+
+
 func _pick_wander_target() -> void:
 	var angle: float = randf() * TAU
 	var radius: float = randf_range(WANDER_RADIUS * 0.3, WANDER_RADIUS) * _wander_mult
 	_wander_target = _home_position + Vector2(cos(angle), sin(angle)) * radius
+	# Sin esto el destino podía caer FUERA de la sala y el worker se iba andando
+	# por encima de la pared: no hay colisionadores en el mundo, así que nada lo
+	# frenaba. Se recorta contra la zona donde vive, no contra la actual, para
+	# que uno que ande cruzando de patio no se quede clavado en el umbral.
+	var rect: Rect2 = GridManager.get_zone_rect_at(_home_position)
+	if rect.size != Vector2.ZERO:
+		_wander_target = _recortar(_wander_target, rect, WANDER_MARGEN)
 	_wander_timer = randf_range(WANDER_REPICK_MIN, WANDER_REPICK_MAX)
+
+
+static func _recortar(p: Vector2, r: Rect2, margen: float) -> Vector2:
+	var m: float = minf(margen, minf(r.size.x, r.size.y) * 0.5 - 1.0)
+	return Vector2(
+		clampf(p.x, r.position.x + m, r.end.x - m),
+		clampf(p.y, r.position.y + m, r.end.y - m))
 
 
 func _release_target() -> void:

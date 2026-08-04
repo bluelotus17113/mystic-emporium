@@ -3,7 +3,8 @@ extends Control
 ## Siempre ofrece "Seguir con la cámara"; open_for admite acciones extra:
 ##   {"text": String, "cb": Callable}                          → botón simple
 ##   {"rename": true, "text": String, "get": Callable, "set": Callable} → renombrar
-## Se cierra al elegir una opción o al hacer clic fuera.
+##   {"cycle": true, "label": String, "get": Callable, "next": Callable} → selector cíclico
+## Se cierra al elegir una opción (salvo cycle, que no cierra) o al hacer clic fuera.
 
 var _target: Node2D = null
 var _panel: PanelContainer
@@ -171,6 +172,8 @@ func _rebuild_extra(actions: Array) -> void:
 			continue
 		if a.get("rename", false):
 			_add_rename_row(a)
+		elif a.get("cycle", false):
+			_add_cycle_row(a)
 		else:
 			var b := Button.new()
 			b.text = String(a.get("text", "Acción"))
@@ -206,6 +209,22 @@ func _add_rename_row(a: Dictionary) -> void:
 		ok.pressed.connect(func(): commit.call())
 		_extra_box.add_child(ok)
 		_panel.reset_size())
+	_extra_box.add_child(btn)
+
+
+func _add_cycle_row(a: Dictionary) -> void:
+	var btn := Button.new()
+	var getter: Callable = a.get("get", Callable())
+	var next_fn: Callable = a.get("next", Callable())
+	var label: String = String(a.get("label", ""))
+	var refresh := func():
+		if getter.is_valid():
+			btn.text = "%s: %s" % [label, String(getter.call())]
+	refresh.call()
+	btn.pressed.connect(func():
+		if next_fn.is_valid():
+			next_fn.call()
+		refresh.call())
 	_extra_box.add_child(btn)
 
 
