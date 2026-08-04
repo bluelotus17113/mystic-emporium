@@ -11,7 +11,7 @@ display_name = "Curtido de Bestias"
 description = "Investigación tier 3."
 required_station_type = 5
 research_time = 35
-coin_cost = 350
+coin_cost = 1050
 
 tier = 3
 recipe_to_unlock = ExtResource("rcp_aceite_bestia")

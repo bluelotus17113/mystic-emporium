@@ -11,7 +11,7 @@ display_name = "Construcción Observatorio"
 description = "Investigación tier 4."
 required_station_type = 7
 research_time = 80
-coin_cost = 800
+coin_cost = 4000
 
 tier = 4
 recipe_to_unlock = ExtResource("rcp_pergamino_rayo")

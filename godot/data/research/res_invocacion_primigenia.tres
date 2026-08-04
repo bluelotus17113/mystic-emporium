@@ -14,7 +14,7 @@ description = "Llamar a las bestias que existían antes que los dioses."
 prerequisites = Array[ResearchData]([ExtResource("2_pre"), ExtResource("3_pre")])
 required_station_type = 5
 research_time = 260.0
-coin_cost = 3000
+coin_cost = 21000
 
 recipe_to_unlock = ExtResource("4_rcp")
 extra_recipes_to_unlock = Array[RecipeData]([ExtResource("5_erc")])

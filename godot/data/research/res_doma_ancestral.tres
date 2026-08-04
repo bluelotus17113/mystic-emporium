@@ -12,7 +12,7 @@ description = "Antiguos rituales para vincular espíritus guardianes."
 prerequisites = Array[ResearchData]([ExtResource("2_pre")])
 required_station_type = 5
 research_time = 120.0
-coin_cost = 1150
+coin_cost = 5750
 
 recipe_to_unlock = ExtResource("3_rcp")
 required_item_ids = PackedStringArray("raiz_umbria", "esencia_espiritual", "incienso_espiritual")

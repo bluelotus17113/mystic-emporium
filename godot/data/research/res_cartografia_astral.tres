@@ -13,7 +13,7 @@ description = "Trazar mapas del cielo para destilar el polvo de las estrellas."
 prerequisites = Array[ResearchData]([ExtResource("2_pre")])
 required_station_type = 7
 research_time = 120.0
-coin_cost = 1200
+coin_cost = 6000
 
 recipe_to_unlock = ExtResource("3_rcp")
 extra_recipes_to_unlock = Array[RecipeData]([ExtResource("4_erc")])

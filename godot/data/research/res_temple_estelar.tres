@@ -13,7 +13,7 @@ description = "El metal enfriado en el vacío del firmamento adquiere propiedade
 prerequisites = Array[ResearchData]([ExtResource("2_pre")])
 required_station_type = 2
 research_time = 120.0
-coin_cost = 1300
+coin_cost = 6500
 
 recipe_to_unlock = ExtResource("3_rcp")
 extra_recipes_to_unlock = Array[RecipeData]([ExtResource("4_erc")])

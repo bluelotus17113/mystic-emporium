@@ -13,7 +13,7 @@ description = "Extraer la quintaesencia de las criaturas mágicas."
 prerequisites = Array[ResearchData]([ExtResource("2_pre")])
 required_station_type = 5
 research_time = 120.0
-coin_cost = 1250
+coin_cost = 6250
 
 recipe_to_unlock = ExtResource("3_rcp")
 extra_recipes_to_unlock = Array[RecipeData]([ExtResource("4_erc")])

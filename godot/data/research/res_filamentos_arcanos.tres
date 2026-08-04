@@ -13,7 +13,7 @@ description = "Tejer la magia en hebras tangibles."
 prerequisites = Array[ResearchData]([ExtResource("2_pre")])
 required_station_type = 3
 research_time = 120.0
-coin_cost = 1100
+coin_cost = 5500
 
 recipe_to_unlock = ExtResource("3_rcp")
 extra_recipes_to_unlock = Array[RecipeData]([ExtResource("4_erc")])

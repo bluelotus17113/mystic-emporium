@@ -353,13 +353,13 @@ WORKER_PREFERENCES = {
 # From zone_expansion_manager.gd, NATURAL_LEVELS constant
 NATURAL_LEVELS = [
     {"label": "Pradera", "cost": 0},
-    {"label": "Claro", "cost": 120},
-    {"label": "Bosquecillo", "cost": 350},
-    {"label": "Arboleda", "cost": 800},
-    {"label": "Espesura", "cost": 1800},
-    {"label": "Fronda", "cost": 4000},
-    {"label": "Selva", "cost": 9000},
-    {"label": "Bosque Ancestral", "cost": 20000},
+    {"label": "Claro", "cost": 130},
+    {"label": "Bosquecillo", "cost": 400},
+    {"label": "Arboleda", "cost": 900},
+    {"label": "Espesura", "cost": 2200},
+    {"label": "Fronda", "cost": 10000},
+    {"label": "Selva", "cost": 25000},
+    {"label": "Bosque Ancestral", "cost": 60000},
 ]
 
 
@@ -576,13 +576,13 @@ def main():
     print("=" * 90)
 
     # Design targets:
-    #   t1 0:00-0:30  t2 0:30-2:00  t3 2:00-5:00  t4 5:00-8:00  t5 8:00-10:00+
+    #   t1 0:00-0:45  t2 0:45-3:00  t3 3:00-8:00  t4 8:00-13:00  t5 13:00-20:00
     design_hours = {
-        1: (0, 0.5),
-        2: (0.5, 2.0),
-        3: (2.0, 5.0),
-        4: (5.0, 8.0),
-        5: (8.0, 10.0),
+        1: (0, 0.75),
+        2: (0.75, 3.0),
+        3: (3.0, 8.0),
+        4: (8.0, 13.0),
+        5: (13.0, 20.0),
     }
 
     # Compute estimated income per hour for each tier (from orders)
@@ -715,7 +715,7 @@ def main():
     print("  RESUMEN FINAL")
     print("=" * 90)
     print(f"\n  Duración total estimada: {total_hours:.1f} horas")
-    print(f"  Diseño declarado: 10 horas")
+    print(f"  Diseño declarado: 18-20 horas")
     for tier, cum_h, verdict in verdicts:
         print(f"    Tier {tier}: alcanzado a las {cum_h:.1f}h — {verdict}")
 

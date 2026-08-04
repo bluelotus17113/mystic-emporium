@@ -11,7 +11,7 @@ display_name = "Familiares"
 description = "Investigación tier 5."
 required_station_type = 5
 research_time = 180
-coin_cost = 1920
+coin_cost = 13440
 
 tier = 5
 recipe_to_unlock = ExtResource("rcp_pergamino_teleport")

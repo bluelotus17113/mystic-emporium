@@ -13,7 +13,7 @@ description = "Los artesanos que dominan el temple estelar pueden forjar armas d
 prerequisites = Array[ResearchData]([ExtResource("2_pre")])
 required_station_type = 2
 research_time = 240.0
-coin_cost = 2500
+coin_cost = 17500
 
 recipe_to_unlock = ExtResource("3_rcp")
 extra_recipes_to_unlock = Array[RecipeData]([ExtResource("4_erc")])

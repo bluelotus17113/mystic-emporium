@@ -14,7 +14,7 @@ description = "El pináculo de la alquimia: convertir lo vil en oro líquido."
 prerequisites = Array[ResearchData]([ExtResource("2_pre"), ExtResource("3_pre")])
 required_station_type = 1
 research_time = 240.0
-coin_cost = 2800
+coin_cost = 19600
 
 recipe_to_unlock = ExtResource("4_rcp")
 extra_recipes_to_unlock = Array[RecipeData]([ExtResource("5_erc")])

@@ -11,7 +11,7 @@ display_name = "Destilación"
 description = "Investigación tier 3."
 required_station_type = 1
 research_time = 38
-coin_cost = 380
+coin_cost = 1140
 
 tier = 3
 recipe_to_unlock = ExtResource("rcp_esencia_estabilizada")

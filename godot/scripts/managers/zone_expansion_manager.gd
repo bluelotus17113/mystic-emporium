@@ -15,13 +15,13 @@ const NATURAL_HEIGHT: float = 400.0    # (legado)
 const MAP_MARGIN: float = 40.0         # margen interno respecto al borde del mapa
 const NATURAL_LEVELS: Array = [
 	{"width": 900.0,  "height": 520.0,  "cost": 0,     "label": "Pradera"},
-	{"width": 1250.0, "height": 700.0,  "cost": 120,   "label": "Claro"},
-	{"width": 1650.0, "height": 920.0,  "cost": 350,   "label": "Bosquecillo"},
-	{"width": 2100.0, "height": 1180.0, "cost": 800,   "label": "Arboleda"},
-	{"width": 2600.0, "height": 1460.0, "cost": 1800,  "label": "Espesura"},
-	{"width": 3150.0, "height": 1760.0, "cost": 4000,  "label": "Fronda"},
-	{"width": 3600.0, "height": 2050.0, "cost": 9000,  "label": "Selva"},
-	{"width": 4000.0, "height": 2400.0, "cost": 20000, "label": "Bosque Ancestral"},
+	{"width": 1250.0, "height": 700.0,  "cost": 130,   "label": "Claro"},
+	{"width": 1650.0, "height": 920.0,  "cost": 400,   "label": "Bosquecillo"},
+	{"width": 2100.0, "height": 1180.0, "cost": 900,   "label": "Arboleda"},
+	{"width": 2600.0, "height": 1460.0, "cost": 2200,  "label": "Espesura"},
+	{"width": 3150.0, "height": 1760.0, "cost": 10000,  "label": "Fronda"},
+	{"width": 3600.0, "height": 2050.0, "cost": 25000,  "label": "Selva"},
+	{"width": 4000.0, "height": 2400.0, "cost": 60000, "label": "Bosque Ancestral"},
 ]
 
 

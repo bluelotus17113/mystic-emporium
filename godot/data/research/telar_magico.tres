@@ -11,7 +11,7 @@ display_name = "Telar Mágico"
 description = "Investigación tier 3."
 required_station_type = 3
 research_time = 40
-coin_cost = 400
+coin_cost = 1200
 
 tier = 3
 recipe_to_unlock = ExtResource("rcp_tinta_arcana")

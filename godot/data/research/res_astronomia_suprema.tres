@@ -13,7 +13,7 @@ description = "Comprender la mecánica celeste en su totalidad."
 prerequisites = Array[ResearchData]([ExtResource("2_pre")])
 required_station_type = 7
 research_time = 280.0
-coin_cost = 3800
+coin_cost = 26600
 
 recipe_to_unlock = ExtResource("3_rcp")
 extra_recipes_to_unlock = Array[RecipeData]([ExtResource("4_erc")])

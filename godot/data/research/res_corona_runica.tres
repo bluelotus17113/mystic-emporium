@@ -13,7 +13,7 @@ description = "La fusión definitiva de gemología y metalurgia arcana."
 prerequisites = Array[ResearchData]([ExtResource("2_pre")])
 required_station_type = 3
 research_time = 260.0
-coin_cost = 3200
+coin_cost = 22400
 
 recipe_to_unlock = ExtResource("3_rcp")
 extra_recipes_to_unlock = Array[RecipeData]([ExtResource("4_erc")])

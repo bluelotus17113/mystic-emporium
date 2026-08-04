@@ -11,7 +11,7 @@ display_name = "Astrología"
 description = "Investigación tier 4."
 required_station_type = 7
 research_time = 60
-coin_cost = 640
+coin_cost = 3200
 
 tier = 4
 recipe_to_unlock = ExtResource("rcp_polvo_estrella")

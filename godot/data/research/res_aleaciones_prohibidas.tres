@@ -13,7 +13,7 @@ description = "Fórmulas metalúrgicas selladas por los dioses antiguos."
 prerequisites = Array[ResearchData]([ExtResource("2_pre")])
 required_station_type = 2
 research_time = 280.0
-coin_cost = 3500
+coin_cost = 24500
 
 recipe_to_unlock = ExtResource("3_rcp")
 extra_recipes_to_unlock = Array[RecipeData]([ExtResource("4_erc")])

@@ -12,7 +12,7 @@ description = "Trazar el sello que abre las puertas entre planos."
 prerequisites = Array[ResearchData]([ExtResource("2_pre")])
 required_station_type = 5
 research_time = 240.0
-coin_cost = 2800
+coin_cost = 19600
 
 recipe_to_unlock = ExtResource("3_rcp")
 required_item_ids = PackedStringArray("incienso_espiritual", "polvo_estrella", "tinta_celestial")

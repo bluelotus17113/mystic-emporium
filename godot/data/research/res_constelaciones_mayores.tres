@@ -13,7 +13,7 @@ description = "Leer los patrones ocultos en la bóveda celeste."
 prerequisites = Array[ResearchData]([ExtResource("2_pre")])
 required_station_type = 7
 research_time = 220.0
-coin_cost = 2400
+coin_cost = 16800
 
 recipe_to_unlock = ExtResource("3_rcp")
 extra_recipes_to_unlock = Array[RecipeData]([ExtResource("4_erc")])
