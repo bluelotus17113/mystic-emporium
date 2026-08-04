@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="ResearchData" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/research_data.gd" id="1_re"]
+[ext_resource type="Resource" path="res://data/research/destilacion.tres" id="2_pre"]
+[ext_resource type="Resource" path="res://data/recipes/craft_cristal_abisal.tres" id="3_rcp"]
+[ext_resource type="Resource" path="res://data/recipes/craft_extracto_umbrio.tres" id="4_erc"]
+
+[resource]
+script = ExtResource("1_re")
+id = &"res_alquimia_abisal"
+display_name = "Alquimia Abisal"
+description = "La sal de las profundidades esconde propiedades que solo un maestro alquimista puede despertar."
+prerequisites = Array[ResearchData]([ExtResource("2_pre")])
+required_station_type = 1
+research_time = 120.0
+coin_cost = 1200
+
+recipe_to_unlock = ExtResource("3_rcp")
+extra_recipes_to_unlock = Array[RecipeData]([ExtResource("4_erc")])
+required_item_ids = PackedStringArray("sal_abisal", "cristal_cuarzo", "agua_arcana")
+required_item_qty = PackedInt32Array(30, 20, 15)
+tier = 4

@@ -11,5 +11,5 @@ display_name = "Pergamino de Celeridad"
 description = "Confiere velocidad sobrenatural por un breve tiempo."
 max_stack = 30
 category = 2
-base_value = 90
+base_value = 29
 tier = 3

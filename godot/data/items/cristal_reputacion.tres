@@ -10,6 +10,6 @@ id = &"cristal_reputacion"
 display_name = "Cristal de Reputación"
 description = "Token de reputación visible."
 max_stack = 99
-category = 5
+category = 3
 base_value = 15
 tier = 2

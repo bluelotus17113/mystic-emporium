@@ -11,5 +11,5 @@ display_name = "Daga Encantada"
 description = "Hoja imbuida con energía arcana. Producto premium."
 max_stack = 20
 category = 2
-base_value = 120
+base_value = 55
 tier = 4

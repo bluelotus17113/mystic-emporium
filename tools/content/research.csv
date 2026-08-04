@@ -1,0 +1,22 @@
+id,display_name,description,prerequisites,required_station_type,research_time,coin_cost,required_item_ids,recipe_to_unlock_id,extra_recipes_to_unlock_ids,tier
+# ===== CADENA A: ALQUIMIA PROFUNDA (desde res_destilacion T3, estacion 1) =====
+res_alquimia_abisal,Alquimia Abisal,La sal de las profundidades esconde propiedades que solo un maestro alquimista puede despertar.,res_destilacion,1,120.0,1200,sal_abisal:30|cristal_cuarzo:20|agua_arcana:15,craft_cristal_abisal,craft_extracto_umbrio,4
+res_sintesis_elemental,Síntesis Elemental,Combinar la esencia de los elementos en un solo crisol.,res_destilacion,1,120.0,1100,polvo_espectro:25|esencia_estabilizada:12|hierba_lunar:20,craft_amalgama_arcana,craft_balsamo_lunar,4
+res_transmutacion_suprema,Transmutación Suprema,El pináculo de la alquimia: convertir lo vil en oro líquido.,res_alquimia_abisal|res_sintesis_elemental,1,240.0,2800,cristal_abisal:15|extracto_umbrio:15|esencia_luz:10,craft_tonico_abisal,craft_elixir_sombrio,5
+# ===== CADENA B: FORJA ASTRAL (desde res_mineria_avanzada T4, estacion 2) =====
+res_temple_estelar,Temple Estelar,El metal enfriado en el vacío del firmamento adquiere propiedades únicas.,res_mineria_avanzada,2,120.0,1300,savia_ancestral:25|lingote_hierro:20|mena_hierro:15,craft_aleacion_estelar,craft_vidrio_obsidiana,4
+res_forja_celestial,Forja Celestial,Los artesanos que dominan el temple estelar pueden forjar armas de leyenda.,res_temple_estelar,2,240.0,2500,aleacion_estelar:12|esencia_luz:10|escama_dragon:8,craft_espada_astral,craft_armadura_celestial,5
+res_aleaciones_prohibidas,Aleaciones Prohibidas,Fórmulas metalúrgicas selladas por los dioses antiguos.,res_forja_celestial,2,280.0,3500,vidrio_obsidiana:12|nucleo_obsidiana:10|lingote_mithril:8,craft_martillo_obsidiana,craft_escudo_dragon,5
+# ===== CADENA C: BESTIARIO ARCANO (desde res_curtido_bestias T3, estacion 5) =====
+res_esencias_bestiales,Esencias Bestiales,Extraer la quintaesencia de las criaturas mágicas.,res_curtido_bestias,5,120.0,1250,hueso_wyvern:20|esencia_estabilizada:15|resina_encantada:12,craft_esencia_wyvern,craft_fibra_dragon,4
+res_doma_ancestral,Doma Ancestral,Antiguos rituales para vincular espíritus guardianes.,res_curtido_bestias,5,120.0,1150,raiz_umbria:20|esencia_espiritual:15|incienso_espiritual:10,craft_incienso_espiritual,,4
+res_invocacion_primigenia,Invocación Primigenia,Llamar a las bestias que existían antes que los dioses.,res_esencias_bestiales|res_doma_ancestral,5,260.0,3000,esencia_wyvern:10|esencia_sombra:10|cuero_curtido:20,craft_armadura_wyvern,craft_baston_espiritual,5
+# ===== CADENA D: ASTRONOMÍA ARCANA (desde res_astrologia T4, estacion 7) =====
+res_cartografia_astral,Cartografía Astral,Trazar mapas del cielo para destilar el polvo de las estrellas.,res_astrologia,7,120.0,1200,sal_abisal:20|polvo_lunar:15|tinta_arcana:12,craft_polvo_celestial,craft_tinta_celestial,4
+res_constelaciones_mayores,Constelaciones Mayores,Leer los patrones ocultos en la bóveda celeste.,res_cartografia_astral,7,220.0,2400,polvo_celestial:12|pergamino_blanco:20|polvo_estrella:10,craft_mapa_constelaciones,craft_reloj_celestial,5
+res_astronomia_suprema,Astronomía Suprema,Comprender la mecánica celeste en su totalidad.,res_constelaciones_mayores,7,280.0,3800,tinta_celestial:15|fragmento_celestial:12|lagrima_hada:8,craft_orbe_astral,craft_tomo_astral,5
+# ===== NODOS EXTRA (estacion 3, desde res_encantamiento_basico T3) =====
+res_filamentos_arcanos,Filamentos Arcanos,Tejer la magia en hebras tangibles.,res_encantamiento_basico,3,120.0,1100,hilo_tela_magica:25|savia_ancestral:15|esencia_espiritual:12,craft_filamento_estelar,craft_capa_vampirica,4
+res_gemologia_avanzada,Gemología Avanzada,Tallar gemas con precisión rúnica para liberar su poder latente.,res_encantamiento_basico,3,120.0,1250,fragmento_amatista:25|cristal_abisal:12|esencia_estabilizada:15,craft_piedra_abisal,craft_cetro_arcano,4
+res_corona_runica,Corona Rúnica,La fusión definitiva de gemología y metalurgia arcana.,res_gemologia_avanzada,3,260.0,3200,aleacion_estelar:12|lingote_mithril:10|tinta_celestial:10,craft_corona_runica,craft_amuleto_constelacion,5
+res_circulo_invocacion,Círculo de Invocación,Trazar el sello que abre las puertas entre planos.,res_doma_ancestral,5,240.0,2800,incienso_espiritual:12|polvo_estrella:10|tinta_celestial:10,craft_circulo_invocacion,,5

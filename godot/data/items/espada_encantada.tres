@@ -11,5 +11,5 @@ display_name = "Espada Encantada"
 description = "Espada larga arcana."
 max_stack = 99
 category = 3
-base_value = 100
+base_value = 500
 tier = 4

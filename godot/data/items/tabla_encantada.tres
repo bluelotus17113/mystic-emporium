@@ -11,5 +11,5 @@ display_name = "Tabla Encantada"
 description = "Madera arcana procesada para escribir pergaminos."
 max_stack = 50
 category = 1
-base_value = 24
+base_value = 18
 tier = 2

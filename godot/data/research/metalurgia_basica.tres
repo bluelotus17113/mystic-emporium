@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="ResearchData" load_steps=4 format=3 uid="uid://b5j8r7n9m1h03"]
 
 [ext_resource type="Script" path="res://scripts/data/research_data.gd" id="1_rd"]
-[ext_resource type="Resource" uid="uid://b5j8r7n9m1h02" path="res://data/research/mineria_arcana.tres" id="2_pre"]
+[ext_resource type="Resource" uid="uid://b5j8r7n9m1bf8c" path="res://data/research/mineria_arcana.tres" id="2_pre"]
 [ext_resource type="Resource" uid="uid://b5j8r7n9m1c03" path="res://data/recipes/lingote_hierro.tres" id="3_recipe"]
 
 [resource]
@@ -16,3 +16,4 @@ coin_cost = 190
 recipe_to_unlock = ExtResource("3_recipe")
 required_item_ids = PackedStringArray("cristal_cuarzo", "hierba_lunar")
 required_item_qty = PackedInt32Array(6, 3)
+tier = 2

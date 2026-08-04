@@ -11,5 +11,5 @@ display_name = "Botas de Velocidad"
 description = "Botas ligeras."
 max_stack = 99
 category = 3
-base_value = 40
+base_value = 145
 tier = 3

@@ -11,5 +11,5 @@ display_name = "Pergamino de Teletransporte"
 description = "Teletransporta al portador."
 max_stack = 99
 category = 3
-base_value = 250
+base_value = 1028
 tier = 5

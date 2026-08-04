@@ -11,5 +11,5 @@ display_name = "Mapa del Tesoro"
 description = "Indica ubicación de tesoro."
 max_stack = 99
 category = 3
-base_value = 40
+base_value = 122
 tier = 3

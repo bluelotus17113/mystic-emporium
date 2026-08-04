@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="ResearchData" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/research_data.gd" id="1_re"]
+[ext_resource type="Resource" path="res://data/research/mineria_avanzada.tres" id="2_pre"]
+[ext_resource type="Resource" path="res://data/recipes/craft_aleacion_estelar.tres" id="3_rcp"]
+[ext_resource type="Resource" path="res://data/recipes/craft_vidrio_obsidiana.tres" id="4_erc"]
+
+[resource]
+script = ExtResource("1_re")
+id = &"res_temple_estelar"
+display_name = "Temple Estelar"
+description = "El metal enfriado en el vacío del firmamento adquiere propiedades únicas."
+prerequisites = Array[ResearchData]([ExtResource("2_pre")])
+required_station_type = 2
+research_time = 120.0
+coin_cost = 1300
+
+recipe_to_unlock = ExtResource("3_rcp")
+extra_recipes_to_unlock = Array[RecipeData]([ExtResource("4_erc")])
+required_item_ids = PackedStringArray("savia_ancestral", "lingote_hierro", "mena_hierro")
+required_item_qty = PackedInt32Array(25, 20, 15)
+tier = 4

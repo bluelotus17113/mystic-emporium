@@ -11,5 +11,5 @@ display_name = "Lanza Élfica"
 description = "Lanza ligera del bosque."
 max_stack = 99
 category = 3
-base_value = 100
+base_value = 924
 tier = 4

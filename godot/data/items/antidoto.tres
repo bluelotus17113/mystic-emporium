@@ -11,5 +11,5 @@ display_name = "Antídoto"
 description = "Cura envenenamiento."
 max_stack = 99
 category = 3
-base_value = 15
+base_value = 25
 tier = 2

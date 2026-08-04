@@ -11,5 +11,5 @@ display_name = "Lingote de Oro"
 description = "Oro refinado."
 max_stack = 99
 category = 0
-base_value = 100
+base_value = 1078
 tier = 4

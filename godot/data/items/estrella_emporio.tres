@@ -11,5 +11,5 @@ description = "La culminación de tu arte. Un artefacto legendario forjado con l
 icon = ExtResource("2_icon")
 max_stack = 1
 category = 0
-base_value = 9999
+base_value = 4412
 tier = 5

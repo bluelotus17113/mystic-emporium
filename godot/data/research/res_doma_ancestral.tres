@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="ResearchData" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/research_data.gd" id="1_re"]
+[ext_resource type="Resource" path="res://data/research/curtido_bestias.tres" id="2_pre"]
+[ext_resource type="Resource" path="res://data/recipes/craft_incienso_espiritual.tres" id="3_rcp"]
+
+[resource]
+script = ExtResource("1_re")
+id = &"res_doma_ancestral"
+display_name = "Doma Ancestral"
+description = "Antiguos rituales para vincular espíritus guardianes."
+prerequisites = Array[ResearchData]([ExtResource("2_pre")])
+required_station_type = 5
+research_time = 120.0
+coin_cost = 1150
+
+recipe_to_unlock = ExtResource("3_rcp")
+required_item_ids = PackedStringArray("raiz_umbria", "esencia_espiritual", "incienso_espiritual")
+required_item_qty = PackedInt32Array(20, 15, 10)
+tier = 4

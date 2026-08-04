@@ -11,5 +11,5 @@ display_name = "Lingote de Plata"
 description = "Plata refinada."
 max_stack = 99
 category = 0
-base_value = 40
+base_value = 100
 tier = 3

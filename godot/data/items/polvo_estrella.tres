@@ -11,5 +11,5 @@ display_name = "Polvo de Estrella"
 description = "Recolectado tras lluvia de meteoros."
 max_stack = 99
 category = 0
-base_value = 100
+base_value = 145
 tier = 4

@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/item_data.gd" id="1_id"]
+
+[resource]
+script = ExtResource("1_id")
+id = &"tonico_abisal"
+display_name = "Tónico Abisal"
+description = "Elixir que otorga visión en la oscuridad absoluta."
+max_stack = 50
+category = 2
+base_value = 403
+tier = 5

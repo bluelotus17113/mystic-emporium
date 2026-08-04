@@ -11,5 +11,5 @@ display_name = "Bastón Arcano"
 description = "Bastón con cristal en la punta."
 max_stack = 99
 category = 3
-base_value = 100
+base_value = 168
 tier = 4

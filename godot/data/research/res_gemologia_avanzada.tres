@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="ResearchData" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/research_data.gd" id="1_re"]
+[ext_resource type="Resource" path="res://data/research/encantamiento_basico.tres" id="2_pre"]
+[ext_resource type="Resource" path="res://data/recipes/craft_piedra_abisal.tres" id="3_rcp"]
+[ext_resource type="Resource" path="res://data/recipes/craft_cetro_arcano.tres" id="4_erc"]
+
+[resource]
+script = ExtResource("1_re")
+id = &"res_gemologia_avanzada"
+display_name = "Gemología Avanzada"
+description = "Tallar gemas con precisión rúnica para liberar su poder latente."
+prerequisites = Array[ResearchData]([ExtResource("2_pre")])
+required_station_type = 3
+research_time = 120.0
+coin_cost = 1250
+
+recipe_to_unlock = ExtResource("3_rcp")
+extra_recipes_to_unlock = Array[RecipeData]([ExtResource("4_erc")])
+required_item_ids = PackedStringArray("fragmento_amatista", "cristal_abisal", "esencia_estabilizada")
+required_item_qty = PackedInt32Array(25, 12, 15)
+tier = 4

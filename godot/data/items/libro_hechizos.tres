@@ -11,5 +11,5 @@ display_name = "Libro de Hechizos"
 description = "Tomo completo."
 max_stack = 99
 category = 3
-base_value = 100
+base_value = 532
 tier = 4

@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="RecipeData" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/recipe_data.gd" id="1_rd"]
+[ext_resource type="Resource" path="res://data/items/esencia_estabilizada.tres" id="2_esen"]
+[ext_resource type="Resource" path="res://data/items/tinta_arcana.tres" id="3_tint"]
+[ext_resource type="Resource" path="res://data/items/agua_arcana.tres" id="4_agua"]
+[ext_resource type="Resource" path="res://data/items/esencia_sombra.tres" id="5_out"]
+
+[resource]
+script = ExtResource("1_rd")
+id = &"craft_esencia_sombra"
+display_name = "Esencia de Sombra"
+description = "Estabilizar tinta arcana para precipitar la esencia de sombra."
+ingredients = Array[ItemData]([ExtResource("2_esen"), ExtResource("3_tint"), ExtResource("4_agua")])
+ingredient_quantities = Array[int]([1, 1, 1])
+output_item = ExtResource("5_out")
+output_quantity = 1
+crafting_time = 25.0
+required_station_type = 4
+unlocked_by_default = false
+tier = 4

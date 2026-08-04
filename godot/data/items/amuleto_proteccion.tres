@@ -11,5 +11,5 @@ display_name = "Amuleto de Protección"
 description = "Amuleto encantado que repele la oscuridad."
 max_stack = 20
 category = 2
-base_value = 140
+base_value = 35
 tier = 4

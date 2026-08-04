@@ -11,5 +11,5 @@ display_name = "Pergamino en Blanco"
 description = "Base sobre la que se escriben hechizos."
 max_stack = 50
 category = 1
-base_value = 18
+base_value = 11
 tier = 2

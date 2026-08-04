@@ -11,5 +11,5 @@ display_name = "Poción de Curación Menor"
 description = "Poción base que restaura puntos de vida. Demanda constante."
 max_stack = 50
 category = 2
-base_value = 60
+base_value = 22
 tier = 3

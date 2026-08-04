@@ -11,5 +11,5 @@ display_name = "Lágrima de Hada"
 description = "Componente alquímico ultra-raro."
 max_stack = 99
 category = 0
-base_value = 100
+base_value = 306
 tier = 4

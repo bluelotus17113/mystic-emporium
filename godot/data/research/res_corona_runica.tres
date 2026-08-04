@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="ResearchData" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/research_data.gd" id="1_re"]
+[ext_resource type="Resource" path="res://data/research/res_gemologia_avanzada.tres" id="2_pre"]
+[ext_resource type="Resource" path="res://data/recipes/craft_corona_runica.tres" id="3_rcp"]
+[ext_resource type="Resource" path="res://data/recipes/craft_amuleto_constelacion.tres" id="4_erc"]
+
+[resource]
+script = ExtResource("1_re")
+id = &"res_corona_runica"
+display_name = "Corona Rúnica"
+description = "La fusión definitiva de gemología y metalurgia arcana."
+prerequisites = Array[ResearchData]([ExtResource("2_pre")])
+required_station_type = 3
+research_time = 260.0
+coin_cost = 3200
+
+recipe_to_unlock = ExtResource("3_rcp")
+extra_recipes_to_unlock = Array[RecipeData]([ExtResource("4_erc")])
+required_item_ids = PackedStringArray("aleacion_estelar", "lingote_mithril", "tinta_celestial")
+required_item_qty = PackedInt32Array(12, 10, 10)
+tier = 5

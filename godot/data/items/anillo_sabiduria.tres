@@ -11,5 +11,5 @@ display_name = "Anillo de Sabiduría"
 description = "Aumenta inteligencia."
 max_stack = 99
 category = 3
-base_value = 100
+base_value = 1398
 tier = 4

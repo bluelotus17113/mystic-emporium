@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="ResearchData" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/research_data.gd" id="1_re"]
+[ext_resource type="Resource" path="res://data/research/res_forja_celestial.tres" id="2_pre"]
+[ext_resource type="Resource" path="res://data/recipes/craft_martillo_obsidiana.tres" id="3_rcp"]
+[ext_resource type="Resource" path="res://data/recipes/craft_escudo_dragon.tres" id="4_erc"]
+
+[resource]
+script = ExtResource("1_re")
+id = &"res_aleaciones_prohibidas"
+display_name = "Aleaciones Prohibidas"
+description = "Fórmulas metalúrgicas selladas por los dioses antiguos."
+prerequisites = Array[ResearchData]([ExtResource("2_pre")])
+required_station_type = 2
+research_time = 280.0
+coin_cost = 3500
+
+recipe_to_unlock = ExtResource("3_rcp")
+extra_recipes_to_unlock = Array[RecipeData]([ExtResource("4_erc")])
+required_item_ids = PackedStringArray("vidrio_obsidiana", "nucleo_obsidiana", "lingote_mithril")
+required_item_qty = PackedInt32Array(12, 10, 8)
+tier = 5

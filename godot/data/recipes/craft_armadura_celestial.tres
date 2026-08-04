@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="RecipeData" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/recipe_data.gd" id="1_rd"]
+[ext_resource type="Resource" path="res://data/items/aleacion_estelar.tres" id="2_alea"]
+[ext_resource type="Resource" path="res://data/items/escama_dragon.tres" id="3_esca"]
+[ext_resource type="Resource" path="res://data/items/fibra_dragon.tres" id="4_fibr"]
+[ext_resource type="Resource" path="res://data/items/armadura_celestial.tres" id="5_out"]
+
+[resource]
+script = ExtResource("1_rd")
+id = &"craft_armadura_celestial"
+display_name = "Armadura Celestial"
+description = "Coraza que refleja la luz de las constelaciones."
+ingredients = Array[ItemData]([ExtResource("2_alea"), ExtResource("3_esca"), ExtResource("4_fibr")])
+ingredient_quantities = Array[int]([1, 1, 1])
+output_item = ExtResource("5_out")
+output_quantity = 1
+crafting_time = 65.0
+required_station_type = 2
+unlocked_by_default = false
+tier = 5

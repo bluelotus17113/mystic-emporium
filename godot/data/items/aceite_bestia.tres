@@ -11,5 +11,5 @@ display_name = "Aceite de Bestia"
 description = "Aceite extraído de criaturas."
 max_stack = 99
 category = 0
-base_value = 40
+base_value = 24
 tier = 3

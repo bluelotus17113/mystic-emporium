@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/item_data.gd" id="1_id"]
+
+[resource]
+script = ExtResource("1_id")
+id = &"raiz_umbria"
+display_name = "Raíz Umbría"
+description = "Crece en las cavernas donde la oscuridad es absoluta."
+max_stack = 99
+category = 0
+base_value = 120
+tier = 4

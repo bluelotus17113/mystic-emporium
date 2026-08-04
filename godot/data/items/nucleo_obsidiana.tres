@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/item_data.gd" id="1_id"]
+
+[resource]
+script = ExtResource("1_id")
+id = &"nucleo_obsidiana"
+display_name = "Núcleo de Obsidiana"
+description = "Fragmento del corazón de un volcán extinto."
+max_stack = 99
+category = 0
+base_value = 300
+tier = 5

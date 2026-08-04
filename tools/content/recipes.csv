@@ -1,0 +1,62 @@
+id,display_name,description,ingredients,output_item_id,output_quantity,crafting_time,required_station_type,tier,unlocked_by_default
+# === TIER 4 RECIPES (12) — margen 1.25 verificado ===
+craft_cristal_abisal,Cristal Abisal,Sal abisal cristalizada en una matriz de esencia espiritual.,sal_abisal:1|esencia_espiritual:1,cristal_abisal,1,25.0,1,4,false
+craft_extracto_umbrio,Extracto Umbrío,Raíz umbría macerada en agua arcana triple.,raiz_umbria:1|agua_arcana:3,extracto_umbrio,1,22.0,1,4,false
+craft_aleacion_estelar,Aleación Estelar,Savia ancestral templada con lingote de hierro y mena.,savia_ancestral:1|lingote_hierro:1|mena_hierro:2,aleacion_estelar,1,28.0,2,4,false
+craft_vidrio_obsidiana,Vidrio de Obsidiana,Polvo de espectro fundido con cristales de cuarzo.,polvo_espectro:1|cristal_cuarzo:3,vidrio_obsidiana,1,26.0,2,4,false
+craft_polvo_celestial,Polvo Celestial,Sal abisal triturada con polvo lunar como catalizador.,sal_abisal:1|polvo_lunar:1,polvo_celestial,1,24.0,7,4,false
+craft_esencia_wyvern,Esencia de Wyvern,Hueso de wyvern refinado con esencia estabilizada.,hueso_wyvern:1|esencia_estabilizada:1,esencia_wyvern,1,26.0,5,4,false
+craft_fibra_dragon,Fibra de Dragón,Hilo de tela mágica impregnado con sal abisal y resina.,sal_abisal:1|hilo_tela_magica:1|resina_encantada:1,fibra_dragon,1,30.0,3,4,false
+craft_incienso_espiritual,Incienso Espiritual,Raíz umbría infusionada con esencia de espíritus.,raiz_umbria:1|esencia_espiritual:1,incienso_espiritual,1,24.0,5,4,false
+craft_tinta_celestial,Tinta Celestial,Tinta arcana enriquecida con polvo de espectro.,tinta_arcana:1|polvo_espectro:1,tinta_celestial,1,22.0,4,4,false
+craft_filamento_estelar,Filamento Estelar,Hilo de tela mágica trenzado con savia ancestral.,hilo_tela_magica:1|savia_ancestral:1,filamento_estelar,1,24.0,3,4,false
+craft_amalgama_arcana,Amalgama Arcana,Fragmento de amatista fusionado con esencia y polvo de espectro.,fragmento_amatista:1|esencia_estabilizada:1|polvo_espectro:1,amalgama_arcana,1,28.0,1,4,false
+craft_balsamo_lunar,Bálsamo Lunar,Savia ancestral cuajada con hierba lunar.,savia_ancestral:1|hierba_lunar:2,balsamo_lunar,1,20.0,1,4,false
+# === TIER 5 RECIPES (18) — margen 1.25 verificado ===
+craft_tonico_abisal,Tónico Abisal,Elixir que otorga visión en la oscuridad absoluta.,cristal_abisal:1|extracto_umbrio:1,tonico_abisal,1,50.0,1,5,false
+craft_elixir_sombrio,Elixir Sombrío,Brebaje que permite caminar entre sombras.,extracto_umbrio:1|esencia_sombra:1,elixir_sombrio,1,55.0,1,5,false
+craft_piedra_abisal,Piedra Abisal,Gema tallada que absorbe la luz a su alrededor.,cristal_abisal:1|sal_abisal:2,piedra_abisal,1,45.0,3,5,false
+craft_espada_astral,Espada Astral,Filo forjado en el corazón de una estrella.,aleacion_estelar:1|vidrio_obsidiana:1|esencia_luz:1,espada_astral,1,60.0,2,5,false
+craft_armadura_celestial,Armadura Celestial,Coraza que refleja la luz de las constelaciones.,aleacion_estelar:1|escama_dragon:1|fibra_dragon:1,armadura_celestial,1,65.0,2,5,false
+craft_amuleto_constelacion,Amuleto de Constelación,Joya que contiene un mapa estelar en miniatura.,polvo_celestial:1|lagrima_hada:1|oro_elfico:1,amuleto_constelacion,1,55.0,3,5,false
+craft_martillo_obsidiana,Martillo de Obsidiana,Arma contundente tallada en vidrio volcánico.,vidrio_obsidiana:1|nucleo_obsidiana:1|lingote_hierro:2,martillo_obsidiana,1,62.0,2,5,false
+craft_armadura_wyvern,Armadura de Wyvern,Pechera flexible forjada con esencia de wyvern.,esencia_wyvern:1|cuero_curtido:2|lingote_hierro:1,armadura_wyvern,1,58.0,2,5,false
+craft_capa_vampirica,Capa Vampírica,Manto que drena la fuerza de quien se acerca.,sangre_vampiro:1|hilo_tela_magica:2|esencia_sombra:1,capa_vampirica,1,52.0,3,5,false
+craft_escudo_dragon,Escudo de Dragón,Barrera escamada que repele el fuego dragonil.,fibra_dragon:1|escama_dragon:1|lingote_mithril:1,escudo_dragon,1,70.0,2,5,false
+craft_baston_espiritual,Bastón Espiritual,Vara que canaliza la voz de los ancestros.,incienso_espiritual:1|madera_arcana:3|esencia_espiritual:1,baston_espiritual,1,48.0,5,5,false
+craft_circulo_invocacion,Círculo de Invocación,Artefacto que atrae entidades del plano etéreo.,incienso_espiritual:1|polvo_estrella:1|tinta_celestial:1,circulo_invocacion,1,60.0,5,5,false
+craft_mapa_constelaciones,Mapa de Constelaciones,Pergamino que revela las rutas del firmamento.,tinta_celestial:1|pergamino_blanco:2|polvo_celestial:1,mapa_constelaciones,1,55.0,4,5,false
+craft_reloj_celestial,Reloj Celestial,Cronómetro que mide el pulso de los astros.,polvo_celestial:1|aleacion_estelar:1|fragmento_celestial:1,reloj_celestial,1,68.0,7,5,false
+craft_orbe_astral,Orbe Astral,Esfera que contiene una galaxia en miniatura.,polvo_celestial:1|cristal_abisal:1|lagrima_hada:1,orbe_astral,1,72.0,7,5,false
+craft_corona_runica,Corona Rúnica,Diadema que amplifica el poder de los portadores de magia.,aleacion_estelar:1|lingote_mithril:1|tinta_celestial:1,corona_runica,1,65.0,3,5,false
+craft_cetro_arcano,Cetro Arcano,Bastón de mando que doblega la voluntad elemental.,vidrio_obsidiana:1|oro_elfico:2|esencia_luz:1,cetro_arcano,1,68.0,3,5,false
+craft_tomo_astral,Tomo Astral,Volumen encuadernado con tinta de constelaciones.,tinta_celestial:1|libro_hechizos:1|polvo_celestial:1,tomo_astral,1,55.0,4,5,false
+# === GRUPO C: intermedios faltantes (16) ===
+craft_polvo_hueso,Polvo de Hueso,Moler madera arcana con esencia espiritual para obtener polvo de hueso.,esencia_espiritual:1|madera_arcana:1|agua_arcana:2,polvo_hueso,1,18.0,1,3,false
+craft_esencia_sombra,Esencia de Sombra,Estabilizar tinta arcana para precipitar la esencia de sombra.,esencia_estabilizada:1|tinta_arcana:1|agua_arcana:1,esencia_sombra,1,25.0,4,4,false
+craft_sal_cristalizada,Sal Cristalizada,Cristalizar agua arcana sobre un núcleo de cuarzo.,agua_arcana:1|cristal_cuarzo:1,sal_cristalizada,1,10.0,1,2,true
+craft_cuarzo_purificado,Cuarzo Purificado,Purificar cristal de cuarzo con hierba lunar.,cristal_cuarzo:1|hierba_lunar:1,cuarzo_purificado,1,10.0,3,2,true
+craft_flor_sol,Flor de Sol,Cultivar una flor que atrapa la luz del sol.,hierba_lunar:1|madera_arcana:1,flor_sol,1,12.0,5,2,true
+craft_ortiga_sombria,Ortiga Sombría,Hacer brotar una ortiga de las sombras.,madera_arcana:1|agua_arcana:1,ortiga_sombria,1,12.0,5,2,true
+craft_cuero_curtido,Cuero Curtido,Curtir materiales con esencia espiritual.,esencia_espiritual:1|madera_arcana:1|agua_arcana:2,cuero_curtido,1,20.0,1,3,false
+craft_raiz_mandragora,Raíz de Mandrágora,Cultivar una mandrágora con hierbas lunares y esencia.,hierba_lunar:2|esencia_espiritual:1|cristal_cuarzo:1,raiz_mandragora,1,22.0,5,3,false
+craft_pasta_mandragora,Pasta de Mandrágora,Macerar raíz de mandrágora en agua arcana.,raiz_mandragora:1|agua_arcana:4,pasta_mandragora,2,20.0,1,3,false
+craft_pigmento_runico,Pigmento Rúnico,Triturar cristales y madera con esencia para obtener pigmento.,cristal_cuarzo:1|madera_arcana:1|esencia_espiritual:1|agua_arcana:1,pigmento_runico,1,20.0,3,3,false
+craft_fragmento_obsidiana,Fragmento de Obsidiana,Forjar obsidiana a partir de cristales imbuidos.,cristal_cuarzo:2|esencia_espiritual:1|agua_arcana:1,fragmento_obsidiana,1,22.0,2,3,false
+craft_plata_pura,Plata Pura,Fundir mena de hierro con esencia espiritual para obtener plata.,mena_hierro:3|esencia_espiritual:1,plata_pura,1,18.0,2,3,false
+craft_resina_encantada,Resina Encantada,Infundir madera arcana con esencia espiritual.,madera_arcana:2|esencia_espiritual:1|agua_arcana:1,resina_encantada,1,18.0,3,3,false
+craft_hilo_tela_magica,Hilo de Tela Mágica,Hilar esencia espiritual con cristal de cuarzo.,esencia_espiritual:1|cristal_cuarzo:1|agua_arcana:2,hilo_tela_magica,1,22.0,3,3,false
+craft_esencia_luz,Esencia de Luz,Canalizar luz lunar a través de esencia estabilizada.,esencia_estabilizada:1|polvo_lunar:1|agua_arcana:3,esencia_luz,1,28.0,7,4,false
+craft_mithril_raw,Mithril Crudo,Aleación primigenia de sal abisal con esencia y amatista.,sal_abisal:1|esencia_estabilizada:1|fragmento_amatista:1,mithril_raw,1,45.0,2,5,false
+# === GRUPO B: materiales de criatura — extracción (5, estación 5) ===
+craft_champinon_sangrante,Champiñón Sangrante,Invocar y extraer un champiñón del plano de las sombras.,esencia_espiritual:1|hierba_lunar:1|cristal_cuarzo:1|agua_arcana:1,champinon_sangrante,1,18.0,5,3,false
+craft_hueso_wyvern,Hueso de Wyvern,Invocar un wyvern espectral y extraer sus huesos.,esencia_espiritual:1|esencia_estabilizada:1|polvo_lunar:1|agua_arcana:1,hueso_wyvern,1,26.0,5,4,false
+craft_sangre_vampiro,Sangre de Vampiro,Invocar una entidad vampírica y destilar su esencia vital.,esencia_espiritual:2|esencia_estabilizada:1|agua_arcana:2,sangre_vampiro,1,28.0,5,4,false
+craft_cuerno_unicornio,Cuerno de Unicornio,Invocar un unicornio astral y extraer su cuerno.,sal_abisal:1|esencia_estabilizada:1|polvo_lunar:2,cuerno_unicornio,1,50.0,5,5,false
+craft_escama_dragon,Escama de Dragón Bebé,Invocar un dragón espectral y recolectar sus escamas.,raiz_umbria:1|esencia_estabilizada:1|polvo_lunar:2,escama_dragon,1,55.0,5,5,false
+# === NUEVOS TIER 5: consumidores de recolectables (5) ===
+craft_amuleto_fenix,Amuleto Fénix,Forjar un amuleto con el corazón de un elemental de fuego.,corazon_magmatico:1|raiz_umbria:1|esencia_estabilizada:1|polvo_lunar:2,amuleto_fenix,1,55.0,3,5,false
+craft_corona_escarcha,Corona de Escarcha,Tallar una diadema con escarcha que nunca se derrite.,escarcha_eterna:1|sal_abisal:1|esencia_estabilizada:1|polvo_lunar:2,corona_escarcha,1,55.0,3,5,false
+craft_cetro_tormenta,Cetro de Tormentas,Forjar un cetro que canaliza la furia de los cielos.,rayo_cristalizado:1|raiz_umbria:1|esencia_estabilizada:1|agua_arcana:3,cetro_tormenta,1,65.0,3,5,false
+craft_orbe_fusion,Orbe de Fusión,Fusionar amalgama arcana con un fragmento celestial.,amalgama_arcana:1|fragmento_celestial:1|polvo_lunar:2,orbe_fusion,1,60.0,7,5,false
+craft_polvo_constelaciones,Polvo de Constelaciones,Pulverizar ceniza estelar con cristal abisal.,ceniza_estelar:1|cristal_abisal:1|agua_arcana:3,polvo_constelaciones,1,55.0,7,5,false

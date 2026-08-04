@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="OrderData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/order_data.gd" id="1_od"]
+[ext_resource type="Resource" path="res://data/items/flor_sol.tres" id="2_it"]
+
+[resource]
+script = ExtResource("1_od")
+id = &"ord_flor_sol"
+display_name = "Jardinero real"
+requested_item = ExtResource("2_it")
+requested_quantity = 5
+coin_reward = 120
+reputation_reward = 2
+time_limit = 0.0
+tier = 2
+min_reputation = 20

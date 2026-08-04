@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="ResearchData" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/research_data.gd" id="1_re"]
+[ext_resource type="Resource" path="res://data/research/res_alquimia_abisal.tres" id="2_pre"]
+[ext_resource type="Resource" path="res://data/research/res_sintesis_elemental.tres" id="3_pre"]
+[ext_resource type="Resource" path="res://data/recipes/craft_tonico_abisal.tres" id="4_rcp"]
+[ext_resource type="Resource" path="res://data/recipes/craft_elixir_sombrio.tres" id="5_erc"]
+
+[resource]
+script = ExtResource("1_re")
+id = &"res_transmutacion_suprema"
+display_name = "Transmutación Suprema"
+description = "El pináculo de la alquimia: convertir lo vil en oro líquido."
+prerequisites = Array[ResearchData]([ExtResource("2_pre"), ExtResource("3_pre")])
+required_station_type = 1
+research_time = 240.0
+coin_cost = 2800
+
+recipe_to_unlock = ExtResource("4_rcp")
+extra_recipes_to_unlock = Array[RecipeData]([ExtResource("5_erc")])
+required_item_ids = PackedStringArray("cristal_abisal", "extracto_umbrio", "esencia_luz")
+required_item_qty = PackedInt32Array(15, 15, 10)
+tier = 5

@@ -10,6 +10,6 @@ id = &"vale_gremio"
 display_name = "Vale del Gremio"
 description = "Cupon para favor del gremio."
 max_stack = 99
-category = 5
+category = 3
 base_value = 40
 tier = 3

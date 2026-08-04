@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="OrderData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/order_data.gd" id="1_od"]
+[ext_resource type="Resource" path="res://data/items/circulo_invocacion.tres" id="2_it"]
+
+[resource]
+script = ExtResource("1_od")
+id = &"ord_circulo_invocacion"
+display_name = "Invocador real"
+requested_item = ExtResource("2_it")
+requested_quantity = 1
+coin_reward = 1537
+reputation_reward = 5
+time_limit = 0.0
+tier = 5
+min_reputation = 155

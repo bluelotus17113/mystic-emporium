@@ -10,6 +10,6 @@ id = &"token_evento"
 display_name = "Token de Evento"
 description = "Premio de evento estacional."
 max_stack = 99
-category = 5
+category = 3
 base_value = 15
 tier = 2

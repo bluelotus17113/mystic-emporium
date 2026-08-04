@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="OrderData" load_steps=3 format=3 uid="uid://b5j8r7n9m1d04"]
+[gd_resource type="Resource" script_class="OrderData" load_steps=3 format=3 uid="uid://cpf0bk6bmsuv6"]
 
 [ext_resource type="Script" path="res://scripts/data/order_data.gd" id="1_od"]
 [ext_resource type="Resource" uid="uid://b5j8r7n9m1b02" path="res://data/items/cristal_cuarzo.tres" id="2_cc"]
@@ -9,6 +9,8 @@ id = &"order_cristal"
 display_name = "Joyero curioso"
 requested_item = ExtResource("2_cc")
 requested_quantity = 3
-coin_reward = 60
+coin_reward = 31
 reputation_reward = 1
 time_limit = 0.0
+tier = 1
+min_reputation = 0

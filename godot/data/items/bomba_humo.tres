@@ -11,5 +11,5 @@ display_name = "Bomba de Humo"
 description = "Humo distractor."
 max_stack = 99
 category = 3
-base_value = 15
+base_value = 194
 tier = 2

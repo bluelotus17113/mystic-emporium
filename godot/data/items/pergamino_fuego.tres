@@ -11,5 +11,5 @@ display_name = "Pergamino de Fuego"
 description = "Hechizo de fuego."
 max_stack = 99
 category = 3
-base_value = 40
+base_value = 125
 tier = 3

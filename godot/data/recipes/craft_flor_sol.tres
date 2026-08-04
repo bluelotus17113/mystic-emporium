@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="RecipeData" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/recipe_data.gd" id="1_rd"]
+[ext_resource type="Resource" path="res://data/items/hierba_lunar.tres" id="2_hier"]
+[ext_resource type="Resource" path="res://data/items/madera_arcana.tres" id="3_made"]
+[ext_resource type="Resource" path="res://data/items/flor_sol.tres" id="4_out"]
+
+[resource]
+script = ExtResource("1_rd")
+id = &"craft_flor_sol"
+display_name = "Flor de Sol"
+description = "Cultivar una flor que atrapa la luz del sol."
+ingredients = Array[ItemData]([ExtResource("2_hier"), ExtResource("3_made")])
+ingredient_quantities = Array[int]([1, 1])
+output_item = ExtResource("4_out")
+output_quantity = 1
+crafting_time = 12.0
+required_station_type = 5
+unlocked_by_default = true
+tier = 2

@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/item_data.gd" id="1_id"]
+
+[resource]
+script = ExtResource("1_id")
+id = &"extracto_umbrio"
+display_name = "Extracto Umbrío"
+description = "Destilado concentrado de raíz umbría."
+max_stack = 99
+category = 1
+base_value = 169
+tier = 4

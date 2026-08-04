@@ -11,5 +11,5 @@ display_name = "Poción de Fuerza Menor"
 description = "Aumenta temporalmente la fuerza física."
 max_stack = 40
 category = 2
-base_value = 75
+base_value = 38
 tier = 3

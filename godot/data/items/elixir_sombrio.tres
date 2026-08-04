@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/item_data.gd" id="1_id"]
+
+[resource]
+script = ExtResource("1_id")
+id = &"elixir_sombrio"
+display_name = "Elixir Sombrío"
+description = "Brebaje que permite caminar entre sombras."
+max_stack = 50
+category = 2
+base_value = 337
+tier = 5

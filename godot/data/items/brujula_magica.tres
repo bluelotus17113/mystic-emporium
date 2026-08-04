@@ -11,5 +11,5 @@ display_name = "Brújula Mágica"
 description = "Brújula que apunta a magia."
 max_stack = 99
 category = 3
-base_value = 40
+base_value = 194
 tier = 3

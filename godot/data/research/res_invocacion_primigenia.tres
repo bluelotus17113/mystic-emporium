@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="ResearchData" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/research_data.gd" id="1_re"]
+[ext_resource type="Resource" path="res://data/research/res_esencias_bestiales.tres" id="2_pre"]
+[ext_resource type="Resource" path="res://data/research/res_doma_ancestral.tres" id="3_pre"]
+[ext_resource type="Resource" path="res://data/recipes/craft_armadura_wyvern.tres" id="4_rcp"]
+[ext_resource type="Resource" path="res://data/recipes/craft_baston_espiritual.tres" id="5_erc"]
+
+[resource]
+script = ExtResource("1_re")
+id = &"res_invocacion_primigenia"
+display_name = "Invocación Primigenia"
+description = "Llamar a las bestias que existían antes que los dioses."
+prerequisites = Array[ResearchData]([ExtResource("2_pre"), ExtResource("3_pre")])
+required_station_type = 5
+research_time = 260.0
+coin_cost = 3000
+
+recipe_to_unlock = ExtResource("4_rcp")
+extra_recipes_to_unlock = Array[RecipeData]([ExtResource("5_erc")])
+required_item_ids = PackedStringArray("esencia_wyvern", "esencia_sombra", "cuero_curtido")
+required_item_qty = PackedInt32Array(10, 10, 20)
+tier = 5

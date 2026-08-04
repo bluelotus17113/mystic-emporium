@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="ResearchData" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/research_data.gd" id="1_re"]
+[ext_resource type="Resource" path="res://data/research/curtido_bestias.tres" id="2_pre"]
+[ext_resource type="Resource" path="res://data/recipes/craft_esencia_wyvern.tres" id="3_rcp"]
+[ext_resource type="Resource" path="res://data/recipes/craft_fibra_dragon.tres" id="4_erc"]
+
+[resource]
+script = ExtResource("1_re")
+id = &"res_esencias_bestiales"
+display_name = "Esencias Bestiales"
+description = "Extraer la quintaesencia de las criaturas mágicas."
+prerequisites = Array[ResearchData]([ExtResource("2_pre")])
+required_station_type = 5
+research_time = 120.0
+coin_cost = 1250
+
+recipe_to_unlock = ExtResource("3_rcp")
+extra_recipes_to_unlock = Array[RecipeData]([ExtResource("4_erc")])
+required_item_ids = PackedStringArray("hueso_wyvern", "esencia_estabilizada", "resina_encantada")
+required_item_qty = PackedInt32Array(20, 15, 12)
+tier = 4

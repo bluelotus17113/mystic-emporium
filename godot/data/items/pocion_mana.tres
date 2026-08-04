@@ -11,5 +11,5 @@ display_name = "Poción de Maná"
 description = "Restaura maná."
 max_stack = 99
 category = 3
-base_value = 15
+base_value = 69
 tier = 2

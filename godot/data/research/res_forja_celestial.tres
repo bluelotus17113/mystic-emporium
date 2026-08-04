@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="ResearchData" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/research_data.gd" id="1_re"]
+[ext_resource type="Resource" path="res://data/research/res_temple_estelar.tres" id="2_pre"]
+[ext_resource type="Resource" path="res://data/recipes/craft_espada_astral.tres" id="3_rcp"]
+[ext_resource type="Resource" path="res://data/recipes/craft_armadura_celestial.tres" id="4_erc"]
+
+[resource]
+script = ExtResource("1_re")
+id = &"res_forja_celestial"
+display_name = "Forja Celestial"
+description = "Los artesanos que dominan el temple estelar pueden forjar armas de leyenda."
+prerequisites = Array[ResearchData]([ExtResource("2_pre")])
+required_station_type = 2
+research_time = 240.0
+coin_cost = 2500
+
+recipe_to_unlock = ExtResource("3_rcp")
+extra_recipes_to_unlock = Array[RecipeData]([ExtResource("4_erc")])
+required_item_ids = PackedStringArray("aleacion_estelar", "esencia_luz", "escama_dragon")
+required_item_qty = PackedInt32Array(12, 10, 8)
+tier = 5

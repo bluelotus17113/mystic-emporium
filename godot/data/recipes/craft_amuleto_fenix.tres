@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="RecipeData" load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/recipe_data.gd" id="1_rd"]
+[ext_resource type="Resource" path="res://data/items/corazon_magmatico.tres" id="2_cora"]
+[ext_resource type="Resource" path="res://data/items/raiz_umbria.tres" id="3_raiz"]
+[ext_resource type="Resource" path="res://data/items/esencia_estabilizada.tres" id="4_esen"]
+[ext_resource type="Resource" path="res://data/items/polvo_lunar.tres" id="5_polv"]
+[ext_resource type="Resource" path="res://data/items/amuleto_fenix.tres" id="6_out"]
+
+[resource]
+script = ExtResource("1_rd")
+id = &"craft_amuleto_fenix"
+display_name = "Amuleto Fénix"
+description = "Forjar un amuleto con el corazón de un elemental de fuego."
+ingredients = Array[ItemData]([ExtResource("2_cora"), ExtResource("3_raiz"), ExtResource("4_esen"), ExtResource("5_polv")])
+ingredient_quantities = Array[int]([1, 1, 1, 2])
+output_item = ExtResource("6_out")
+output_quantity = 1
+crafting_time = 55.0
+required_station_type = 3
+unlocked_by_default = false
+tier = 5

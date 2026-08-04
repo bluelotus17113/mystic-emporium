@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="ResearchData" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/research_data.gd" id="1_re"]
+[ext_resource type="Resource" path="res://data/research/destilacion.tres" id="2_pre"]
+[ext_resource type="Resource" path="res://data/recipes/craft_amalgama_arcana.tres" id="3_rcp"]
+[ext_resource type="Resource" path="res://data/recipes/craft_balsamo_lunar.tres" id="4_erc"]
+
+[resource]
+script = ExtResource("1_re")
+id = &"res_sintesis_elemental"
+display_name = "Síntesis Elemental"
+description = "Combinar la esencia de los elementos en un solo crisol."
+prerequisites = Array[ResearchData]([ExtResource("2_pre")])
+required_station_type = 1
+research_time = 120.0
+coin_cost = 1100
+
+recipe_to_unlock = ExtResource("3_rcp")
+extra_recipes_to_unlock = Array[RecipeData]([ExtResource("4_erc")])
+required_item_ids = PackedStringArray("polvo_espectro", "esencia_estabilizada", "hierba_lunar")
+required_item_qty = PackedInt32Array(25, 12, 20)
+tier = 4

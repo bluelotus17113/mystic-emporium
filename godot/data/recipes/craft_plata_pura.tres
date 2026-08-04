@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="RecipeData" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/recipe_data.gd" id="1_rd"]
+[ext_resource type="Resource" path="res://data/items/mena_hierro.tres" id="2_mena"]
+[ext_resource type="Resource" path="res://data/items/esencia_espiritual.tres" id="3_esen"]
+[ext_resource type="Resource" path="res://data/items/plata_pura.tres" id="4_out"]
+
+[resource]
+script = ExtResource("1_rd")
+id = &"craft_plata_pura"
+display_name = "Plata Pura"
+description = "Fundir mena de hierro con esencia espiritual para obtener plata."
+ingredients = Array[ItemData]([ExtResource("2_mena"), ExtResource("3_esen")])
+ingredient_quantities = Array[int]([3, 1])
+output_item = ExtResource("4_out")
+output_quantity = 1
+crafting_time = 18.0
+required_station_type = 2
+unlocked_by_default = false
+tier = 3

@@ -1,0 +1,48 @@
+id,display_name,requested_item_id,requested_quantity,coin_reward,reputation_reward,time_limit,tier,min_reputation
+# === TIER 4 PEDIDOS (8) — min_reputation 60-100, coin = 1.8×value aprox ===
+ord_sal_abisal,Alquimista de las profundidades,sal_abisal,3,600,4,0.0,4,65
+ord_cristal_abisal,Cristalero arcano,cristal_abisal,2,550,4,0.0,4,70
+ord_extracto_umbrio,Boticario sombrío,extracto_umbrio,2,610,4,0.0,4,75
+ord_vidrio_obsidiana,Vidriero volcánico,vidrio_obsidiana,2,580,4,0.0,4,70
+ord_esencia_wyvern,Cazador de bestias,esencia_wyvern,2,630,4,0.0,4,85
+ord_filamento_estelar,Sastre celestial,filamento_estelar,2,700,4,0.0,4,90
+ord_balsamo_lunar,Curandero del bosque,balsamo_lunar,3,850,4,0.0,4,80
+ord_incienso_espiritual,Chamán errante,incienso_espiritual,2,590,4,0.0,4,72
+# === TIER 5 PEDIDOS (12) — min_reputation 120-200, coin = 1.9×value aprox ===
+ord_tonico_abisal,Explorador abisal,tonico_abisal,1,770,5,0.0,5,130
+ord_elixir_sombrio,Ladrón de sombras,elixir_sombrio,1,640,5,0.0,5,125
+ord_espada_astral,Paladín estelar,espada_astral,1,1070,5,0.0,5,160
+ord_armadura_celestial,Guardián de las constelaciones,armadura_celestial,1,1600,5,0.0,5,180
+ord_amuleto_constelacion,Astrólogo de la corte,amuleto_constelacion,1,860,5,0.0,5,140
+ord_martillo_obsidiana,Herrero volcánico,martillo_obsidiana,1,1200,5,0.0,5,170
+ord_escudo_dragon,Capitán de la guardia,escudo_dragon,1,1750,5,0.0,5,190
+ord_baston_espiritual,Nigromante anciano,baston_espiritual,1,470,5,0.0,5,120
+ord_circulo_invocacion,Invocador real,circulo_invocacion,1,1060,5,0.0,5,155
+ord_reloj_celestial,Cronomante del gremio,reloj_celestial,1,1470,5,0.0,5,175
+ord_corona_runica,Archimago imperial,corona_runica,1,1470,5,0.0,5,200
+ord_tomo_astral,Bibliotecario ancestral,tomo_astral,1,1050,5,0.0,5,150
+# === PEDIDOS PARA CALLEJONES SIN SALIDA (20) ===
+ord_aceite_bestia,Comerciante de aceites,aceite_bestia,3,228,3,0.0,3,45
+ord_pocion_fuerza,Guerrero del gremio,pocion_fuerza,2,285,3,0.0,3,50
+ord_pocion_velocidad,Mensajero real,pocion_velocidad,2,1539,3,0.0,3,55
+ord_pocion_curacion_mayor,Clérigo de batalla,pocion_curacion_mayor,2,1626,3,0.0,3,50
+ord_pergamino_fuego,Mago de combate,pergamino_fuego,3,712,3,0.0,3,40
+ord_golem_arcilla,Arquitecto arcano,golem_arcilla,1,1210,4,0.0,4,70
+ord_pergamino_rayo,Invocador de tormentas,pergamino_rayo,2,897,4,0.0,4,65
+ord_espada_encantada,Caballero de la orden,espada_encantada,1,1100,4,0.0,4,75
+ord_armadura_wyvern,Cazador de wyverns,armadura_wyvern,1,867,5,0.0,5,125
+ord_capa_vampirica,Señor de la noche,capa_vampirica,1,875,5,0.0,5,130
+ord_cetro_arcano,Consejero real,cetro_arcano,1,3512,5,0.0,5,195
+ord_estrella_emporio,Coleccionista legendario,estrella_emporio,1,24997,5,0.0,5,200
+ord_piedra_abisal,Joyero de la corte oscura,piedra_abisal,1,1167,5,0.0,5,145
+ord_mapa_constelaciones,Navegante estelar,mapa_constelaciones,1,1182,5,0.0,5,140
+ord_orbe_astral,Vidente del gremio,orbe_astral,1,1935,5,0.0,5,160
+ord_amuleto_fenix,Maestro de elementales,amuleto_fenix,1,1545,5,0.0,5,135
+ord_corona_escarcha,Señor del invierno,corona_escarcha,1,1545,5,0.0,5,135
+ord_cetro_tormenta,Señor de las tormentas,cetro_tormenta,1,1550,5,0.0,5,150
+ord_orbe_fusion,Astrónomo real,orbe_fusion,1,1707,5,0.0,5,170
+ord_polvo_constelaciones,Cartógrafo celestial,polvo_constelaciones,1,1347,5,0.0,5,120
+ord_champinon_sangrante,Boticario oscuro,champinon_sangrante,3,228,3,0.0,3,45
+ord_flor_sol,Jardinero real,flor_sol,5,120,2,0.0,2,20
+ord_fragmento_obsidiana,Herrero abisal,fragmento_obsidiana,3,228,3,0.0,3,50
+ord_pigmento_runico,Escriba del gremio,pigmento_runico,3,228,3,0.0,3,40

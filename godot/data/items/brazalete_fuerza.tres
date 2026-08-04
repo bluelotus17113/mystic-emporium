@@ -11,5 +11,5 @@ display_name = "Brazalete de Fuerza"
 description = "Brazalete pesado, +fuerza."
 max_stack = 99
 category = 3
-base_value = 40
+base_value = 128
 tier = 3

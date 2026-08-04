@@ -11,5 +11,5 @@ display_name = "Lingote de Mithril"
 description = "Mithril forjado."
 max_stack = 99
 category = 0
-base_value = 250
+base_value = 625
 tier = 5

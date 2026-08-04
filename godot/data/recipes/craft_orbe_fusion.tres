@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="RecipeData" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/recipe_data.gd" id="1_rd"]
+[ext_resource type="Resource" path="res://data/items/amalgama_arcana.tres" id="2_amal"]
+[ext_resource type="Resource" path="res://data/items/fragmento_celestial.tres" id="3_frag"]
+[ext_resource type="Resource" path="res://data/items/polvo_lunar.tres" id="4_polv"]
+[ext_resource type="Resource" path="res://data/items/orbe_fusion.tres" id="5_out"]
+
+[resource]
+script = ExtResource("1_rd")
+id = &"craft_orbe_fusion"
+display_name = "Orbe de Fusión"
+description = "Fusionar amalgama arcana con un fragmento celestial."
+ingredients = Array[ItemData]([ExtResource("2_amal"), ExtResource("3_frag"), ExtResource("4_polv")])
+ingredient_quantities = Array[int]([1, 1, 2])
+output_item = ExtResource("5_out")
+output_quantity = 1
+crafting_time = 60.0
+required_station_type = 7
+unlocked_by_default = false
+tier = 5

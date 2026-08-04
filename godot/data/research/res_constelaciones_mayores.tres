@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="ResearchData" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/research_data.gd" id="1_re"]
+[ext_resource type="Resource" path="res://data/research/res_cartografia_astral.tres" id="2_pre"]
+[ext_resource type="Resource" path="res://data/recipes/craft_mapa_constelaciones.tres" id="3_rcp"]
+[ext_resource type="Resource" path="res://data/recipes/craft_reloj_celestial.tres" id="4_erc"]
+
+[resource]
+script = ExtResource("1_re")
+id = &"res_constelaciones_mayores"
+display_name = "Constelaciones Mayores"
+description = "Leer los patrones ocultos en la bóveda celeste."
+prerequisites = Array[ResearchData]([ExtResource("2_pre")])
+required_station_type = 7
+research_time = 220.0
+coin_cost = 2400
+
+recipe_to_unlock = ExtResource("3_rcp")
+extra_recipes_to_unlock = Array[RecipeData]([ExtResource("4_erc")])
+required_item_ids = PackedStringArray("polvo_celestial", "pergamino_blanco", "polvo_estrella")
+required_item_qty = PackedInt32Array(12, 20, 10)
+tier = 5

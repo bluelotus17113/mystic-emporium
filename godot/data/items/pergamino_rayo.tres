@@ -11,5 +11,5 @@ display_name = "Pergamino de Rayo"
 description = "Hechizo de rayo."
 max_stack = 99
 category = 3
-base_value = 100
+base_value = 204
 tier = 4

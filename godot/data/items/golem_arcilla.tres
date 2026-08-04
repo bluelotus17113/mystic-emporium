@@ -11,5 +11,5 @@ display_name = "Golem de Arcilla (consumible)"
 description = "Invoca golem temporal."
 max_stack = 99
 category = 3
-base_value = 100
+base_value = 550
 tier = 4

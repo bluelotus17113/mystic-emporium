@@ -17,3 +17,4 @@ output_quantity = 1
 crafting_time = 8.0
 required_station_type = 1
 unlocked_by_default = false
+tier = 3

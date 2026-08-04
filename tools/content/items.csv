@@ -1,0 +1,51 @@
+id,display_name,description,max_stack,category,base_value,tier
+# === RECOLECTABLES PRIMARIOS (4, especificados) ===
+sal_abisal,Sal Abisal,Cristaliza en las simas donde no llega la luz.,99,0,110,4
+raiz_umbria,Raíz Umbría,Crece en las cavernas donde la oscuridad es absoluta.,99,0,120,4
+ceniza_estelar,Ceniza Estelar,Restos de estrellas fugaces que nunca tocaron el suelo.,99,0,260,5
+nucleo_obsidiana,Núcleo de Obsidiana,Fragmento del corazón de un volcán extinto.,99,0,300,5
+# === PRIMARIOS ADICIONALES (6, tier 4-5) ===
+polvo_espectro,Polvo de Espectro,Residuo etéreo que dejan los fantasmas al desvanecerse.,99,0,105,4
+savia_ancestral,Savia Ancestral,Resina fosilizada de los primeros bosques del mundo.,99,0,115,4
+fragmento_celestial,Fragmento Celestial,Esquirla desprendida de la bóveda celeste.,99,0,270,5
+corazon_magmatico,Corazón Magmático,Núcleo incandescente de un elemental de fuego.,99,0,280,5
+escarcha_eterna,Escarcha Eterna,Cristal de hielo que nunca se derrite.,99,0,290,5
+rayo_cristalizado,Rayo Cristalizado,Descarga eléctrica atrapada en cristal de cuarzo.,99,0,310,5
+# === TIER 4 PROCESADOS (12, category 1) — valores auto-calculados con margen 1.25 ===
+cristal_abisal,Cristal Abisal,Sal abisal purificada en una matriz cristalina.,99,1,153,4
+extracto_umbrio,Extracto Umbrío,Destilado concentrado de raíz umbría.,99,1,169,4
+aleacion_estelar,Aleación Estelar,Metal forjado con savia ancestral y lingote de hierro.,99,1,187,4
+vidrio_obsidiana,Vidrio de Obsidiana,Polvo de espectro fundido con cristales de cuarzo.,99,1,162,4
+polvo_celestial,Polvo Celestial,Sal abisal triturada con polvo lunar como catalizador.,99,1,160,4
+esencia_wyvern,Esencia de Wyvern,Hueso de wyvern refinado con esencia estabilizada.,99,1,175,4
+fibra_dragon,Fibra de Dragón,Hilo de tela mágica impregnado con sal abisal y resina.,99,1,238,4
+incienso_espiritual,Incienso Espiritual,Raíz umbría infusionada con esencia de espíritus.,99,1,165,4
+tinta_celestial,Tinta Celestial,Tinta arcana enriquecida con polvo de espectro.,99,1,182,4
+filamento_estelar,Filamento Estelar,Hilo de tela mágica trenzado con savia ancestral.,99,1,194,4
+amalgama_arcana,Amalgama Arcana,Fragmento de amatista fusionado con polvo de espectro.,99,1,232,4
+balsamo_lunar,Bálsamo Lunar,Savia ancestral cuajada al claro de luna.,99,1,157,4
+# === TIER 5 FINALES (18, category 2) — valores auto-calculados con margen 1.25 ===
+tonico_abisal,Tónico Abisal,Elixir que otorga visión en la oscuridad absoluta.,50,2,403,5
+elixir_sombrio,Elixir Sombrío,Brebaje que permite caminar entre sombras.,50,2,337,5
+piedra_abisal,Piedra Abisal,Gema tallada que absorbe la luz a su alrededor.,50,2,467,5
+espada_astral,Espada Astral,Filo forjado en el corazón de una estrella.,1,2,562,5
+armadura_celestial,Armadura Celestial,Coraza que refleja la luz de las constelaciones.,1,2,844,5
+amuleto_constelacion,Amuleto de Constelación,Joya que contiene un mapa estelar en miniatura.,50,2,450,5
+martillo_obsidiana,Martillo de Obsidiana,Arma contundente tallada en vidrio volcánico.,1,2,633,5
+armadura_wyvern,Armadura de Wyvern,Pechera flexible forjada con esencia de wyvern.,1,2,347,5
+capa_vampirica,Capa Vampírica,Manto que drena la fuerza de quien se acerca.,1,2,350,5
+escudo_dragon,Escudo de Dragón,Barrera escamada que repele el fuego dragonil.,1,2,923,5
+baston_espiritual,Bastón Espiritual,Vara que canaliza la voz de los ancestros.,1,2,248,5
+circulo_invocacion,Círculo de Invocación,Artefacto que atrae entidades del plano etéreo.,50,2,559,5
+mapa_constelaciones,Mapa de Constelaciones,Pergamino que revela las rutas del firmamento.,50,2,473,5
+reloj_celestial,Reloj Celestial,Cronómetro que mide el pulso de los astros.,50,2,772,5
+orbe_astral,Orbe Astral,Esfera que contiene una galaxia en miniatura.,50,2,517,5
+corona_runica,Corona Rúnica,Diadema que amplifica el poder de los portadores de magia.,1,2,774,5
+cetro_arcano,Cetro Arcano,Bastón de mando que doblega la voluntad elemental.,1,2,578,5
+tomo_astral,Tomo Astral,Volumen encuadernado con tinta de constelaciones.,50,2,553,5
+# === NUEVOS TIER 5 (content patch) ===
+amuleto_fenix,Amuleto Fénix,Joya que arde con el fuego primordial de un elemental.,50,2,618,5
+corona_escarcha,Corona de Escarcha,Diadema de hielo eterno que no se derrite.,50,2,618,5
+cetro_tormenta,Cetro de Tormentas,Vara que comanda el poder de los cielos.,1,2,620,5
+orbe_fusion,Orbe de Fusión,Esfera donde convergen las fuerzas del cosmos.,50,2,683,5
+polvo_constelaciones,Polvo de Constelaciones,Restos pulverizados de constelaciones olvidadas.,99,2,539,5

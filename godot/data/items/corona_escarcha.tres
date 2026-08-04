@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/item_data.gd" id="1_id"]
+
+[resource]
+script = ExtResource("1_id")
+id = &"corona_escarcha"
+display_name = "Corona de Escarcha"
+description = "Diadema de hielo eterno que no se derrite."
+max_stack = 50
+category = 2
+base_value = 618
+tier = 5

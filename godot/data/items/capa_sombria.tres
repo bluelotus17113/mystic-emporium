@@ -11,5 +11,5 @@ display_name = "Capa Sombría"
 description = "Capa que se mimetiza con sombras."
 max_stack = 99
 category = 3
-base_value = 100
+base_value = 375
 tier = 4

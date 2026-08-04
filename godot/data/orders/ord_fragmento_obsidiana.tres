@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="OrderData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/order_data.gd" id="1_od"]
+[ext_resource type="Resource" path="res://data/items/fragmento_obsidiana.tres" id="2_it"]
+
+[resource]
+script = ExtResource("1_od")
+id = &"ord_fragmento_obsidiana"
+display_name = "Herrero abisal"
+requested_item = ExtResource("2_it")
+requested_quantity = 3
+coin_reward = 228
+reputation_reward = 3
+time_limit = 0.0
+tier = 3
+min_reputation = 50

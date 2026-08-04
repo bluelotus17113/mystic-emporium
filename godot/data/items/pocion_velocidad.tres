@@ -11,5 +11,5 @@ display_name = "Poción de Velocidad"
 description = "Aumenta velocidad temporal."
 max_stack = 99
 category = 3
-base_value = 40
+base_value = 405
 tier = 3

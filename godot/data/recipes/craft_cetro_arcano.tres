@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="RecipeData" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/recipe_data.gd" id="1_rd"]
+[ext_resource type="Resource" path="res://data/items/vidrio_obsidiana.tres" id="2_vidr"]
+[ext_resource type="Resource" path="res://data/items/oro_elfico.tres" id="3_oro_"]
+[ext_resource type="Resource" path="res://data/items/esencia_luz.tres" id="4_esen"]
+[ext_resource type="Resource" path="res://data/items/cetro_arcano.tres" id="5_out"]
+
+[resource]
+script = ExtResource("1_rd")
+id = &"craft_cetro_arcano"
+display_name = "Cetro Arcano"
+description = "Bastón de mando que doblega la voluntad elemental."
+ingredients = Array[ItemData]([ExtResource("2_vidr"), ExtResource("3_oro_"), ExtResource("4_esen")])
+ingredient_quantities = Array[int]([1, 2, 1])
+output_item = ExtResource("5_out")
+output_quantity = 1
+crafting_time = 68.0
+required_station_type = 3
+unlocked_by_default = false
+tier = 5

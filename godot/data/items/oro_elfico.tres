@@ -11,5 +11,5 @@ display_name = "Oro Élfico"
 description = "Oro encantado más resistente que el común."
 max_stack = 99
 category = 0
-base_value = 100
+base_value = 431
 tier = 4

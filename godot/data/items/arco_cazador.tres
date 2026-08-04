@@ -11,5 +11,5 @@ display_name = "Arco de Cazador"
 description = "Arco compuesto."
 max_stack = 99
 category = 3
-base_value = 40
+base_value = 192
 tier = 3

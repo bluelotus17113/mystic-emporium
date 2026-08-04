@@ -11,5 +11,5 @@ display_name = "Casco Rúnico"
 description = "Casco con runas grabadas."
 max_stack = 99
 category = 3
-base_value = 100
+base_value = 1662
 tier = 4

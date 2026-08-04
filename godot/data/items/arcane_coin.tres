@@ -10,6 +10,6 @@ id = &"arcane_coin"
 display_name = "Moneda Arcana"
 description = "Moneda principal del juego."
 max_stack = 99
-category = 5
+category = 3
 base_value = 5
 tier = 1

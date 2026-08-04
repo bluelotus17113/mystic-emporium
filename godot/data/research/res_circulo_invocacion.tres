@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="ResearchData" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/research_data.gd" id="1_re"]
+[ext_resource type="Resource" path="res://data/research/res_doma_ancestral.tres" id="2_pre"]
+[ext_resource type="Resource" path="res://data/recipes/craft_circulo_invocacion.tres" id="3_rcp"]
+
+[resource]
+script = ExtResource("1_re")
+id = &"res_circulo_invocacion"
+display_name = "Círculo de Invocación"
+description = "Trazar el sello que abre las puertas entre planos."
+prerequisites = Array[ResearchData]([ExtResource("2_pre")])
+required_station_type = 5
+research_time = 240.0
+coin_cost = 2800
+
+recipe_to_unlock = ExtResource("3_rcp")
+required_item_ids = PackedStringArray("incienso_espiritual", "polvo_estrella", "tinta_celestial")
+required_item_qty = PackedInt32Array(12, 10, 10)
+tier = 5
