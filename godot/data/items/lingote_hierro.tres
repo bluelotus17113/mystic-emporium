@@ -12,4 +12,4 @@ description = "Mena fundida en lingote. Base para armas y artefactos."
 max_stack = 99
 category = 0
 base_value = 22
-tier = 2
+tier = 3

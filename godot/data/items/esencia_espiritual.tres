@@ -12,4 +12,4 @@ description = "Energía etérea condensada. Necesaria para encantamientos."
 max_stack = 50
 category = 0
 base_value = 12
-tier = 1
+tier = 3
