@@ -38,6 +38,18 @@ HIERBA = {
     "clara":  (0x92, 0xCB, 0x98),  # #92cb98
 }
 
+## La MISMA hierba en sombra, no otro verde: la rampa HIERBA multiplicada por 0,84.
+## `grass_dark` usaba FOLLAJE, que es la rampa de COPA DE ÁRBOL, y el salto desde el
+## #7cf2b6 de la pradera era tan brusco que los parches salían como un damero de canto
+## duro. A escala de escena parecía un fallo de render. Solo se ve componiendo la
+## escena entera con objetos encima: el tile suelto y el campo pelado lo esconden.
+HIERBA_SOMBRA = {
+    "base":   (0x68, 0xCB, 0x98),  # #68cb98
+    "oscura": (0x4B, 0xA8, 0x59),  # #4ba859
+    "clara":  (0x7A, 0xAA, 0x7F),  # #7aaa7f
+    "brillo": (0x82, 0xCC, 0xA7),  # #82cca7
+}
+
 FOLLAJE = {
     "sombra": (0x21, 0x36, 0x2C),  # #21362c
     "medio":  (0x3E, 0xA0, 0x6C),  # #3ea06c
@@ -175,11 +187,11 @@ def grass_pixel(x: int, y: int, seed: int = 0) -> tuple:
 
 
 def grass_dark_pixel(x: int, y: int, seed: int = 0) -> tuple:
-    """grass con la rampa bajada un tono: misma estructura (mismas briznas),
-    colores de la rampa follaje_verde. NO un dibujo distinto.
-    Brillo: FOLLAJE['brillo'] (#9eefc1)."""
-    return hierba_pixel(x, y, FOLLAJE["medio"], FOLLAJE["sombra"], FOLLAJE["luz"],
-                        FOLLAJE["brillo"], seed)
+    """grass en sombra: misma estructura (mismas briznas) con la rampa HIERBA_SOMBRA.
+    NO usa FOLLAJE: esa es la rampa de copa de árbol y el contraste era tan fuerte
+    que los parches se leían como un damero, no como hierba sombreada."""
+    return hierba_pixel(x, y, HIERBA_SOMBRA["base"], HIERBA_SOMBRA["oscura"],
+                        HIERBA_SOMBRA["clara"], HIERBA_SOMBRA["brillo"], seed)
 
 
 def grass_flowers_pixel(x: int, y: int) -> tuple:
@@ -482,7 +494,8 @@ def gen_shore(direction: str) -> Image.Image:
 
 def _colores_en_paleta() -> set:
     """Conjunto de todos los colores RGB definidos en las rampas del JSON."""
-    rampas = [HIERBA, FOLLAJE, FOLLAJE_ROSA, TIERRA, AGUA, AGUA_PROFUNDA, ARENA]
+    rampas = [HIERBA, HIERBA_SOMBRA, FOLLAJE, FOLLAJE_ROSA, TIERRA, AGUA,
+              AGUA_PROFUNDA, ARENA]
     colores = set()
     for rampa in rampas:
         colores.update(rampa.values())

@@ -10,7 +10,6 @@ const TREES: Array = [
 	"res://art/sprites/environment/tree_oak.png",
 	"res://art/sprites/environment/tree_oak.png",
 	"res://art/sprites/environment/tree_birch.png",
-	"res://art/sprites/environment/tree_willow.png",
 	"res://art/sprites/environment/tree_pine.png",
 	"res://art/sprites/environment/tree_cherry.png",
 	"res://art/sprites/environment/tree_bush_big.png",
@@ -19,17 +18,23 @@ const TREES: Array = [
 	"res://art/sprites/minish_objects/tree_dead.png",
 ]
 const TREE_COUNT: int = 40
+## Qué texturas del scatter son un árbol "de verdad" (talable y comprable) y de
+## qué especie. Lo que no está aquí se queda como decorado sin más.
+const ESPECIE_POR_TEXTURA: Dictionary = {
+	"res://art/sprites/environment/tree_oak.png": &"roble",
+	"res://art/sprites/environment/tree_birch.png": &"abedul",
+	"res://art/sprites/environment/tree_pine.png": &"pino",
+	"res://art/sprites/environment/tree_cherry.png": &"cerezo",
+}
 const TREE_TARGET_H: float = 140.0  ## alto objetivo en px → escala grande y uniforme
 ## El punto de orden Y se empuja hacia el borde delantero del tronco: así los
 ## personajes se ocultan de forma más limpia al pasar por detrás del árbol.
 const TRUNK_SORT_NUDGE: float = 12.0
 # Maleza de suelo: dispersa por debajo de la banda de árboles.
+## Tipos de PropNatural (ver ese script para textura, escala y colisión). La
+## roca sale dos veces: el patio pedía piedras y antes no había ninguna.
 const CLUTTER: Array = [
-	"res://art/sprites/minish_objects/bush.png",
-	"res://art/sprites/minish_objects/mushroom_red.png",
-	"res://art/sprites/environment/decoration_stone_cairn.png",
-	"res://art/sprites/environment/decoration_fallen_log.png",
-	"res://art/sprites/minish_objects/hay_bale.png",
+	&"roca", &"roca", &"arbusto", &"seta", &"mojon", &"tronco", &"paja",
 ]
 const CLUTTER_COUNT: int = 44
 # Briznas de pasto que se mecen al pisarlas.
@@ -98,12 +103,19 @@ func _scatter_trees(rng: RandomNumberGenerator) -> void:
 		var tex: Texture2D = load(TREES[rng.randi() % TREES.size()])
 		if tex == null:
 			continue
-		var s := TreeWind.new()
-		s.texture = tex
-		s.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 		# Repartidos por todo el patio.
 		var x: float = rng.randf_range(_rect.position.x + 40.0, _rect.end.x - 40.0)
 		var y: float = rng.randf_range(_rect.position.y + 50.0, _rect.end.y - 40.0)
+		# Los que son ESPECIE se plantan como TreeNatural: se pueden talar (con
+		# la orden del leñador), mover y demoler. Arbustos, manzano y árbol seco
+		# siguen siendo decorado puro: no tiene sentido "talar" un arbusto.
+		var esp: StringName = ESPECIE_POR_TEXTURA.get(tex.resource_path, &"")
+		if esp != &"":
+			_plantar_arbol(parent, esp, Vector2(x, y + TRUNK_SORT_NUDGE))
+			continue
+		var s := TreeWind.new()
+		s.texture = tex
+		s.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 		# Desfase por posición: la ráfaga recorre el patio como una onda.
 		s.phase = x * 0.008
 		s.amp = rng.randf_range(0.035, 0.06)  # cada árbol mece un poco distinto
@@ -114,6 +126,7 @@ func _scatter_trees(rng: RandomNumberGenerator) -> void:
 		s.offset = Vector2(0, -tex.get_height() * 0.5 + 4 - TRUNK_SORT_NUDGE / k)
 		s.add_to_group("natural_visual")
 		s.add_to_group("foliage")
+		s.add_to_group(SunShadows.GRUPO)   # proyecta sombra con el sol
 		parent.add_child(s)
 		s.global_position = Vector2(x, y + TRUNK_SORT_NUDGE)
 		# Tronco sólido estrecho en la base: se puede pasar por detrás, no a través.
@@ -121,27 +134,32 @@ func _scatter_trees(rng: RandomNumberGenerator) -> void:
 		SolidBase.attach(s, Vector2(maxf(20.0, tex.get_width() * k * 0.28), 12.0), Vector2(0, -2 - TRUNK_SORT_NUDGE / k))
 
 
+## Planta un árbol talable y lo apunta al grid de construcción, que es lo que lo
+## hace movible y demolible con las herramientas normales. cost 0: los del patio
+## son gratis, así que demolerlos no reembolsa nada.
+func _plantar_arbol(parent: Node, especie: StringName, pos: Vector2) -> void:
+	var a := TreeNatural.new()
+	a.especie = especie
+	parent.add_child(a)
+	a.global_position = pos
+	BuildManager.register_prebuilt(a, a.global_position, &"deco_tree_%s" % especie, 0)
+
+
 ## Maleza/props menores dispersos por debajo de la banda de árboles.
 func _scatter_clutter(rng: RandomNumberGenerator) -> void:
 	var parent: Node = _visual_parent()
 	for i in CLUTTER_COUNT:
-		var tex: Texture2D = load(CLUTTER[rng.randi() % CLUTTER.size()])
-		if tex == null:
-			continue
-		var s := Sprite2D.new()
-		s.texture = tex
-		s.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		var tipo: StringName = CLUTTER[rng.randi() % CLUTTER.size()]
 		var x: float = rng.randf_range(_rect.position.x + 40.0, _rect.end.x - 40.0)
 		var y: float = rng.randf_range(_rect.position.y + 50.0, _rect.end.y - 30.0)
-		var k: float = 1.4 if "mushroom" in tex.resource_path else 1.7
-		s.scale = Vector2(k, k)
-		s.offset = Vector2(0, -tex.get_height() * 0.5 + 4)
-		s.add_to_group("natural_visual")
-		parent.add_child(s)
-		s.global_position = Vector2(x, y)
-		# props grandes bloquean el paso; setas no
-		if "mushroom" not in tex.resource_path:
-			SolidBase.attach(s, Vector2(tex.get_width() * k * 0.5, 12.0), Vector2(0, -2))
+		var p := PropNatural.new()
+		p.tipo = tipo
+		parent.add_child(p)
+		p.global_position = Vector2(x, y)
+		# Al grid: es lo que lo vuelve movible, copiable y demolible. cost 0,
+		# igual que los árboles: son del patio, demolerlos no reembolsa.
+		BuildManager.register_prebuilt(p, p.global_position,
+				PropNatural.ficha_de(tipo), 0)
 
 
 ## Mariposas que revolotean por el patio de día.

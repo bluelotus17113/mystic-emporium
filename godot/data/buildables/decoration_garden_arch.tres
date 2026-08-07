@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="BuildableData" load_steps=4 format=3 uid="uid://b5j8r7n9m1h09"]
+[gd_resource type="Resource" script_class="BuildableData" load_steps=4 format=3 uid="uid://2twg3krn6wfi"]
 
 [ext_resource type="Script" path="res://scripts/data/buildable_data.gd" id="1_bd"]
 [ext_resource type="PackedScene" uid="uid://b5j8r7n9m1d98" path="res://scenes/environment/decorations/decoration_garden_arch.tscn" id="2_scene"]

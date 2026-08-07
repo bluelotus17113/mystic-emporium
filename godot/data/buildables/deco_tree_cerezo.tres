@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="BuildableData" load_steps=4 format=3 uid="uid://c9508f5f81f9ed"]
+
+[ext_resource type="Script" path="res://scripts/data/buildable_data.gd" id="1_bd"]
+[ext_resource type="PackedScene" uid="uid://c9e5a779f6bb90" path="res://scenes/environment/trees/tree_cerezo.tscn" id="2_scene"]
+[ext_resource type="Texture2D" path="res://art/sprites/environment/tree_cherry.png" id="3_icon"]
+
+[resource]
+script = ExtResource("1_bd")
+icon = ExtResource("3_icon")
+id = &"deco_tree_cerezo"
+display_name = "Cerezo en Flor"
+description = "Copa rosada de temporada. Talable."
+scene = ExtResource("2_scene")
+cost = 140
+allowed_zone = 1
+size = Vector2i(1, 1)
+unlocked_by_default = true
+is_decorative = true
+decoration_category = &"nature"

@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="BuildableData" load_steps=4 format=3 uid="uid://ceb5de743fbfd6"]
+
+[ext_resource type="Script" path="res://scripts/data/buildable_data.gd" id="1_bd"]
+[ext_resource type="PackedScene" uid="uid://c4af09385562ba" path="res://scenes/environment/trees/tree_roble.tscn" id="2_scene"]
+[ext_resource type="Texture2D" path="res://art/sprites/environment/tree_oak.png" id="3_icon"]
+
+[resource]
+script = ExtResource("1_bd")
+icon = ExtResource("3_icon")
+id = &"deco_tree_roble"
+display_name = "Roble Arcano"
+description = "Árbol grande de copa densa. El leñador puede talarlo."
+scene = ExtResource("2_scene")
+cost = 120
+allowed_zone = 1
+size = Vector2i(1, 1)
+unlocked_by_default = true
+is_decorative = true
+decoration_category = &"nature"

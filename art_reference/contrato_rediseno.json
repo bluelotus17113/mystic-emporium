@@ -7,33 +7,57 @@
     "El periodo de la rejilla es 16 px en X y en Y (autocorrelacion sobre la valla y",
     "los cultivos), o sea tiles de 16x16 nativos."
   ],
-
   "tile": 16,
   "pitch": 1,
   "zoom_de_presentacion": 4,
-
   "contorno": {
     "color": "#000000",
     "grosor_px": 1,
     "_medido": "83% de las rachas negras son de 1 px nativo; 8% de 2 px en cantos gruesos",
-    "aplica_a": ["objetos", "edificios", "props", "vallas", "arboles", "personajes"],
-    "NO_aplica_a": ["tiles de suelo"],
+    "aplica_a": [
+      "objetos",
+      "edificios",
+      "props",
+      "vallas",
+      "arboles",
+      "personajes"
+    ],
+    "NO_aplica_a": [
+      "tiles de suelo"
+    ],
     "_por_que": [
       "En la referencia la hierba solo tiene un 3,5% de negro, y ese negro son las",
       "sombras de las matas sueltas, no un contorno de celda. Contornear los suelos",
       "dibujaria la rejilla: 120x72 celdas con linea negra se lee como cuadricula."
     ]
   },
-
   "paleta": {
     "_": "Rampas de 3-4 tonos por material, de sombra a luz. Medidas por recorte.",
-
     "hierba": {
       "base": "#7cf2b6",
       "_nota": "EL color de la referencia. Menta brillante, 85% del tile de hierba.",
-      "variacion": ["#76ecb0", "#9bf4c7", "#8ddeae"],
+      "variacion": [
+        "#76ecb0",
+        "#9bf4c7",
+        "#8ddeae"
+      ],
       "mata_oscura": "#5ac96b",
       "mata_clara": "#92cb98"
+    },
+    "hierba_sombra": {
+      "base": "#68cb98",
+      "mata_oscura": "#4ba859",
+      "mata_clara": "#7aaa7f",
+      "brillo": "#82cca7",
+      "_nota": [
+        "Para grass_dark: la MISMA hierba en sombra, no otro verde. Es la rampa hierba",
+        "multiplicada por 0,84.",
+        "Existe porque grass_dark usaba follaje_verde (#3ea06c), que es la rampa de COPA",
+        "de arbol. El salto desde el #7cf2b6 de la pradera era tan grande que los parches",
+        "salian como un damero de canto duro, y a escala de escena parecia un fallo de",
+        "render en vez de hierba en sombra. Solo se ve componiendo la escena entera:",
+        "el tile suelto y el campo sin objetos lo esconden."
+      ]
     },
     "follaje_verde": {
       "sombra": "#21362c",
@@ -98,6 +122,48 @@
       "medio": "#e8bb84",
       "luz": "#f7cbc4",
       "brillo": "#fcebe2"
+    },
+    "blanco": {
+      "sombra": "#e0ddd4",
+      "medio": "#ffffff",
+      "luz": "#ffffff",
+      "brillo": "#ffffff",
+      "_nota": "AÑADIDA a peticion del usuario (lote 2): corteza de abedul. La referencia no tenia blanco puro."
+    },
+    "rojo": {
+      "sombra": "#8e1f1c",
+      "medio": "#d2302f",
+      "luz": "#f06a5a",
+      "brillo": "#f8a58b",
+      "_nota": "AÑADIDA a peticion del usuario (lote 2): manzanas y sombrero de seta."
+    }
+  },
+  "organicidad": {
+    "_": "Añadido tras el lote 2: los sprites cumplian todo el contrato y aun asi parecian fabricados.",
+    "simetria_maxima_natural": 75,
+    "_medido": [
+      "Simetria especular de los arboles de la REFERENCIA del usuario, recortados y",
+      "segmentados contra el verde de fondo: 26,8% / 34,2% / 57,1% / 72,8%.",
+      "Los nuestros, en el mismo momento: 93% a 98%. Casi espejos perfectos.",
+      "Ahi esta todo el 'se siente fabricado': la asimetria es lo que hace que una",
+      "forma parezca viva, y es lo unico que separa limpiamente ambos grupos."
+    ],
+    "aplica_a": ["arboles", "arbustos", "rocas", "setas", "maleza", "follaje"],
+    "NO_aplica_a": ["bala de paja", "tocon cortado", "mojon", "vallas", "edificios"],
+    "_por_que_no": "Los hizo alguien con herramientas; ser simetricos es correcto.",
+    "tramo_recto_de_contorno": {
+      "_uso": "SOLO INFORMATIVO, no es aprobado/suspenso.",
+      "_por_que": [
+        "La primera version media filas seguidas con la misma columna extrema, y eso",
+        "penalizaba la REDONDEZ, no la rectitud: en el punto mas ancho de cualquier",
+        "forma redonda varias filas comparten columna. Un circulo perfecto sacaba 20 px.",
+        "Se caza porque las primitivas organicas de tools/formas_organicas.py suspendian",
+        "su propia medida.",
+        "La version corregida recorre el perimetro y mide tramos de direccion constante",
+        "(cuadrado 39, circulo 9). Discrimina, pero una curva suave en pixeles produce",
+        "tramos largos igualmente, asi que mide suavidad tanto como formula.",
+        "Y sobre la referencia sale contaminado por los bordes del recorte: 40-76 px."
+      ]
     }
   },
 
@@ -109,7 +175,6 @@
     "tiles_seamless": "verificar repeticion 2x2 antes de dar por bueno un suelo",
     "dithering": "prohibido. La referencia no tiene ni un pixel de tramado."
   },
-
   "diferencias_con_el_juego_actual": [
     "contorno: el juego usa #21181b (negro calido); la referencia usa #000000 puro",
     "hierba: el juego usa #63ab3e (verde amarillento); la referencia usa #7cf2b6 (menta)",

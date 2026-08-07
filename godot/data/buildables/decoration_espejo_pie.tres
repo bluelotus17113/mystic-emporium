@@ -16,4 +16,4 @@ allowed_zone = 0
 size = Vector2i(1, 1)
 unlocked_by_default = true
 is_decorative = true
-decoration_category = &"wall"
+decoration_category = &"table"

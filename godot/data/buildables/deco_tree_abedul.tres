@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="BuildableData" load_steps=4 format=3 uid="uid://c93a0e47c6ca98"]
+
+[ext_resource type="Script" path="res://scripts/data/buildable_data.gd" id="1_bd"]
+[ext_resource type="PackedScene" uid="uid://c8a025d0d9cd60" path="res://scenes/environment/trees/tree_abedul.tscn" id="2_scene"]
+[ext_resource type="Texture2D" path="res://art/sprites/environment/tree_birch.png" id="3_icon"]
+
+[resource]
+script = ExtResource("1_bd")
+icon = ExtResource("3_icon")
+id = &"deco_tree_abedul"
+display_name = "Abedul Plateado"
+description = "Tronco claro y copa ligera. Talable."
+scene = ExtResource("2_scene")
+cost = 100
+allowed_zone = 1
+size = Vector2i(1, 1)
+unlocked_by_default = true
+is_decorative = true
+decoration_category = &"nature"
