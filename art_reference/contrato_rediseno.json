@@ -123,6 +123,26 @@
       "luz": "#f7cbc4",
       "brillo": "#fcebe2"
     },
+    "arcano": {
+      "sombra": "#3a2058",
+      "medio": "#6e3aa0",
+      "luz": "#9d6dff",
+      "brillo": "#c89bff",
+      "_ojo": [
+        "DERIVADA, no medida — como la del agua, y por el mismo motivo: la referencia",
+        "del usuario es una granja y no tiene nada magico que medir.",
+        "Son los cuatro purpuras que el juego ya usaba antes del rediseno, conservados",
+        "a proposito: el caldero, el grimorio y el portal los necesitan, y cambiarlos",
+        "sin referencia solo seria capricho."
+      ]
+    },
+    "dorado": {
+      "sombra": "#855a14",
+      "medio": "#d27d2c",
+      "luz": "#f0c060",
+      "brillo": "#f8e0a0",
+      "_ojo": "DERIVADA igual que 'arcano': dorados heredados del juego para monedas y herrajes."
+    },
     "blanco": {
       "sombra": "#e0ddd4",
       "medio": "#ffffff",
