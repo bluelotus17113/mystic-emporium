@@ -58,6 +58,12 @@ PAJA = {
     "L": (0xCB, 0x91, 0x63),
     "B": (0xD8, 0xAD, 0x7A),
 }
+BLANCO = {
+    "S": (0xE0, 0xDD, 0xD4),
+    "M": (0xFF, 0xFF, 0xFF),
+    "L": (0xFF, 0xFF, 0xFF),
+    "B": (0xFF, 0xFF, 0xFF),
+}
 
 # Colores para fuego: combinación de la rampa rojo (base) + dorado (núcleo caliente)
 FUEGO_CORE = DORADO["B"]          # núcleo más caliente = amarillo claro
@@ -811,9 +817,224 @@ def dibujar_chest() -> Lienzo:
     for fx in (7, 22):
         L.rect(fx, 26, fx + 2, 28, MADERA["S"])
         L.vline(fx, 26, 28, MADERA["M"])            # borde interior más claro
+    L.contornear()
+    return L
+
+
+# ---------------------------------------------------------------------------
+# 5. FORGE_48 — horno de forja compacto 48×48 (icono menú construcción)
+# ---------------------------------------------------------------------------
+def dibujar_forge_48() -> Lienzo:
+    L = Lienzo(48, 48)
+    cx = 24
+
+    # ── helper: semi-ancho de la estructura de piedra ──
+    # y=0 se deja transparente (margen para el contorno negro superior).
+    def _hw(y: int) -> int:
+        if y < 2:
+            return 0
+        if y <= 5:
+            return 4 + (y - 2)        # chimenea estrecha: 4→7 en y=2→5
+        if y <= 29:
+            t = min(1.0, (y - 5) / 10.0)
+            return 7 + int(t * 11)    # horno: se ensancha 7→18
+        if y <= 47:
+            return 20                  # base ancha
+        return 0
+
+    # ── 1. Estructura de piedra ──
+    for y in range(2, 48):
+        hw = _hw(y)
+        x0, x1 = cx - hw, cx + hw
+        for x in range(x0, x1 + 1):
+            hval = _h(x, y, 501)
+            if hval < 18:
+                L.set(x, y, PIEDRA["S"])
+            elif hval < 55:
+                L.set(x, y, PIEDRA["M"])
+            elif hval < 82:
+                L.set(x, y, PIEDRA["L"])
+            else:
+                L.set(x, y, PIEDRA["B"])
+
+    # ── 2. Juntas — finas en el horno, más bastas en la base ──
+    for y in range(2, 48):
+        hw = _hw(y)
+        x0, x1 = cx - hw, cx + hw
+        if y <= 29:
+            # Horno: sillares finos 4×5 px
+            block_h, block_w = 4, 5
+        else:
+            # Base: mampostería basta 6×7 px
+            block_h, block_w = 6, 7
+
+        local_y = (y - 2) % block_h
+        if local_y == 0 or local_y == block_h - 1:  # junta horizontal
+            for x in range(x0, x1 + 1):
+                L.set(x, y, PIEDRA["S"])
+
+        row = (y - 2) // block_h
+        offset = (block_w // 2) if row % 2 == 1 else 0
+        for x in range(x0, x1 + 1):
+            lx = x - x0 - offset
+            while lx < 0:
+                lx += block_w
+            lx %= block_w
+            if lx == 0 or lx == block_w - 1:  # junta vertical
+                L.set(x, y, PIEDRA["S"])
+
+    # Cornisa de la chimenea (en y=1-2, debajo del margen)
+    hw_top = _hw(2)
+    L.rect(cx - hw_top - 1, 1, cx + hw_top + 1, 2, PIEDRA["L"])
+    L.hline(1, cx - hw_top - 1, cx + hw_top + 1, PIEDRA["B"])
+
+    # ── 3. Boca del horno (muy prominente, ~mitad del ancho) ──
+    boca_hw = 12            # 25 px total ≈ mitad de 48
+    boca_top = 13
+    boca_bot = 24
+    arco_h = 3
+
+    for y in range(boca_top, boca_bot + 1):
+        if y < boca_top + arco_h:
+            dy = boca_top + arco_h - y
+            reduccion = int(dy * 1.5)
+            hw = max(2, boca_hw - reduccion)
+        else:
+            hw = boca_hw
+        for x in range(cx - hw, cx + hw + 1):
+            L.set(x, y, ARCANO["S"])
+
+    # ── 4. Fuego (3 tonos, de fuera hacia dentro) ──
+    # Capa externa (rojo-anaranjado)
+    for y in range(boca_top - 1, boca_bot + 2):
+        hw = max(0, 12 - abs(y - 19))
+        for x in range(cx - hw, cx + hw + 1):
+            L.set(x, y, FUEGO_EXT)
+    # Capa media (oro-naranja)
+    for y in range(boca_top + 1, boca_bot + 1):
+        hw = max(0, 9 - abs(y - 20))
+        for x in range(cx - hw, cx + hw + 1):
+            L.set(x, y, FUEGO_MED)
+    # Núcleo (blanco-amarillo)
+    for y in range(18, 24):
+        hw = max(1, 5 - abs(y - 21))
+        for x in range(cx - hw, cx + hw + 1):
+            L.set(x, y, FUEGO_CORE)
+    # Lenguas arriba
+    for y in range(10, 13):
+        hw = max(1, (13 - y) * 2)
+        for x in range(cx - hw, cx + hw + 1):
+            L.set(x, y, FUEGO_EXT)
+    for y in range(11, 12):
+        hw = 2
+        for x in range(cx - hw, cx + hw + 1):
+            L.set(x, y, FUEGO_MED)
+    # Bordes oscuros de las lenguas
+    for y in range(10, 13):
+        hw_ext = max(1, (13 - y) * 2)
+        if cx - hw_ext - 1 >= 0:
+            L.set(cx - hw_ext - 1, y, FUEGO_BORDE)
+        if cx + hw_ext + 1 < 48:
+            L.set(cx + hw_ext + 1, y, FUEGO_BORDE)
+
+    # ── 5. Resplandor en los sillares ──
+    for y in range(boca_top - 5, boca_bot + 4):
+        if y < 2 or y > 29:
+            continue
+        hw = _hw(y)
+        for x in range(cx - hw, cx + hw + 1):
+            if not L.px[x, y][3]:
+                continue
+            rgb = L.px[x, y][:3]
+            if rgb not in {PIEDRA["S"], PIEDRA["M"], PIEDRA["L"], PIEDRA["B"]}:
+                continue
+            dx = abs(x - cx)
+            dy = abs(y - (boca_top + boca_bot) // 2)
+            if dx + dy * 1.5 < 12:
+                hval = _h(x, y, 601)
+                p = L.px[x, y]
+                if p[:3] == PIEDRA["M"]:
+                    L.set(x, y, PIEDRA["L"] if hval < 55 else PIEDRA["M"])
+                elif p[:3] == PIEDRA["S"]:
+                    L.set(x, y, PIEDRA["M"] if hval < 45 else PIEDRA["S"])
+
+    # ── 6. Separación horno / base ──
+    L.hline(29, cx - 19, cx + 19, PIEDRA["S"])
 
     L.contornear()
     return L
+
+
+# ---------------------------------------------------------------------------
+# 6. SPELLBOOK — libro abierto 16×16 (icono Mesa de Encantamiento)
+# ---------------------------------------------------------------------------
+def dibujar_spellbook() -> Lienzo:
+    L = Lienzo(16, 16)
+    cx = 8
+
+    # ── 1. Resplandor arcano flotando encima ──
+    L.set(6, 1, ARCANO["B"])
+    L.set(7, 1, ARCANO["B"])
+    L.set(5, 2, ARCANO["B"])
+    L.set(6, 2, ARCANO["L"])
+    L.set(7, 2, ARCANO["L"])
+    L.set(8, 2, ARCANO["B"])
+
+    # ── 2. Páginas (dos bloques triangulares que forman una "V" abierta) ──
+    # Página izquierda (crece hacia la izquierda desde el lomo)
+    pag_izq = [
+        (6, 5),
+        (5, 6), (6, 6),
+        (4, 7), (5, 7), (6, 7),
+        (3, 8), (4, 8), (5, 8), (6, 8),
+        (2, 9), (3, 9), (4, 9), (5, 9), (6, 9),
+        (2, 10), (3, 10), (4, 10), (5, 10), (6, 10),
+        (2, 11), (3, 11), (4, 11), (5, 11), (6, 11),
+    ]
+    # Página derecha (crece hacia la derecha desde el lomo)
+    pag_der = [
+        (9, 5),
+        (9, 6), (10, 6),
+        (9, 7), (10, 7), (11, 7),
+        (9, 8), (10, 8), (11, 8), (12, 8),
+        (9, 9), (10, 9), (11, 9), (12, 9), (13, 9),
+        (9, 10), (10, 10), (11, 10), (12, 10), (13, 10),
+        (9, 11), (10, 11), (11, 11), (12, 11), (13, 11),
+    ]
+    # Lomo (vertical oscuro entre ambas páginas)
+    lomo = [
+        (7, 5),
+        (7, 6), (8, 6),
+        (7, 7), (8, 7),
+        (7, 8), (8, 8),
+        (7, 9), (8, 9),
+        (7, 10), (8, 10),
+        (7, 11), (8, 11),
+    ]
+
+    for x, y in pag_izq:
+        L.set(x, y, BLANCO["M"])
+    for x, y in pag_der:
+        L.set(x, y, BLANCO["S"])
+    for x, y in lomo:
+        L.set(x, y, ARCANO["S"])
+
+    # Brillo en el canto superior-izquierdo de la página izquierda
+    for x, y in [(3, 8), (2, 9), (2, 10), (2, 11)]:
+        L.set(x, y, BLANCO["L"])
+
+    # ── 3. Cubierta (parte inferior) ──
+    for y in (12, 13):
+        for x in range(2, 14):
+            c = MADERA["M"] if y == 12 else MADERA["S"]
+            # Luz desde arriba-izquierda en la cubierta
+            if x <= 4 and y == 12:
+                c = MADERA["L"]
+            L.set(x, y, c)
+
+    L.contornear()
+    return L
+
 
 # ---------------------------------------------------------------------------
 # Verificación
@@ -872,6 +1093,8 @@ def main() -> None:
         "bookshelf": dibujar_bookshelf(),
         "desk": dibujar_desk(),
         "chest": dibujar_chest(),
+        "forge_48": dibujar_forge_48(),
+        "spellbook": dibujar_spellbook(),
     }
 
     for nombre, L in lienzos.items():
@@ -880,7 +1103,7 @@ def main() -> None:
 
     # --- Verificación ---
     todas_rampas = set()
-    for rampa in [PIEDRA, MADERA, DORADO, ROJO, ARCANO, PAJA, HIERRO]:
+    for rampa in [PIEDRA, MADERA, DORADO, ROJO, ARCANO, PAJA, HIERRO, BLANCO]:
         todas_rampas.update(rampa.values())
     todas_rampas.add(FUEGO_CORE)
     todas_rampas.add(FUEGO_MED)
