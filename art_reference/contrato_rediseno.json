@@ -1,0 +1,118 @@
+{
+  "_": "Contrato de arte MEDIDO sobre la referencia del usuario (captura 1920x1080).",
+  "_como_se_midio": [
+    "La captura viene a pitch 4 (67% de los bloques 4x4 son uniformes), asi que el arte",
+    "nativo es 480x270. TODO lo de aqui esta medido sobre esa reduccion, no sobre los",
+    "1920x1080: medir sobre la captura da grosores y tamanos 4 veces mas grandes.",
+    "El periodo de la rejilla es 16 px en X y en Y (autocorrelacion sobre la valla y",
+    "los cultivos), o sea tiles de 16x16 nativos."
+  ],
+
+  "tile": 16,
+  "pitch": 1,
+  "zoom_de_presentacion": 4,
+
+  "contorno": {
+    "color": "#000000",
+    "grosor_px": 1,
+    "_medido": "83% de las rachas negras son de 1 px nativo; 8% de 2 px en cantos gruesos",
+    "aplica_a": ["objetos", "edificios", "props", "vallas", "arboles", "personajes"],
+    "NO_aplica_a": ["tiles de suelo"],
+    "_por_que": [
+      "En la referencia la hierba solo tiene un 3,5% de negro, y ese negro son las",
+      "sombras de las matas sueltas, no un contorno de celda. Contornear los suelos",
+      "dibujaria la rejilla: 120x72 celdas con linea negra se lee como cuadricula."
+    ]
+  },
+
+  "paleta": {
+    "_": "Rampas de 3-4 tonos por material, de sombra a luz. Medidas por recorte.",
+
+    "hierba": {
+      "base": "#7cf2b6",
+      "_nota": "EL color de la referencia. Menta brillante, 85% del tile de hierba.",
+      "variacion": ["#76ecb0", "#9bf4c7", "#8ddeae"],
+      "mata_oscura": "#5ac96b",
+      "mata_clara": "#92cb98"
+    },
+    "follaje_verde": {
+      "sombra": "#21362c",
+      "medio": "#3ea06c",
+      "luz": "#5dcf81",
+      "brillo": "#9eefc1"
+    },
+    "follaje_rosa": {
+      "sombra": "#3c1a20",
+      "medio": "#d16984",
+      "luz": "#f5b3c5",
+      "brillo": "#fcdcdf"
+    },
+    "tierra": {
+      "sombra": "#55433b",
+      "medio": "#bb8153",
+      "luz": "#e8bb84",
+      "brillo": "#f4dfbd"
+    },
+    "paja": {
+      "sombra": "#8f5f43",
+      "medio": "#b07855",
+      "luz": "#cb9163",
+      "brillo": "#d8ad7a"
+    },
+    "piedra": {
+      "sombra": "#744b48",
+      "medio": "#807466",
+      "luz": "#99a792",
+      "brillo": "#d1d1c0"
+    },
+    "madera": {
+      "sombra": "#5d423a",
+      "medio": "#956447",
+      "luz": "#bc8050",
+      "brillo": "#debf88"
+    },
+    "agua": {
+      "sombra": "#224851",
+      "medio": "#2f7f9e",
+      "luz": "#52b9fe",
+      "brillo": "#a8e4ff",
+      "_ojo": [
+        "Esta rampa NO esta medida como las demas: esta DERIVADA, y conviene saberlo.",
+        "La referencia casi no tiene agua — solo un 0,76% de pixeles azulados, que son",
+        "el disco del pozo. El primer intento de medirla salio de un recorte del pozo",
+        "que era hierba y piedra alrededor, y dio un 'agua' verde menta con un casi",
+        "negro. Los tiles salieron verdes con lunares negros.",
+        "Los dos anclajes SI son medidos: #52b9fe (el agua del pozo) y #224851 (su",
+        "sombra). Los dos intermedios estan interpolados entre ellos.",
+        "El agua tiene que contrastar DURO contra la hierba #7cf2b6: son lo que separa",
+        "una orilla, y si comparten tono la costa desaparece."
+      ]
+    },
+    "agua_profunda": {
+      "sombra": "#102a33",
+      "medio": "#173a45",
+      "luz": "#224851"
+    },
+    "arena": {
+      "sombra": "#453f36",
+      "medio": "#e8bb84",
+      "luz": "#f7cbc4",
+      "brillo": "#fcebe2"
+    }
+  },
+
+  "reglas": {
+    "perspectiva": "top-down plano. Nada de mostrar dos caras de un mismo volumen.",
+    "luz": "arriba-izquierda: brillo en esa esquina, sombra propia abajo-derecha",
+    "sombra_de_contacto": "elipse oscura bajo objetos altos, NO un pedestal solido",
+    "tonos_por_material": "3 minimo, 4 recomendado. Con 2 se ve plano; con 5+ se ensucia.",
+    "tiles_seamless": "verificar repeticion 2x2 antes de dar por bueno un suelo",
+    "dithering": "prohibido. La referencia no tiene ni un pixel de tramado."
+  },
+
+  "diferencias_con_el_juego_actual": [
+    "contorno: el juego usa #21181b (negro calido); la referencia usa #000000 puro",
+    "hierba: el juego usa #63ab3e (verde amarillento); la referencia usa #7cf2b6 (menta)",
+    "el resto de la paleta minish (28 colores) queda SUSTITUIDA por estas rampas"
+  ]
+}

@@ -25,3 +25,4 @@ Thumbs.db
 
 # Aseprite working files (keep .png exports, ignore source if too large)
 # *.aseprite
+staging_arte/
