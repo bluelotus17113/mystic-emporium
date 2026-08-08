@@ -153,13 +153,38 @@ func _registrar_encuentro(otro: Node) -> void:
 	var otro_uid: String = otro_vs._uid
 	# Afinidad baja → esto es un choque, no un saludo.
 	if af <= AFINIDAD_CONFLICTO_MAX:
-		_roces[otro_uid] = _roces.get(otro_uid, 0) + 1
+		var antes_r: int = _roces.get(otro_uid, 0)
+		_roces[otro_uid] = antes_r + 1
 		otro_vs._roces[_uid] = otro_vs._roces.get(_uid, 0) + 1
+		_avisar_si_cruza(antes_r, antes_r + 1, UMBRAL_CONFLICTO, otro, false)
 		return
 	# Amistad normal, acelerada si comparten 3 o 4 ejes.
 	var inc: int = INC_AFINIDAD_ALTA if af >= AFINIDAD_ALTA else 1
-	_memoria[otro_uid] = _memoria.get(otro_uid, 0) + inc
+	var antes_m: int = _memoria.get(otro_uid, 0)
+	_memoria[otro_uid] = antes_m + inc
 	otro_vs._memoria[_uid] = otro_vs._memoria.get(_uid, 0) + inc
+	_avisar_si_cruza(antes_m, antes_m + inc, UMBRAL_AMIGO, otro, true)
+
+
+## Avisa al jugador SOLO en el momento exacto en que la cuenta cruza el umbral.
+##
+## Sin esto, todo el sistema social ocurre en segundo plano y el jugador solo se
+## entera si abre el menú del ayudante correcto en el momento correcto. Enterarse
+## de que dos se han hecho amigos es la mitad de la gracia.
+##
+## Avisa solo QUIEN INICIA el saludo, no los dos: `_registrar_encuentro` escribe en
+## ambos lados, y notificar desde los dos daría el mensaje por duplicado.
+func _avisar_si_cruza(antes: int, ahora: int, umbral: int, otro: Node, amistad: bool) -> void:
+	if antes >= umbral or ahora < umbral:
+		return
+	var yo: String = String(_w.get("worker_name"))
+	var el: String = String(otro.get("worker_name"))
+	if amistad:
+		NotificationManager.post("💕 %s y %s se han hecho amigos." % [yo, el],
+			NotificationManager.Kind.SUCCESS)
+	else:
+		NotificationManager.post("💢 %s y %s se han enemistado: trabajan peor cerca." % [yo, el],
+			NotificationManager.Kind.WARNING)
 
 
 ## Emoji de saludo: normal o de amigo según el historial con este compañero.
@@ -321,9 +346,16 @@ func _reconciliar_si_toca(punto: Node2D) -> void:
 			continue
 		if _roces.get(ovs._uid, 0) < UMBRAL_CONFLICTO:
 			continue
-		_roces[ovs._uid] = maxi(0, _roces[ovs._uid] - RECONCILIAR_POR_COINCIDENCIA)
+		var antes: int = _roces[ovs._uid]
+		_roces[ovs._uid] = maxi(0, antes - RECONCILIAR_POR_COINCIDENCIA)
 		ovs._roces[_uid] = maxi(0, ovs._roces.get(_uid, 0) - RECONCILIAR_POR_COINCIDENCIA)
 		_w._puff_mood("🌿")
+		# Dejar de estar enemistados es lo que de verdad se celebra, y además le
+		# devuelve al jugador el −25 % de velocidad que estaba perdiendo.
+		if antes >= UMBRAL_CONFLICTO and _roces[ovs._uid] < UMBRAL_CONFLICTO:
+			NotificationManager.post("🌿 %s y %s han hecho las paces." % [
+				String(_w.get("worker_name")), String(w.get("worker_name"))],
+				NotificationManager.Kind.SUCCESS)
 
 
 func _exit_tree() -> void:
