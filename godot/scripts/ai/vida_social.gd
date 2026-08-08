@@ -15,6 +15,12 @@ const GREET_COOLDOWN: float = 12.0
 const GREET_EMOTES: Array = ["👋", "♪", "😀", "🤝"]
 const CHAT_EMOTES: Array = ["😄", "💬", "♪", "🤝", "✨", "😆", "👍"]
 
+## Amistad: tras este número de encuentros con el mismo ayudante, el saludo cambia.
+## Con GREET_COOLDOWN=12s, un par que se cruce dos veces por día de juego (48 min)
+## tarda ~2.5 días → ~1h real. Lo bastante para notarlo sin que sea instantáneo.
+const UMBRAL_AMIGO: int = 5
+const AMIGO_EMOTES: Array = ["💕", "🌟", "😊", "💖"]
+
 ## Al elegir destino de paseo, una de cada tres veces se va a un banco. Más alto
 ## y viven ahí sentados; más bajo y no se ve nunca que los usen.
 const PROB_SOCIAL: float = 0.34
@@ -26,12 +32,17 @@ var _greet_cd: float = 0.0
 var _greet_scan: float = 0.0
 var _chat_pause: float = 0.0     ## segundos parado charlando
 var _punto: Node2D = null        ## banco ocupado, para soltarlo al irse
+var _uid: String = ""           ## identificador único para la memoria de amistad
+var _memoria: Dictionary = {}   ## uid del compañero → nº de encuentros
 
 
 static func crear(worker: Node2D) -> VidaSocial:
 	var v := VidaSocial.new()
 	v.name = "VidaSocial"
 	v._w = worker
+	## Identificador único: randi() + ticks. Suficiente para los ~40 workers
+	## máximos de una partida. Se guarda y se carga para que la amistad sobreviva.
+	v._uid = "%x%x" % [randi(), Time.get_ticks_usec()]
 	worker.add_child(v)
 	return v
 
@@ -68,10 +79,11 @@ func tick_saludos(delta: float) -> void:
 
 
 func _iniciar(otro: Node) -> void:
+	_registrar_encuentro(otro)
 	_greet_cd = GREET_COOLDOWN
 	_chat_pause = randf_range(0.8, 1.2)
 	_w._face_toward((otro as Node2D).global_position)
-	_w._puff_mood(GREET_EMOTES[randi() % GREET_EMOTES.size()])
+	_w._puff_mood(_pick_greet_emote(otro))
 	_seguir(randf_range(0.5, 0.8))
 	if otro.has_method("_receive_chat"):
 		otro._receive_chat(_w.global_position)
@@ -95,6 +107,48 @@ func _seguir(delay: float) -> void:
 	t.timeout.connect(func() -> void:
 		if is_instance_valid(self) and is_instance_valid(_w):
 			_w._puff_mood(CHAT_EMOTES[randi() % CHAT_EMOTES.size()]))
+
+
+## --- Memoria de amistad ----------------------------------------------------
+
+## Suma un encuentro con otro ayudante. Lo apunta en los dos lados para que la
+## cuenta sea simétrica: si A saluda a B, ambos se recuerdan mutuamente.
+func _registrar_encuentro(otro: Node) -> void:
+	var otro_vs := _vs_de(otro)
+	if otro_vs == null:
+		return
+	var otro_uid: String = otro_vs._uid
+	_memoria[otro_uid] = _memoria.get(otro_uid, 0) + 1
+	otro_vs._memoria[_uid] = otro_vs._memoria.get(_uid, 0) + 1
+
+
+## Emoji de saludo: normal o de amigo según el historial con este compañero.
+func _pick_greet_emote(otro: Node) -> String:
+	var otro_vs := _vs_de(otro)
+	if otro_vs != null and _memoria.get(otro_vs._uid, 0) >= UMBRAL_AMIGO:
+		return AMIGO_EMOTES[randi() % AMIGO_EMOTES.size()]
+	return GREET_EMOTES[randi() % GREET_EMOTES.size()]
+
+
+## Busca el componente VidaSocial de otro worker.
+func _vs_de(worker: Node) -> VidaSocial:
+	return worker.get_node_or_null("VidaSocial") as VidaSocial
+
+
+## --- Persistencia ----------------------------------------------------------
+
+func get_save_state() -> Dictionary:
+	return {"uid": _uid, "memoria": _memoria.duplicate()}
+
+
+func load_save_state(data: Dictionary) -> void:
+	if data.is_empty():
+		return
+	_uid = str(data.get("uid", _uid))
+	_memoria = {}
+	var mem = data.get("memoria", {})
+	for k in mem.keys():
+		_memoria[str(k)] = int(mem[k])
 
 
 ## --- Reuniones en los bancos ------------------------------------------------

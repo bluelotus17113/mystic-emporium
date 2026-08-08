@@ -281,6 +281,10 @@ func get_save_dict() -> Dictionary:
 		# los edificios en su grid_pos (save_manager.gd:210) antes de que
 		# ShopManager reinstancie los workers (línea 239).
 		"casa": Residencia.grid_de(self),
+		# La memoria de amistades la lleva el componente y la guarda él. Sin esta
+		# línea el identificador se regenera en cada carga y TODAS las amistades se
+		# pierden en silencio: nadie recuerda a nadie y no salta ningún error.
+		"social": _vida.get_save_state() if _vida != null else {},
 	}
 
 
@@ -296,6 +300,8 @@ func apply_save_dict(d: Dictionary) -> void:
 		var gp: Vector2i = d["casa"]
 		if gp.x >= 0:
 			Residencia.asignar(self, gp)
+	if d.has("social") and _vida != null:
+		_vida.load_save_state(d["social"])
 	if d.has("trait"):
 		wtrait = int(d["trait"])
 		_apply_trait_behavior()
