@@ -51,6 +51,13 @@ var _favorite_manual: bool = false  ## true si la eligió el jugador, false si s
 const FAVORITE_BIAS: float = 0.45
 var energy: float = 1.0
 var _resting: bool = false
+## Siesta del dormilón: corta, de día y donde le pille. No es el descanso normal
+## —ese busca casa— y por eso lleva su propio par de variables: lo que la hace
+## legible es precisamente que ocurra a la vista y no dentro de un edificio.
+const NAP_SECONDS: float = 6.0
+const NAP_REGEN: float = 0.06   ## recupera poco: es una cabezada, no un descanso
+var _napping: bool = false
+var _nap_left: float = 0.0
 var _rest_target: Node2D = null
 var _rest_house: Node2D = null
 var _inside: bool = false
@@ -255,10 +262,11 @@ func _apply_trait_behavior() -> void:
 			_drain_mult = 0.65   # se cansa menos
 		Trait.DORMILON:
 			_drain_mult = 1.35   # se cansa antes
-		Trait.CURIOSO:
-			_wander_mult = 1.6   # explora más al deambular
 		_:
 			pass
+	# El radio de merodeo sale de Rasgos para no tener el rasgo repartido en dos
+	# sitios: ahí están juntos el ×1,6 del curioso y el ×1,5 nuevo del enérgico.
+	_wander_mult = Rasgos.radio_merodeo(wtrait, _wander_mult)
 
 
 ## --- Persistencia: identidad y progresión del ayudante ---
@@ -622,6 +630,13 @@ func _physics_process(delta: float) -> void:
 	if SiegeManager.is_active() and _siege_combat(delta):
 		_update_anim(delta)
 		return
+	# 1.5) SIESTA — el dormilón se queda frito donde esté. Va aquí, justo bajo el
+	#      asedio: un ogro le despierta, pero una charla no. Es lo que hace que la
+	#      siesta se lea como sueño y no como una pausa más.
+	if _tick_nap(delta):
+		velocity = Vector2.ZERO
+		_update_anim(delta)
+		return
 	# 2) SOCIAL — al cruzarse con otro worker se paran un momento a charlar (solo
 	#    en tiempos de paz, ya cubierto por el punto 1).
 	if _chat_pause > 0.0:
@@ -745,7 +760,7 @@ func _update_energy(delta: float) -> void:
 		# Dentro de casa recupera muy rápido; en sitio cálido rápido; de camino lento.
 		var rate: float = 3.5 if _inside else (2.5 if settled else 0.7)
 		energy = minf(1.0, energy + ENERGY_REGEN * rate * delta)
-		if settled and energy >= REST_RECOVER_TO and not _sleeping:
+		if settled and energy >= Rasgos.recuperar_hasta(wtrait, REST_RECOVER_TO) and not _sleeping:
 			if _inside:
 				_exit_house()
 			_resting = false
@@ -753,6 +768,16 @@ func _update_energy(delta: float) -> void:
 			_rest_house = null
 	elif active:
 		energy = maxf(0.0, energy - ENERGY_DRAIN * _drain_mult * EmporiumUpgradeManager.vigor_multiplier() * delta)
+		# Siesta del dormilón: se planta donde esté, a plena luz. Va ANTES del
+		# descanso forzoso de energía 0 porque salta a 0,25: si fuera después, la
+		# energía ya habría tocado fondo y el dormilón se iría a casa como los demás,
+		# que es justo lo que no se ve desde fuera.
+		if not _napping and Rasgos.quiere_siesta(wtrait, energy, not CalendarManager.is_night()):
+			_napping = true
+			_nap_left = NAP_SECONDS
+			_release_target()
+			_change_state(GameEnums.WorkerState.IDLE)
+			_puff_mood("💤")
 		if energy <= 0.0:
 			_resting = true
 			# Preferimos una casa con hueco; si no, un sitio cálido.
@@ -763,6 +788,18 @@ func _update_energy(delta: float) -> void:
 			_puff_mood("💤")
 	else:
 		energy = minf(1.0, energy + ENERGY_REGEN * delta)
+
+
+## Consume la siesta. Devuelve true mientras dure, para que el ciclo normal se salte.
+func _tick_nap(delta: float) -> bool:
+	if not _napping:
+		return false
+	_nap_left -= delta
+	energy = minf(1.0, energy + NAP_REGEN * delta)
+	if _nap_left <= 0.0:
+		_napping = false
+		_puff_mood("☀")
+	return _napping
 
 
 ## Rutina: de noche los duendes vuelven a casa a dormir; despiertan de día.
@@ -939,7 +976,10 @@ func _find_best_target():
 			continue
 		var d: float = cand.global_position.distance_squared_to(global_position)
 		if t == _favorite_type:
-			d *= FAVORITE_BIAS
+			# El curioso no tiene favorito: Rasgos.sesgo_favorito le devuelve 1.0 y
+			# entonces gana siempre el nodo más cercano. Es lo que hace que se le
+			# vea cambiar de recurso mientras los demás repiten ruta.
+			d *= Rasgos.sesgo_favorito(wtrait, FAVORITE_BIAS)
 		if d < best_score:
 			best_score = d
 			best = cand
