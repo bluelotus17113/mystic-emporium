@@ -86,40 +86,103 @@ func _on_failed(reason: String) -> void:
 	status_label.text = reason
 
 
-## Construye todos los tiles una única vez. Se llama en _ready().
+## Tres tarjetas fijas, una por plaza de la bolsa de contratos. Se construyen una
+## sola vez y `_refresh_all` les cambia el contenido: los candidatos rotan cada día
+## pero los nodos son siempre los mismos, que es lo que evita el tirón de recrear
+## texturas al abrir el panel.
 func _build_tiles_once() -> void:
-	for w in WORKER_INFO:
-		var tile: Dictionary = _build_tile(w)
+	for i in 3:
+		var tile: Dictionary = _build_tile(WORKER_INFO[0], i)
 		grid.add_child(tile.btn)
 		_tiles.append(tile)
 
 
-## Actualiza valores dinámicos (precio, disabled, color de precio) sin recrear nodos.
+## Vuelca la bolsa de hoy en las tres tarjetas: sprite, nombre, rasgo, favorito y
+## precio. Una plaza ya contratada queda vacía hasta la renovación de mañana.
 func _refresh_all() -> void:
-	for tile in _tiles:
-		var price: int = ShopManager.get_price(tile.worker_type)
-		var affordable: bool = InventoryManager.arcane_coins >= price
-		tile.btn.disabled = not affordable
-		tile.cost_lbl.text = "%d ⚜" % price
-		tile.cost_lbl.modulate = Color(1, 0.95, 0.55, 1) if affordable else Color(1, 0.55, 0.55, 1)
+	var bolsa: Array = Contratos.candidatos_crudos()
+	for i in _tiles.size():
+		var tile: Dictionary = _tiles[i]
+		var c: Dictionary = bolsa[i] if i < bolsa.size() else {}
+		if c.is_empty():
+			tile.btn.disabled = true
+			tile.name_lbl.text = "—"
+			tile.desc_lbl.text = "Contratado.\nVuelve mañana."
+			tile.cost_lbl.text = ""
+			tile.icon.texture = null
+			tile.worker_type = -1
+			continue
+		var tipo: int = int(c["type"])
+		var info: Dictionary = _info_de(tipo)
+		var precio: int = int(c["price"])
+		var hay_plaza: bool = Contratos.puede_contratar(tipo)
+		var puede_pagar: bool = InventoryManager.arcane_coins >= precio
+		tile.worker_type = tipo
+		tile.icon.texture = _icono_de(info)
+		tile.name_lbl.text = "%s · %s" % [String(c["name"]), String(info.name)]
+		tile.name_lbl.add_theme_color_override(&"font_color", Color(info.color).lightened(0.35))
+		# La ficha: el rasgo y el recurso favorito son LA decisión del contrato.
+		# Sin ellos delante esto vuelve a ser comprar a ciegas, que es lo que había.
+		tile.desc_lbl.text = "%s\n%s" % [String(c["trait_label"]), _fav_texto(int(c["favorite"]))]
+		if not hay_plaza:
+			# El candidato se ve igual pero bloqueado y CON el motivo: esconderlo
+			# dejaría al jugador sin entender por qué unos días hay tres y otros dos.
+			tile.btn.disabled = true
+			tile.cost_lbl.text = "Sin plaza (máx. %d)" % Contratos.MAX_POR_TIPO
+			tile.cost_lbl.modulate = Color(1, 0.55, 0.55, 1)
+			continue
+		tile.btn.disabled = not puede_pagar
+		tile.cost_lbl.text = "%d ⚜" % precio
+		tile.cost_lbl.modulate = Color(1, 0.95, 0.55, 1) if puede_pagar else Color(1, 0.55, 0.55, 1)
 
 
-func _build_tile(w: Dictionary) -> Dictionary:
-	var price: int = ShopManager.get_price(w.type)
+func _info_de(tipo: int) -> Dictionary:
+	for w in WORKER_INFO:
+		if w.type == tipo:
+			return w
+	return WORKER_INFO[0]
+
+
+## Primer fotograma de la hoja de animación, para que la ficha enseñe EXACTAMENTE
+## el sprite que se va a ver en el juego.
+func _icono_de(info: Dictionary) -> Texture2D:
+	if not ResourceLoader.exists(info.icon):
+		return null
+	var tex: Texture2D = load(info.icon)
+	if tex != null and tex.get_width() > 64:
+		var at := AtlasTexture.new()
+		at.atlas = tex
+		at.region = Rect2(0, 0, 64, 64)
+		return at
+	return tex
+
+
+func _fav_texto(fav: int) -> String:
+	if fav < 0:
+		return "Sin especialidad"
+	return "Prefiere %s" % WorkerBase._resource_type_label(fav)
+
+
+func _build_tile(w: Dictionary, idx: int) -> Dictionary:
+	var price: int = 0
 	var btn := Button.new()
 	btn.custom_minimum_size = TILE_SIZE
 	btn.tooltip_text = w.desc
 	btn.disabled = InventoryManager.arcane_coins < price
-	btn.pressed.connect(ShopManager.try_buy.bind(w.type))
+	btn.pressed.connect(ShopManager.try_contratar.bind(idx))
 
+	# El color del ayudante ya no rellena la tarjeta entera: es una franja a la
+	# izquierda y el color del nombre. Como fondo eran cinco bloques pastel muy
+	# saturados sobre una interfaz oscura —lo más ruidoso de la pantalla— y la
+	# descripción en blanco encima del verde apenas se leía.
 	var color: Color = w.color
 	var sb_normal := StyleBoxFlat.new()
-	sb_normal.bg_color = color
-	sb_normal.border_color = color.lightened(0.3)
-	sb_normal.border_width_left = 1
+	sb_normal.bg_color = UIPalette.fondo(UIPalette.SURFACE, 0.92)
+	sb_normal.border_color = Color(color.r, color.g, color.b, 0.8)
+	sb_normal.border_width_left = 5
 	sb_normal.border_width_top = 1
 	sb_normal.border_width_right = 1
-	sb_normal.border_width_bottom = 2
+	sb_normal.border_width_bottom = 1
 	sb_normal.corner_radius_top_left = 14
 	sb_normal.corner_radius_top_right = 14
 	sb_normal.corner_radius_bottom_right = 14
@@ -133,25 +196,23 @@ func _build_tile(w: Dictionary) -> Dictionary:
 	sb_normal.shadow_offset = Vector2(0, 2)
 	sb_normal.anti_aliasing = true
 	var sb_hover := sb_normal.duplicate() as StyleBoxFlat
-	sb_hover.bg_color = color.lightened(0.18)
-	sb_hover.border_color = Color(1, 0.95, 0.55, 1)
-	sb_hover.border_width_bottom = 3
-	sb_hover.shadow_color = color.lightened(0.5)
-	sb_hover.shadow_color.a = 0.45
-	sb_hover.shadow_size = 6
+	sb_hover.bg_color = UIPalette.fondo(UIPalette.SURFACE_HI, 0.98)
+	sb_hover.border_color = UIPalette.GOLD
+	sb_hover.shadow_color = Color(color.r, color.g, color.b, 0.45)
+	sb_hover.shadow_size = 8
 	var sb_pressed := sb_normal.duplicate() as StyleBoxFlat
-	sb_pressed.bg_color = color.darkened(0.18)
+	sb_pressed.bg_color = UIPalette.fondo(UIPalette.SURFACE_LO, 1.0)
 	var sb_disabled := sb_normal.duplicate() as StyleBoxFlat
-	sb_disabled.bg_color = color.darkened(0.40)
-	sb_disabled.border_color = color.darkened(0.55)
+	sb_disabled.bg_color = UIPalette.fondo(UIPalette.SURFACE_LO, 0.5)
+	sb_disabled.border_color = Color(color.r, color.g, color.b, 0.3)
 	sb_disabled.shadow_size = 1
 	btn.add_theme_stylebox_override(&"normal", sb_normal)
 	btn.add_theme_stylebox_override(&"hover", sb_hover)
 	btn.add_theme_stylebox_override(&"pressed", sb_pressed)
 	btn.add_theme_stylebox_override(&"disabled", sb_disabled)
-	btn.add_theme_color_override(&"font_color", Color(1, 1, 1, 1))
+	btn.add_theme_color_override(&"font_color", UIPalette.TEXT)
 	btn.add_theme_color_override(&"font_hover_color", Color(1, 1, 1, 1))
-	btn.add_theme_color_override(&"font_disabled_color", Color(0.85, 0.85, 0.85, 1))
+	btn.add_theme_color_override(&"font_disabled_color", UIPalette.TEXT_OFF)
 
 	var vb := VBoxContainer.new()
 	vb.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -185,6 +246,10 @@ func _build_tile(w: Dictionary) -> Dictionary:
 	name_lbl.text = w.name
 	name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	name_lbl.add_theme_font_size_override(&"font_size", 14)
+	# El nombre lleva el color del ayudante: es lo que lo identifica ahora que el
+	# fondo de la tarjeta es el mismo para los cinco. Aclarado para que verdes y
+	# morados medios se lean sobre oscuro.
+	name_lbl.add_theme_color_override(&"font_color", color.lightened(0.35))
 	name_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	vb.add_child(name_lbl)
 
@@ -192,8 +257,8 @@ func _build_tile(w: Dictionary) -> Dictionary:
 	desc_lbl.text = w.desc
 	desc_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	desc_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	desc_lbl.add_theme_font_size_override(&"font_size", 10)
-	desc_lbl.modulate = Color(1, 1, 1, 0.85)
+	desc_lbl.add_theme_font_size_override(&"font_size", 11)
+	desc_lbl.add_theme_color_override(&"font_color", UIPalette.TEXT_DIM)
 	desc_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	desc_lbl.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	vb.add_child(desc_lbl)
@@ -212,7 +277,8 @@ func _build_tile(w: Dictionary) -> Dictionary:
 	btn.mouse_entered.connect(_card_hover.bind(btn, true))
 	btn.mouse_exited.connect(_card_hover.bind(btn, false))
 	btn.resized.connect(func(): btn.pivot_offset = btn.size * 0.5)
-	return {"btn": btn, "cost_lbl": cost_lbl, "worker_type": w.type}
+	return {"btn": btn, "cost_lbl": cost_lbl, "worker_type": w.type,
+		"name_lbl": name_lbl, "desc_lbl": desc_lbl, "icon": icon_rect}
 
 
 func _card_hover(btn: Button, entering: bool) -> void:

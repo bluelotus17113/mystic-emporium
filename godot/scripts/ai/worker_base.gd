@@ -521,7 +521,9 @@ func _stats_data() -> Array:
 	return out
 
 
-func _resource_type_label(t: int) -> String:
+## Estática a proposito: la usa tambien shop_panel para la ficha del contrato, y
+## duplicar alli las 19 etiquetas seria pedir que se desincronicen.
+static func _resource_type_label(t: int) -> String:
 	match t:
 		GameEnums.ResourceType.HERB: return "🌿 Hierbas"
 		GameEnums.ResourceType.CRYSTAL: return "🔮 Cristal"
