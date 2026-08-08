@@ -77,6 +77,12 @@ const GREET_RADIUS: float = 28.0
 const GREET_COOLDOWN: float = 12.0
 const GREET_EMOTES: Array = ["👋", "♪", "😀", "🤝"]
 const CHAT_EMOTES: Array = ["😄", "💬", "♪", "🤝", "✨", "😆", "👍"]
+## Vida social: al elegir destino de paseo, una de cada tres veces se va a un banco.
+## Más alto y viven en el banco; más bajo y no se ve nunca que lo usen.
+const PROB_SOCIAL: float = 0.34
+const SOCIAL_MIN: float = 6.0
+const SOCIAL_MAX: float = 12.0
+var _social: Node2D = null  ## banco que tiene ocupado, para soltarlo al irse
 
 var state: GameEnums.WorkerState = GameEnums.WorkerState.IDLE
 var target: Node2D = null
@@ -1020,7 +1026,30 @@ func _wander(delta: float) -> void:
 const WANDER_MARGEN: float = 12.0
 
 
+## Suelta el banco que tuviera ocupado. Sin esto, un ayudante que se va a
+## recolectar deja su plaza tomada y el banco acaba "lleno" sin nadie sentado.
+func _soltar_social() -> void:
+	if _social != null:
+		if is_instance_valid(_social) and _social.has_method("leave"):
+			_social.leave(self)
+		_social = null
+
+
 func _pick_wander_target() -> void:
+	# Vida social: a veces, en vez de un punto al azar, se van a un banco a charlar.
+	# Solo ocurre AQUÍ, en el wander, y eso es deliberado: el wander ya es tiempo
+	# perdido —el worker deambula porque no encontró recursos libres—, así que
+	# socializar no le quita ni un segundo a la producción. Un estado social que
+	# compitiera con la recolección se leería como que los ayudantes vaguean.
+	if _social == null and randf() < PROB_SOCIAL:
+		var p: Node2D = PuntoSocial.mas_cercano(global_position)
+		if p != null:
+			_social = p
+			_wander_target = p.enter(self)
+			_wander_timer = randf_range(SOCIAL_MIN, SOCIAL_MAX)
+			_puff_mood(CHAT_EMOTES[randi() % CHAT_EMOTES.size()])
+			return
+	_soltar_social()
 	var angle: float = randf() * TAU
 	var radius: float = randf_range(WANDER_RADIUS * 0.3, WANDER_RADIUS) * _wander_mult
 	_wander_target = _home_position + Vector2(cos(angle), sin(angle)) * radius
@@ -1042,6 +1071,7 @@ static func _recortar(p: Vector2, r: Rect2, margen: float) -> Vector2:
 
 
 func _release_target() -> void:
+	_soltar_social()   ## si estaba en un banco, deja la plaza al cambiar de tarea
 	if target != null and is_instance_valid(target) and target.has_method("release"):
 		target.release(self)
 	target = null

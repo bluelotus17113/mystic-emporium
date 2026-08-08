@@ -1,9 +1,11 @@
-[gd_scene load_steps=2 format=3 uid="uid://b5j8r7n9m1e07"]
+[gd_scene load_steps=3 format=3 uid="uid://b5j8r7n9m1e07"]
 
 [ext_resource type="Texture2D" path="res://art/sprites/environment/decoration_garden_bench.png" id="1_tex"]
+[ext_resource type="Script" path="res://scripts/environment/punto_social.gd" id="2_social"]
 
 [node name="DecoGardenBench" type="Node2D"]
 y_sort_enabled = true
+script = ExtResource("2_social")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture_filter = 1
