@@ -279,6 +279,11 @@ func get_save_dict() -> Dictionary:
 		"energy": energy,
 		"favorite": _favorite_type,
 		"favorite_manual": _favorite_manual,
+		# Celda de su casa. Se guarda la CELDA y no una referencia al nodo porque
+		# los nodos se recrean al cargar. Funciona porque BuildManager reconstruye
+		# los edificios en su grid_pos (save_manager.gd:210) antes de que
+		# ShopManager reinstancie los workers (línea 239).
+		"casa": Residencia.grid_de(self),
 	}
 
 
@@ -290,6 +295,10 @@ func apply_save_dict(d: Dictionary) -> void:
 	energy = clampf(float(d.get("energy", energy)), 0.0, 1.0)
 	_favorite_type = int(d.get("favorite", _favorite_type))
 	_favorite_manual = bool(d.get("favorite_manual", false))
+	if d.has("casa"):
+		var gp: Vector2i = d["casa"]
+		if gp.x >= 0:
+			Residencia.asignar(self, gp)
 	if d.has("trait"):
 		wtrait = int(d["trait"])
 		_apply_trait_behavior()
@@ -829,8 +838,16 @@ func _maybe_sleep(delta: float) -> void:
 		_rest_house = null
 
 
-## Casa de duendes con hueco libre más cercana, para descansar dentro.
+## La casa del ayudante. Primero la SUYA; si no tiene o se la demolieron, la más
+## cercana con hueco, y entonces se queda con ella.
+##
+## Que cada uno vuelva siempre a la misma es lo que convierte el albergue en
+## vecindario: sin esto dormían cada noche donde cayera y no había "Fizwick vive
+## aquí", que es media gracia de que la isla se sienta habitada.
 func _find_worker_house() -> Node2D:
+	var mia: Node2D = Residencia.casa_de(self)
+	if mia != null and mia.has_method("has_room") and mia.has_room():
+		return mia
 	var best: Node2D = null
 	var best_d: float = 520.0
 	for h in get_tree().get_nodes_in_group("worker_house"):
