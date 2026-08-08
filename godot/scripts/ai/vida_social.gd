@@ -179,6 +179,28 @@ func _pick_greet_emote(otro: Node) -> String:
 	return GREET_EMOTES[randi() % GREET_EMOTES.size()]
 
 
+## Fija los cuatro ejes desde fuera. La usa el contrato: el jugador ve el carácter
+## en la ficha ANTES de fichar, así que el ayudante tiene que nacer con ese y no con
+## otro sorteado aparte.
+func fijar_ejes(ei: bool, sn: bool, tf: bool, jp: bool) -> void:
+	_eje_ei = ei
+	_eje_sn = sn
+	_eje_tf = tf
+	_eje_jp = jp
+
+
+## Los cuatro ejes como diccionario, para meterlos en la ficha de un candidato.
+static func sortear_ejes() -> Dictionary:
+	return {"ei": randi() & 1 == 1, "sn": randi() & 1 == 1,
+			"tf": randi() & 1 == 1, "jp": randi() & 1 == 1}
+
+
+## Siglas a partir de unos ejes sueltos, sin necesitar un ayudante vivo.
+static func sigla_de(e: Dictionary) -> String:
+	return ("I" if e.get("ei", false) else "E") + ("N" if e.get("sn", false) else "S") \
+		+ ("F" if e.get("tf", false) else "T") + ("P" if e.get("jp", false) else "J")
+
+
 ## Busca el componente VidaSocial de otro worker.
 func _vs_de(worker: Node) -> VidaSocial:
 	return worker.get_node_or_null("VidaSocial") as VidaSocial
@@ -306,3 +328,36 @@ func _reconciliar_si_toca(punto: Node2D) -> void:
 
 func _exit_tree() -> void:
 	soltar()
+
+
+## --- Para enseñarlo en pantalla --------------------------------------------
+
+## Nombre corto del carácter, a partir de los dos ejes que más se notan mirando:
+## E/I dice si busca compañía, y T/F si va a lo suyo o se deja llevar.
+##
+## No hay tabla de 16: son dos ejes, cuatro combinaciones. Poner los dieciséis
+## nombres del MBTI real ("Arquitecto", "Mediador"…) obligaría a mantener una lista
+## que nadie puede verificar contra el comportamiento, porque los otros dos ejes no
+## cambian nada visible todavía.
+func caracter() -> String:
+	if _eje_ei:
+		return "reservado y soñador" if _eje_tf else "reservado y práctico"
+	return "sociable y soñador" if _eje_tf else "sociable y práctico"
+
+
+## Cuántos amigos tiene hechos (encuentros por encima del umbral).
+func n_amigos() -> int:
+	var n := 0
+	for v in _memoria.values():
+		if int(v) >= UMBRAL_AMIGO:
+			n += 1
+	return n
+
+
+## Con cuántos está enemistado.
+func n_enemigos() -> int:
+	var n := 0
+	for v in _roces.values():
+		if int(v) >= UMBRAL_CONFLICTO:
+			n += 1
+	return n

@@ -172,6 +172,13 @@ func try_contratar(idx: int) -> void:
 			"name": cand["name"], "trait": cand["trait"], "favorite": cand["favorite"],
 			"favorite_manual": true,
 		})
+	# Los ejes se fijan tras apply_save_dict: el componente ya existe (lo crea el
+	# _ready del worker) y así nace con el carácter que se vio en la ficha.
+	var vs = inst.get_node_or_null("VidaSocial")
+	if vs != null and cand.has("ejes"):
+		var e: Dictionary = cand["ejes"]
+		vs.fijar_ejes(bool(e.get("ei", false)), bool(e.get("sn", false)),
+			bool(e.get("tf", false)), bool(e.get("jp", false)))
 	Contratos.contratar(idx)
 	prices[tipo] = int(get_price(tipo) * 1.4)   # se mantiene la escalada
 	worker_purchased.emit(tipo, inst)

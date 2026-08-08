@@ -492,6 +492,20 @@ func _stats_data() -> Array:
 	else:
 		out.append({"label": "Nivel", "text": "MÁX (%d)" % level})
 	out.append({"label": "Rasgo", "text": String(TRAIT_NAMES.get(wtrait, "—"))})
+	if _vida != null:
+		# Las siglas solas no dicen nada a quien no conozca el MBTI, así que van
+		# con su descripción al lado. Un "INTJ" a secas sería tan decorativo como
+		# el rasgo CURIOSO antes de que hiciera algo.
+		out.append({"label": "Carácter", "text": "%s · %s" % [_vida.sigla(), _vida.caracter()]})
+		var amigos: int = _vida.n_amigos()
+		var enemigos: int = _vida.n_enemigos()
+		if amigos > 0 or enemigos > 0:
+			var partes: Array = []
+			if amigos > 0:
+				partes.append("💕 %d" % amigos)
+			if enemigos > 0:
+				partes.append("💢 %d" % enemigos)
+			out.append({"label": "Relaciones", "text": " · ".join(partes)})
 	if preferred_resource_types.size() > 1:
 		out.append({"label": "Especialidad", "text": especialidad_texto()})
 	out.append({"label": "Ahora", "text": _state_label()})
@@ -579,7 +593,8 @@ func _worker_title() -> String:
 		GameEnums.WorkerType.LENADOR: role = "🪓 Leñador"
 		GameEnums.WorkerType.ESPIRITU: role = "👻 Espíritu"
 		_: role = "Ayudante"
-	return "%s %s · Nv %d · %s" % [role, worker_name, level, TRAIT_NAMES.get(wtrait, "")]
+	var sig: String = " · %s" % _vida.sigla() if _vida != null else ""
+	return "%s %s · Nv %d · %s%s" % [role, worker_name, level, TRAIT_NAMES.get(wtrait, ""), sig]
 
 
 func _capture_home() -> void:

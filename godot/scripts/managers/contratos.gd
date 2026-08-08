@@ -140,6 +140,9 @@ func _generar_candidato() -> Dictionary:
 		"trait_label": WorkerBase.TRAIT_NAMES.get(rasgo, ""),
 		"favorite": fav,
 		"price": precio,
+		# El carácter va en la ficha: desde que existe el MBTI es media personalidad,
+		# y fichar a ciegas justo esa parte vaciaba la idea del contrato.
+		"ejes": VidaSocial.sortear_ejes(),
 	}
 
 

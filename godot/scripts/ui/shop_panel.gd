@@ -123,7 +123,9 @@ func _refresh_all() -> void:
 		tile.name_lbl.add_theme_color_override(&"font_color", Color(info.color).lightened(0.35))
 		# La ficha: el rasgo y el recurso favorito son LA decisión del contrato.
 		# Sin ellos delante esto vuelve a ser comprar a ciegas, que es lo que había.
-		tile.desc_lbl.text = "%s\n%s" % [String(c["trait_label"]), _fav_texto(int(c["favorite"]))]
+		var sig: String = VidaSocial.sigla_de(c.get("ejes", {}))
+		tile.desc_lbl.text = "%s\n%s\n%s" % [String(c["trait_label"]), sig,
+			_fav_texto(int(c["favorite"]))]
 		if not hay_plaza:
 			# El candidato se ve igual pero bloqueado y CON el motivo: esconderlo
 			# dejaría al jugador sin entender por qué unos días hay tres y otros dos.
