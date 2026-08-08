@@ -133,6 +133,7 @@ func save_game(slot: int = -1) -> void:
 		"orders": OrderManager.get_save_state(),
 		"event": EventManager.get_save_state(),
 		"shop": ShopManager.get_save_state(),
+		"contratos": Contratos.get_save_state(),
 	}
 	var path: String = _slot_path(slot)
 	var tmp_path: String = _slot_tmp_path(slot)
@@ -239,6 +240,11 @@ func load_game(slot: int = -1) -> bool:
 	# Shop al final: requiere ShopManager.spawn_container/worker_scenes ya cableados.
 	if parsed.has("shop"):
 		ShopManager.load_save_state(parsed.shop)
+	# Contratos DESPUÉS del shop: su tope de 10 por tipo cuenta los ayudantes del
+	# grupo "workers", y esos los acaba de reinstanciar ShopManager. Antes contaría 0
+	# y diría que hay plazas libres cuando no las hay.
+	if parsed.has("contratos"):
+		Contratos.load_save_state(parsed.contratos)
 	current_slot = slot
 	print("[Save] Loaded slot %d" % slot)
 	game_loaded.emit(slot)

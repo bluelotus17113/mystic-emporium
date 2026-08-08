@@ -130,3 +130,49 @@ func load_save_state(data: Dictionary) -> void:
 		# nombre/rasgo aleatorios; aquí los sobreescribimos con los guardados).
 		if inst.has_method("apply_save_dict"):
 			inst.apply_save_dict(entry.get("state", {}))
+
+
+## --- Contratos ---------------------------------------------------------------
+## Contrata al candidato `idx` de la bolsa de Contratos. A diferencia de try_buy,
+## el ayudante nace con el nombre, el rasgo y el favorito que el jugador vio en la
+## ficha: ahí está la gracia de contratar en vez de comprar a ciegas.
+func try_contratar(idx: int) -> void:
+	var c: Array = Contratos.candidatos_crudos()
+	if idx < 0 or idx >= c.size() or c[idx].is_empty():
+		purchase_failed.emit("Ese contrato ya no está disponible.")
+		return
+	var cand: Dictionary = c[idx]
+	var tipo: int = int(cand["type"])
+	if not Contratos.puede_contratar(tipo):
+		purchase_failed.emit("Ya tienes %d de ese tipo." % Contratos.MAX_POR_TIPO)
+		return
+	if not worker_scenes.has(tipo) or spawn_container == null:
+		purchase_failed.emit("No hay escena o contenedor para ese tipo.")
+		return
+	var precio: int = int(cand["price"])
+	if InventoryManager.arcane_coins < precio:
+		purchase_failed.emit("Coins insuficientes (necesitas %d ⚜)." % precio)
+		return
+	if not InventoryManager.spend_coins(precio):
+		purchase_failed.emit("No se pudo descontar coins.")
+		return
+	var scene: PackedScene = worker_scenes[tipo]
+	var inst = scene.instantiate() if scene != null else null
+	if inst == null:
+		InventoryManager.add_coins(precio)   # devolver lo cobrado
+		purchase_failed.emit("No se pudo instanciar el ayudante.")
+		return
+	spawn_container.add_child(inst)
+	if spawn_position_provider.is_valid():
+		inst.global_position = spawn_position_provider.call()
+	# Los datos de la ficha se aplican DESPUÉS de add_child: worker_base los pisa
+	# en _ready() con valores al azar, así que ponerlos antes no serviría de nada.
+	if inst.has_method("apply_save_dict"):
+		inst.apply_save_dict({
+			"name": cand["name"], "trait": cand["trait"], "favorite": cand["favorite"],
+			"favorite_manual": true,
+		})
+	Contratos.contratar(idx)
+	prices[tipo] = int(get_price(tipo) * 1.4)   # se mantiene la escalada
+	worker_purchased.emit(tipo, inst)
+	print("[Contratos] +%s (%s) por %d ⚜" % [_type_name(tipo), String(cand["name"]), precio])
