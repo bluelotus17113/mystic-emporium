@@ -69,20 +69,10 @@ var _base_move_speed: float = 0.0
 var _mood: Label = null
 var _mood_accum: float = 0.0
 var _dust_accum: float = 0.0
-var _greet_cd: float = 0.0
-var _greet_scan: float = 0.0
 var _breath_cd: float = 0.0
-var _chat_pause: float = 0.0  ## se paran un momento a "charlar" al cruzarse
-const GREET_RADIUS: float = 28.0
-const GREET_COOLDOWN: float = 12.0
-const GREET_EMOTES: Array = ["👋", "♪", "😀", "🤝"]
-const CHAT_EMOTES: Array = ["😄", "💬", "♪", "🤝", "✨", "😆", "👍"]
-## Vida social: al elegir destino de paseo, una de cada tres veces se va a un banco.
-## Más alto y viven en el banco; más bajo y no se ve nunca que lo usen.
-const PROB_SOCIAL: float = 0.34
-const SOCIAL_MIN: float = 6.0
-const SOCIAL_MAX: float = 12.0
-var _social: Node2D = null  ## banco que tiene ocupado, para soltarlo al irse
+## Saludos, charlas y reuniones viven en su propio componente: este fichero ya
+## lleva recolección, energía, descanso, sueño, siestas, combate, guardado y menú.
+var _vida: VidaSocial = null
 
 var state: GameEnums.WorkerState = GameEnums.WorkerState.IDLE
 var target: Node2D = null
@@ -147,6 +137,7 @@ func _ready() -> void:
 	_combat_hb.died.connect(_enter_downed)
 	SiegeManager.siege_ended.connect(_on_siege_ended)
 	# call_deferred porque al spawnear, global_position aún no está finalizado.
+	_vida = VidaSocial.crear(self)
 	call_deferred("_capture_home")
 
 
@@ -372,51 +363,11 @@ func _maybe_breath(delta: float) -> void:
 	BreathPuff.spawn(self, Vector2(_facing_x * 5.0, -32.0))
 
 
-## Al cruzarse con otro worker caminando, se paran un momento a charlar:
-## ambos se plantan e intercambian un par de burbujas (con cooldown anti-spam).
-func _maybe_greet(delta: float) -> void:
-	_greet_cd -= delta
-	_greet_scan -= delta
-	if _greet_cd > 0.0 or _greet_scan > 0.0:
-		return
-	_greet_scan = 0.4
-	if velocity.length_squared() < 4.0:
-		return
-	for w in get_tree().get_nodes_in_group("workers"):
-		if w == self or not is_instance_valid(w) or not (w as Node2D).visible:
-			continue
-		if global_position.distance_to((w as Node2D).global_position) < GREET_RADIUS:
-			_start_chat(w)
-			return
-
-
-## Inicia una charla: yo saludo y "provoco" que el otro responda.
-func _start_chat(other: Node) -> void:
-	_greet_cd = GREET_COOLDOWN
-	_chat_pause = randf_range(0.8, 1.2)
-	_face_toward((other as Node2D).global_position)
-	_puff_mood(GREET_EMOTES[randi() % GREET_EMOTES.size()])
-	_chat_followup(randf_range(0.5, 0.8))
-	if other.has_method("_receive_chat"):
-		other._receive_chat(global_position)
-
-
-## Respuesta cuando otro worker nos aborda: nos paramos y contestamos.
+## El saludo al cruzarse lo lleva el componente; aquí solo queda la puerta de
+## entrada, porque quien saluda llama a `_receive_chat` sobre el NODO del worker.
 func _receive_chat(from_pos: Vector2) -> void:
-	if _chat_pause > 0.0:
-		return
-	_greet_cd = GREET_COOLDOWN
-	_chat_pause = randf_range(0.8, 1.2)
-	_face_toward(from_pos)
-	_chat_followup(randf_range(0.25, 0.5))
-
-
-## Suelta otra burbuja tras un pequeño retardo (el "ida y vuelta" de la charla).
-func _chat_followup(delay: float) -> void:
-	var t := get_tree().create_timer(delay)
-	t.timeout.connect(func() -> void:
-		if is_instance_valid(self):
-			_puff_mood(CHAT_EMOTES[randi() % CHAT_EMOTES.size()]))
+	if _vida != null:
+		_vida.responder(from_pos)
 
 
 func _face_toward(pos: Vector2) -> void:
@@ -656,8 +607,8 @@ func _physics_process(delta: float) -> void:
 		return
 	# 2) SOCIAL — al cruzarse con otro worker se paran un momento a charlar (solo
 	#    en tiempos de paz, ya cubierto por el punto 1).
-	if _chat_pause > 0.0:
-		_chat_pause -= delta
+	if _vida != null and _vida.esta_charlando():
+		_vida.consumir_charla(delta)
 		velocity = Vector2.ZERO
 		_update_anim(delta)
 		return
@@ -701,7 +652,8 @@ func _physics_process(delta: float) -> void:
 			pass
 	_update_anim(delta)
 	_maybe_mood(delta)
-	_maybe_greet(delta)
+	if _vida != null:
+		_vida.tick_saludos(delta)
 	_maybe_breath(delta)
 	_maybe_sleep(delta)
 	_update_energy(delta)
@@ -1026,30 +978,17 @@ func _wander(delta: float) -> void:
 const WANDER_MARGEN: float = 12.0
 
 
-## Suelta el banco que tuviera ocupado. Sin esto, un ayudante que se va a
-## recolectar deja su plaza tomada y el banco acaba "lleno" sin nadie sentado.
-func _soltar_social() -> void:
-	if _social != null:
-		if is_instance_valid(_social) and _social.has_method("leave"):
-			_social.leave(self)
-		_social = null
-
-
 func _pick_wander_target() -> void:
-	# Vida social: a veces, en vez de un punto al azar, se van a un banco a charlar.
-	# Solo ocurre AQUÍ, en el wander, y eso es deliberado: el wander ya es tiempo
-	# perdido —el worker deambula porque no encontró recursos libres—, así que
-	# socializar no le quita ni un segundo a la producción. Un estado social que
-	# compitiera con la recolección se leería como que los ayudantes vaguean.
-	if _social == null and randf() < PROB_SOCIAL:
-		var p: Node2D = PuntoSocial.mas_cercano(global_position)
-		if p != null:
-			_social = p
-			_wander_target = p.enter(self)
-			_wander_timer = randf_range(SOCIAL_MIN, SOCIAL_MAX)
-			_puff_mood(CHAT_EMOTES[randi() % CHAT_EMOTES.size()])
+	# A veces, en vez de un punto al azar, se va a un banco a charlar. Solo pasa
+	# AQUÍ y es deliberado: deambula porque no encontró recursos libres, o sea que
+	# ese tiempo ya estaba perdido. El componente decide; este fichero solo obedece.
+	if _vida != null:
+		var r: Dictionary = _vida.buscar_reunion()
+		if r.get("activo", false):
+			_wander_target = r["destino"]
+			_wander_timer = r["duracion"]
 			return
-	_soltar_social()
+		_vida.soltar()
 	var angle: float = randf() * TAU
 	var radius: float = randf_range(WANDER_RADIUS * 0.3, WANDER_RADIUS) * _wander_mult
 	_wander_target = _home_position + Vector2(cos(angle), sin(angle)) * radius
@@ -1071,7 +1010,8 @@ static func _recortar(p: Vector2, r: Rect2, margen: float) -> Vector2:
 
 
 func _release_target() -> void:
-	_soltar_social()   ## si estaba en un banco, deja la plaza al cambiar de tarea
+	if _vida != null:
+		_vida.soltar()   ## si estaba en un banco, deja la plaza al cambiar de tarea
 	if target != null and is_instance_valid(target) and target.has_method("release"):
 		target.release(self)
 	target = null

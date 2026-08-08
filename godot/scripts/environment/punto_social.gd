@@ -15,7 +15,7 @@ const CAP: int = 2
 ## Dos posiciones separadas para que los sprites no se solapen.
 ## Offsets relativos al centro del nodo (global_position).
 ## Dos posiciones a 20 px entre sí (dentro de GREET_RADIUS=28). Así el worker
-## que llega caminando ve al que ya está sentado y _maybe_greet dispara la charla.
+## que llega caminando ve al que ya está sentado y VidaSocial.tick_saludos dispara la charla.
 const STAND_OFFSETS: Array[Vector2] = [
 	Vector2(-10, 48),
 	Vector2(10, 48),
