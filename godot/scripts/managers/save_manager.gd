@@ -30,7 +30,7 @@ const BANDERAS_DIAGNOSTICO: Array[String] = [
 	"--testnotif", "--testarboles", "--spikes", "--perfprobe", "--escaparate",
 	"--sinsombras", "--hora", "--captura", "--mueveprop",
 	"--diaghud", "--capturapaneles", "--capturaviaje", "--sintelon",
-	"--caprecolectable", "--diagencuentros",
+	"--caprecolectable", "--diagencuentros", "--diagrina",
 ]
 
 

@@ -120,6 +120,10 @@ func _ready() -> void:
 		var de := preload("res://scripts/tools/diag_encuentros.gd").new()
 		de.name = "DiagEncuentros"
 		add_child(de)
+	if _tiene_bandera("--diagrina"):
+		var dr := preload("res://scripts/tools/diag_rina.gd").new()
+		dr.name = "DiagRina"
+		add_child(dr)
 	var dh := preload("res://scripts/tools/diag_hud.gd").new()
 	dh.name = "DiagHUD"
 	add_child(dh)

@@ -112,9 +112,23 @@ func tick_saludos(delta: float) -> void:
 
 func _iniciar(otro: Node) -> void:
 	_registrar_encuentro(otro)
+	var otro_vs := _vs_de(otro)
+	var reñidos: bool = otro_vs != null and enemistado_con(otro_vs)
 	_greet_cd = GREET_COOLDOWN
+	var pos_otro: Vector2 = (otro as Node2D).global_position
+	if reñidos:
+		# Se dan la ESPALDA y se apartan. Antes hacían el mismo gesto que al
+		# saludarse —girarse el uno hacia el otro y pararse— y solo cambiaba el
+		# emoji: desde lejos no se distinguía una riña de una charla.
+		_chat_pause = randf_range(0.3, 0.5)   # se paran menos: no hay conversación
+		_w._face_toward(_w.global_position * 2.0 - pos_otro)
+		_w._puff_mood(CONFLICTO_EMOTES[randi() % CONFLICTO_EMOTES.size()])
+		_apartarse_de(pos_otro)
+		if otro.has_method("_receive_chat"):
+			otro._receive_chat(_w.global_position)   # el otro también reacciona
+		return
 	_chat_pause = randf_range(0.8, 1.2)
-	_w._face_toward((otro as Node2D).global_position)
+	_w._face_toward(pos_otro)
 	_w._puff_mood(_pick_greet_emote(otro))
 	_seguir(randf_range(0.5, 0.8))
 	if otro.has_method("_receive_chat"):
@@ -127,9 +141,31 @@ func responder(desde: Vector2) -> void:
 	if _chat_pause > 0.0:
 		return
 	_greet_cd = GREET_COOLDOWN
+	# Si quien le aborda es su enemigo, el que responde también se aparta. Sin esto
+	# la riña se veía a medias: uno huía y el otro se quedaba mirándole marcharse.
+	if _enemigo_cerca_de(desde):
+		_chat_pause = randf_range(0.3, 0.5)
+		_w._face_toward(_w.global_position * 2.0 - desde)
+		_w._puff_mood(CONFLICTO_EMOTES[randi() % CONFLICTO_EMOTES.size()])
+		_apartarse_de(desde)
+		return
 	_chat_pause = randf_range(0.8, 1.2)
 	_w._face_toward(desde)
 	_seguir(randf_range(0.25, 0.5))
+
+
+## ¿El que me aborda desde `desde` es alguien con quien estoy reñido? Se resuelve
+## por posición porque `_receive_chat` solo transmite un punto, no el nodo.
+func _enemigo_cerca_de(desde: Vector2) -> bool:
+	for w in _w.get_tree().get_nodes_in_group("workers"):
+		if w == _w or not is_instance_valid(w):
+			continue
+		if (w as Node2D).global_position.distance_to(desde) > 4.0:
+			continue
+		var ovs := _vs_de(w)
+		if ovs != null and enemistado_con(ovs):
+			return true
+	return false
 
 
 ## Suelta otra burbuja tras un retardo: es el "ida y vuelta" que hace que la
@@ -315,6 +351,11 @@ func buscar_reunion() -> Dictionary:
 	var p: Node2D = PuntoSocial.mas_cercano(_w.global_position)
 	if p == null or not p.has_method("enter"):
 		return {"activo": false}
+	# No se sienta donde ya hay alguien con quien está reñido. Evitarse es la mitad
+	# de que la enemistad se note; y si se sentaran juntos, la reconciliación
+	# ocurriría sola en vez de ser algo que el jugador provoca.
+	if _hay_enemigo_en(p):
+		return {"activo": false}
 	_punto = p
 	_w._puff_mood(CHAT_EMOTES[randi() % CHAT_EMOTES.size()])
 	_reconciliar_si_toca(p)
@@ -393,3 +434,40 @@ func n_enemigos() -> int:
 		if int(v) >= UMBRAL_CONFLICTO:
 			n += 1
 	return n
+
+
+## --- Que la riña se vea -----------------------------------------------------
+
+## Cuánto se aparta un ayudante al toparse con alguien con quien está reñido.
+const APARTARSE: float = 90.0
+
+## Manda al ayudante a pasear en dirección contraria al otro. Es lo que convierte
+## la enemistad en algo que se MIRA: dos que se evitan por el patio se leen sin
+## abrir ningún menú, mientras que un emoji dura medio segundo y te lo pierdes.
+func _apartarse_de(pos_otro: Vector2) -> void:
+	soltar()   # si iba a un banco, ya no: no se sienta al lado de quien le cae mal
+	var huida: Vector2 = (_w.global_position - pos_otro).normalized()
+	if huida == Vector2.ZERO:
+		huida = Vector2.RIGHT
+	var destino: Vector2 = _w.global_position + huida * APARTARSE
+	# Recortar contra la zona, igual que hace _pick_wander_target. Sin esto, dos
+	# reñidos que se cruzan junto al borde se mandan andando fuera de la isla: no
+	# hay colisionadores en el mundo, así que nada los frena.
+	var rect: Rect2 = GridManager.get_zone_rect_at(_w.get("_home_position"))
+	if rect.size != Vector2.ZERO:
+		destino = WorkerBase._recortar(destino, rect, WorkerBase.WANDER_MARGEN)
+	_w.set("_wander_target", destino)
+	_w.set("_wander_timer", randf_range(2.0, 3.5))
+
+
+## ¿Hay alguien reñido con él sentado ya en este punto social? Se usa para que no
+## elija un banco ocupado por un enemigo: si se sentaran juntos, la reconciliación
+## sería automática y dejaría de ser algo que el jugador provoca.
+func _hay_enemigo_en(punto: Node2D) -> bool:
+	for w in _w.get_tree().get_nodes_in_group("workers"):
+		if w == _w or not is_instance_valid(w):
+			continue
+		var ovs := _vs_de(w)
+		if ovs != null and ovs._punto == punto and enemistado_con(ovs):
+			return true
+	return false
