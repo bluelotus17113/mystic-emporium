@@ -114,6 +114,12 @@ func _ready() -> void:
 	var cap := preload("res://scripts/tools/captura_zona.gd").new()
 	cap.name = "CapturaZona"
 	add_child(cap)
+	# Solo se instala con su bandera: recorre TODOS los pares de ayudantes cada
+	# 0,5 s, que es O(n²) y no tiene por qué correr en una partida normal.
+	if _tiene_bandera("--diagencuentros"):
+		var de := preload("res://scripts/tools/diag_encuentros.gd").new()
+		de.name = "DiagEncuentros"
+		add_child(de)
 	var dh := preload("res://scripts/tools/diag_hud.gd").new()
 	dh.name = "DiagHUD"
 	add_child(dh)
@@ -619,3 +625,11 @@ func _find_item_by_id(id: StringName) -> ItemData:
 
 
 
+
+
+## ¿Está esta bandera en la línea de órdenes, con o sin "=valor"?
+func _tiene_bandera(nombre: String) -> bool:
+	for a in OS.get_cmdline_user_args():
+		if a == nombre or a.begins_with(nombre + "="):
+			return true
+	return false

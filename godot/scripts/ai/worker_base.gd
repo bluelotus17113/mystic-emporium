@@ -63,6 +63,13 @@ var _rest_house: Node2D = null
 var _inside: bool = false
 var _sleeping: bool = false   ## durmiendo de noche (no despierta hasta el día)
 var _sleep_scan: float = 0.0
+## Mal ambiente: trabajar rodeado de enemistados cuesta rendimiento. Es la ÚNICA
+## consecuencia mecánica de lo social; las amistades a propósito no dan ventaja.
+## La asimetría es deliberada: un mal ambiente se nota, uno bueno es lo normal.
+const PENALIZA_ENEMIGOS: float = 0.75   ## −25 % de velocidad
+const ANIMO_INTERVALO: float = 2.0      ## cada cuánto se recomprueba
+var _animo_scan: float = 0.0
+var _animo_mult: float = 1.0
 var _wander_mult: float = 1.0
 var _drain_mult: float = 1.0
 var _base_move_speed: float = 0.0
@@ -280,7 +287,13 @@ func get_save_dict() -> Dictionary:
 		# los nodos se recrean al cargar. Funciona porque BuildManager reconstruye
 		# los edificios en su grid_pos (save_manager.gd:210) antes de que
 		# ShopManager reinstancie los workers (línea 239).
-		"casa": Residencia.grid_de(self),
+		"casa_x": Residencia.grid_de(self).x,
+		"casa_y": Residencia.grid_de(self).y,
+		# Como DOS enteros, no como Vector2i: al pasar por JSON un Vector2i se
+		# serializa como el texto "(3, 5)" y vuelve como String, no como vector.
+		# Daba "Trying to assign value of type String to a variable of type Vector2i"
+		# al cargar cualquier partida que ya tuviera casa asignada.
+		#
 		# La memoria de amistades la lleva el componente y la guarda él. Sin esta
 		# línea el identificador se regenera en cada carga y TODAS las amistades se
 		# pierden en silencio: nadie recuerda a nadie y no salta ningún error.
@@ -296,10 +309,11 @@ func apply_save_dict(d: Dictionary) -> void:
 	energy = clampf(float(d.get("energy", energy)), 0.0, 1.0)
 	_favorite_type = int(d.get("favorite", _favorite_type))
 	_favorite_manual = bool(d.get("favorite_manual", false))
-	if d.has("casa"):
-		var gp: Vector2i = d["casa"]
-		if gp.x >= 0:
-			Residencia.asignar(self, gp)
+	if d.has("casa_x") and d.has("casa_y"):
+		var cx: int = int(d["casa_x"])
+		var cy: int = int(d["casa_y"])
+		if cx >= 0:
+			Residencia.asignar(self, Vector2i(cx, cy))
 	if d.has("social") and _vida != null:
 		_vida.load_save_state(d["social"])
 	if d.has("trait"):
@@ -658,6 +672,7 @@ func _physics_process(delta: float) -> void:
 			pass
 	_update_anim(delta)
 	_maybe_mood(delta)
+	_tick_animo(delta)
 	if _vida != null:
 		_vida.tick_saludos(delta)
 	_maybe_breath(delta)
@@ -775,6 +790,25 @@ func _tick_nap(delta: float) -> bool:
 		_napping = false
 		_puff_mood("☀")
 	return _napping
+
+
+## Recalcula la penalización por mal ambiente. Cada 2 s y no cada frame porque
+## rodeado_de_enemigos() recorre los ayudantes cercanos y eso es caro en el bucle.
+func _tick_animo(delta: float) -> void:
+	_animo_scan -= delta
+	if _animo_scan > 0.0:
+		return
+	_animo_scan = ANIMO_INTERVALO
+	var antes: float = _animo_mult
+	_animo_mult = 1.0
+	if _vida != null and _vida.rodeado_de_enemigos():
+		_animo_mult = PENALIZA_ENEMIGOS
+	if not is_equal_approx(antes, _animo_mult):
+		# Se reaplica sobre la velocidad de nivel, no sobre la actual: encadenar
+		# multiplicadores la haría derivar a cero tras unos cuantos cambios.
+		move_speed = _base_move_speed * (1.0 + SPEED_PER_LEVEL * float(level - 1)) * _animo_mult
+		if _animo_mult < 1.0:
+			_puff_mood("💢")
 
 
 ## Rutina: de noche los duendes vuelven a casa a dormir; despiertan de día.
